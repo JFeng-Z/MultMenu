@@ -1,0 +1,332 @@
+{
+  "name": "STM32F103",
+  "type": "ARM",
+  "dependenceList": [],
+  "srcDirs": [
+    ".eide/deps",
+    "FreeRTOS",
+    "HARDWARE"
+  ],
+  "virtualFolder": {
+    "name": "<virtual_root>",
+    "files": [],
+    "folders": [
+      {
+        "name": "CMSIS",
+        "files": [
+          {
+            "path": "Libraries/CMSIS/core_cm3.c"
+          },
+          {
+            "path": "Libraries/CMSIS/system_stm32f10x.c"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "DOC",
+        "files": [
+          {
+            "path": "Doc/ReadMe.txt"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "FWLIB",
+        "files": [
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/misc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_adc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_bkp.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_can.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_crc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dac.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dbgmcu.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_exti.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_flash.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_fsmc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_i2c.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_iwdg.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_pwr.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rtc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_sdio.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_wwdg.c"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "STARTUP",
+        "files": [
+          {
+            "path": "Libraries/CMSIS/startup/startup_stm32f10x_hd.s"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "USER",
+        "files": [
+          {
+            "path": "User/FreeRTOSConfig.h"
+          },
+          {
+            "path": "User/main.c"
+          },
+          {
+            "path": "User/stm32f10x_conf.h"
+          },
+          {
+            "path": "User/stm32f10x_it.c"
+          },
+          {
+            "path": "User/stm32f10x_it.h"
+          }
+        ],
+        "folders": []
+      }
+    ]
+  },
+  "outDir": "build",
+  "deviceName": null,
+  "packDir": null,
+  "miscInfo": {
+    "uid": "981fcffb006b569910fbc72d57385d33"
+  },
+  "targets": {
+    "Target 1": {
+      "excludeList": [
+        "<virtual_root>/USER/dsp_led.c",
+        "FreeRTOS/port/MemMang/heap_1.c",
+        "FreeRTOS/port/MemMang/heap_2.c",
+        "FreeRTOS/port/MemMang/heap_3.c",
+        "FreeRTOS/port/MemMang/heap_5.c",
+        "FreeRTOS/port/RVDS/ARM7_LPC21xx",
+        "FreeRTOS/port/RVDS/ARM_CA9",
+        "FreeRTOS/port/RVDS/ARM_CM0",
+        "FreeRTOS/port/RVDS/ARM_CM4F",
+        "FreeRTOS/port/RVDS/ARM_CM4_MPU",
+        "FreeRTOS/port/RVDS/ARM_CM7"
+      ],
+      "toolchain": "AC5",
+      "compileConfig": {
+        "cpuType": "Cortex-M3",
+        "floatingPointHardware": "none",
+        "scatterFilePath": "",
+        "useCustomScatterFile": false,
+        "storageLayout": {
+          "RAM": [
+            {
+              "tag": "RAM",
+              "id": 1,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "noInit": false
+            },
+            {
+              "tag": "RAM",
+              "id": 2,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "noInit": false
+            },
+            {
+              "tag": "RAM",
+              "id": 3,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "noInit": false
+            },
+            {
+              "tag": "IRAM",
+              "id": 1,
+              "mem": {
+                "startAddr": "0x20000000",
+                "size": "0xc000"
+              },
+              "isChecked": true,
+              "noInit": false
+            },
+            {
+              "tag": "IRAM",
+              "id": 2,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "noInit": false
+            }
+          ],
+          "ROM": [
+            {
+              "tag": "ROM",
+              "id": 1,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "isStartup": false
+            },
+            {
+              "tag": "ROM",
+              "id": 2,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "isStartup": false
+            },
+            {
+              "tag": "ROM",
+              "id": 3,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "isStartup": false
+            },
+            {
+              "tag": "IROM",
+              "id": 1,
+              "mem": {
+                "startAddr": "0x8000000",
+                "size": "0x40000"
+              },
+              "isChecked": true,
+              "isStartup": true
+            },
+            {
+              "tag": "IROM",
+              "id": 2,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "isStartup": false
+            }
+          ]
+        },
+        "options": "null"
+      },
+      "uploader": "OpenOCD",
+      "uploadConfig": {
+        "bin": "",
+        "target": "stm32f1x",
+        "interface": "cmsis-dap",
+        "baseAddr": "0x08000000"
+      },
+      "uploadConfigMap": {
+        "JLink": {
+          "bin": "",
+          "baseAddr": "",
+          "cpuInfo": {
+            "vendor": "null",
+            "cpuName": "null"
+          },
+          "proType": 1,
+          "speed": 8000,
+          "otherCmds": ""
+        }
+      },
+      "custom_dep": {
+        "name": "default",
+        "incList": [
+          ".cmsis/include",
+          "RTE/_Target 1",
+          ".eide/deps",
+          "HARDWARE",
+          "HARDWARE/Encoder",
+          "HARDWARE/GUI",
+          "HARDWARE/KEY",
+          "HARDWARE/LED",
+          "HARDWARE/MY_I2C",
+          "HARDWARE/TEST",
+          "HARDWARE/uart",
+          "FreeRTOS/include",
+          "FreeRTOS/src",
+          "FreeRTOS/port/RVDS/ARM_CM3",
+          "FreeRTOS/port/MemMang",
+          "User",
+          "Libraries/CMSIS",
+          "Libraries/STM32F10x_StdPeriph_Driver/src",
+          "Libraries/STM32F10x_StdPeriph_Driver/inc",
+          "HARDWARE/U8G2/inc",
+          "HARDWARE/U8G2/src"
+        ],
+        "libList": [],
+        "sourceDirList": [],
+        "defineList": [
+          "USE_STDPERIPH_DRIVER",
+          "STM32F10X_HD"
+        ]
+      }
+    }
+  },
+  "version": "3.3"
+}
