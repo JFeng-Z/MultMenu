@@ -1,6 +1,14 @@
 #include "GUI.h"
 
-extern u8g2_t u8g2;
+u8g2_t u8g2;
+
+uint8_t func_index=0;
+uint8_t last_index=0;
+extern key_table table[30];
+void (*now_func)();
+
+TaskHandle_t GUI_Task_Handle;
+static void GUI_Task(void* parameter);
 
 /**
  * @brief 菜单名称定义
@@ -64,6 +72,51 @@ key_table table[30]=
     {24,24,24,14,4,1,(*fun_appC_32)},
     {25,25,25,15,4,2,(*fun_appC_33)},
 };
+
+static void GUI_Task(void* parameter)
+{
+  while (1)
+  {
+    if (Key_Scan_WK(KeyWkUp_PORT,KeyWkUp_PIN)==KEY_ON)
+		{
+			func_index=table[func_index].enter;
+		}
+		if (Key_Scan(KEY1_PORT,KEY1_PIN)==KEY_ON)
+		{
+			func_index=table[func_index].up;
+		}
+		if (Key_Scan(KEY2_PORT,KEY2_PIN)==KEY_ON)
+		{
+			func_index=table[func_index].down;
+		}
+		if (func_index!=last_index)
+		{
+			now_func=table[func_index].now_function;
+			u8g2_ClearBuffer(&u8g2);
+			(*now_func)();
+			u8g2_SendBuffer(&u8g2);
+			last_index=func_index;
+		}
+  }
+}
+
+void GUI_init(void)
+{
+  u8g2Init(&u8g2);
+  testDrawProcess(&u8g2);
+  fun_Cover();
+}
+
+BaseType_t GUI_Task_Create(void)
+{
+    BaseType_t xReturn=pdPASS;
+    xReturn=xTaskCreate((TaskFunction_t)GUI_Task,"GUI_Task",100,NULL,4,&GUI_Task_Handle);
+    if (pdPASS==xReturn)
+    {
+        return pdPASS;
+    }
+    else return pdFAIL;
+}
 
 #define Max_Y 60
 #define Min_Y 15

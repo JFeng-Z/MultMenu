@@ -2,12 +2,15 @@
  * @Author: JFeng 2834294740@qq.com
  * @Date: 2023-06-29 20:48:08
  * @LastEditors: JFeng 2834294740@qq.com
- * @LastEditTime: 2023-06-29 21:47:39
+ * @LastEditTime: 2023-06-30 17:51:27
  * @FilePath: \Projectd:\study\STM32F103_CMSIS\MY_GUI_RTOS\HARDWARE\Encoder\rotary_encoder.c
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-#include "stm32f10x.h"
 #include "rotary_encoder.h"
+
+TaskHandle_t Encoder_Task_Handle;
+static void Encoder(void* parameter);
+uint8_t number=0;
 
 void rotary_encoder_Init(void)
 {
@@ -52,4 +55,25 @@ int16_t GETCounter_Encoder(void) //����Encoder_Count��ֵ����
     Temp=TIM_GetCounter(TIM4);       
     TIM_SetCounter(TIM4,0);       
     return Temp;
+}
+
+static void Encoder(void* parameter)
+{
+  while (1)
+  {
+    number=GETCounter_Encoder();
+    printf("number=%d",number);
+    vTaskDelay(1000);
+  }
+}
+
+BaseType_t Encoder_Task_Create(void)
+{
+    BaseType_t xReturn=pdPASS;
+    xReturn=xTaskCreate((TaskFunction_t)Encoder,"Encoder",100,NULL,4,&Encoder_Task_Handle);
+    if (pdPASS==xReturn)
+    {
+        return pdPASS;
+    }
+    else return pdFAIL;
 }

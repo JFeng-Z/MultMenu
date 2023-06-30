@@ -6,6 +6,9 @@
 #include "u8g2.h"
 #include "stm32f10x.h"
 #include "test.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "bsp_key.h"
 #include <string.h>
 
 #define Enter 1
@@ -23,6 +26,8 @@ typedef struct GUI
     void(*now_function)();
 }key_table;
 
+BaseType_t GUI_Task_Create(void);
+void GUI_init(void);
 void fun_Cover(void);
 void fun_menu(void);
 void fun_appA_21(void);
