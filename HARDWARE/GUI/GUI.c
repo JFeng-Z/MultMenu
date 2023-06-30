@@ -2,7 +2,11 @@
 
 extern u8g2_t u8g2;
 
-const char *Menu[][4]=
+/**
+ * @brief 菜单名称定义
+ * 
+ */
+const char *Menu[][4]= 
 {
     {"-[1]Function",
     "-[2]Game",
@@ -18,6 +22,10 @@ const char *Menu[][4]=
     "<--"}
 };
 
+/**
+ * @brief 行数及坐标
+ * 
+ */
 const uint8_t line_num[4]={15,30,45,60};
 
 key_table table[30]=
@@ -64,6 +72,13 @@ extern uint8_t func_index;
 extern uint8_t last_index;
 const uint8_t time=5;
 
+/**
+ * @brief 线性增长函数用于坐标移动
+ * 
+ * @param Tgt 目标值
+ * @param Now 当前值
+ * @return uint8_t 
+ */
 uint8_t Linear(uint8_t Tgt,uint8_t Now)
 {
     uint8_t x=0;
@@ -82,6 +97,13 @@ uint8_t Linear(uint8_t Tgt,uint8_t Now)
     return x;
 }
 
+/**
+ * @brief 线性增长函数2用于方框变化
+ * 
+ * @param Tgt 目标值
+ * @param Now 当前值
+ * @return uint8_t 
+ */
 uint8_t Linear2(uint8_t Tgt,uint8_t Now)
 {
     uint8_t x=0;
@@ -136,14 +158,20 @@ uint8_t Quadratic2(uint8_t Tgt,uint8_t Now)
     return x;
 }
 
-/******************首页*******************/
+/**
+ * @brief 首页
+ * 
+ */
 void fun_Cover(void)
 {
     draw(&u8g2);
     u8g2_SetFont(&u8g2,u8g2_font_profont12_mf);
 }
 
-/******************菜单函数*******************/
+/**
+ * @brief 菜单函数
+ * 
+ */
 void fun_menu(void)
 {
     uint8_t i=y,t=0,w1=w;
