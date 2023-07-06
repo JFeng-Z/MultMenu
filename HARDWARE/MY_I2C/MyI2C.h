@@ -13,8 +13,8 @@
 #include "Tim_Tick.h"
 
 #define I2C_PORT GPIOB
-#define I2C_SCL GPIO_Pin_10
-#define I2C_SDA GPIO_Pin_11
+#define I2C_SCL GPIO_Pin_11
+#define I2C_SDA GPIO_Pin_10
 
 void MyI2C_SCL_W_SetState(uint8_t State);
 void MyI2C_SDA_W_SetState(uint8_t State);

@@ -19,6 +19,7 @@
 #include "bsp_led.h"
 #include "stm32_u8g2.h"
 #include "GUI.h"
-#include "rotary_encoder.h"
+// #include "rotary_encoder.h"
+#include "menu.h"
 
 #endif

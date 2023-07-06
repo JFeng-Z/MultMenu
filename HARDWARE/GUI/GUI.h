@@ -10,10 +10,7 @@
 #include "task.h"
 #include "bsp_key.h"
 #include <string.h>
-
-#define Enter 1
-#define Up 2
-#define Down 3
+#include "menu.h"
 
 typedef struct GUI
 {
@@ -25,6 +22,9 @@ typedef struct GUI
     uint8_t cursor_num;
     void(*now_function)();
 }key_table;
+
+uint8_t Linear(uint8_t Tgt,uint8_t Now);
+uint8_t Linear2(uint8_t Tgt,uint8_t Now);
 
 BaseType_t GUI_Task_Create(void);
 void GUI_init(void);

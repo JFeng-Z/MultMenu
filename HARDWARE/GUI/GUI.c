@@ -4,7 +4,6 @@ u8g2_t u8g2;
 
 uint8_t func_index=0;
 uint8_t last_index=0;
-extern key_table table[30];
 void (*now_func)();
 
 TaskHandle_t GUI_Task_Handle;
@@ -16,18 +15,39 @@ static void GUI_Task(void* parameter);
  */
 const char *Menu[][4]= 
 {
+
     {"-[1]Function",
     "-[2]Game",
     "-[3]Time",
     "<--"},
+
     {"-[1]PID",
     "-[2]State",
     "-[3]Speed",
     "<--"},
+
     {"-[1]Game1",
     "-[2]Game2",
     "-[3]Game3",
     "<--"}
+
+};
+
+const char *Menu2[]= 
+{
+    "-[1]Function",
+    "-[2]Game",
+    "-[3]Time",
+    "<--",
+    "-[1]PID",
+    "-[2]State",
+    "-[3]Speed",
+    "<--",
+    "-[1]Game1",
+    "-[2]Game2",
+    "-[3]Game3",
+    "<--"
+
 };
 
 /**
@@ -78,25 +98,29 @@ static void GUI_Task(void* parameter)
   while (1)
   {
     if (Key_Scan_WK(KeyWkUp_PORT,KeyWkUp_PIN)==KEY_ON)
-		{
-			func_index=table[func_index].enter;
-		}
-		if (Key_Scan(KEY1_PORT,KEY1_PIN)==KEY_ON)
-		{
-			func_index=table[func_index].up;
-		}
-		if (Key_Scan(KEY2_PORT,KEY2_PIN)==KEY_ON)
-		{
-			func_index=table[func_index].down;
-		}
-		if (func_index!=last_index)
-		{
-			now_func=table[func_index].now_function;
-			u8g2_ClearBuffer(&u8g2);
-			(*now_func)();
-			u8g2_SendBuffer(&u8g2);
-			last_index=func_index;
-		}
+	{
+		func_index=table[func_index].enter;
+	}
+	if (Key_Scan(KEY1_PORT,KEY1_PIN)==KEY_ON)
+	{
+        func_index=table[func_index].up;
+	}
+	if (Key_Scan(KEY2_PORT,KEY2_PIN)==KEY_ON)
+	{
+        func_index=table[func_index].down;
+	}
+	if (func_index!=last_index)
+	{
+        now_func=table[func_index].now_function;
+        if (__fabs(last_index-func_index)!=3)
+        {
+            last_index=func_index;
+        }
+        else func_index=last_index;
+        u8g2_ClearBuffer(&u8g2);
+        (*now_func)();
+        u8g2_SendBuffer(&u8g2);
+	}
   }
 }
 
@@ -118,12 +142,8 @@ BaseType_t GUI_Task_Create(void)
     else return pdFAIL;
 }
 
-#define Max_Y 60
-#define Min_Y 15
 uint8_t x,y=3,w;
-extern uint8_t func_index;
-extern uint8_t last_index;
-const uint8_t time=5;
+const uint8_t time=3;
 
 /**
  * @brief 线性增长函数用于坐标移动
@@ -136,11 +156,11 @@ uint8_t Linear(uint8_t Tgt,uint8_t Now)
 {
     uint8_t x=0;
     static uint8_t t=0;
-    if (__fabs(last_index-func_index)==3)
-    {
-        t=0;
-        return Tgt;
-    }
+    // if (__fabs(last_index-func_index)==3)
+    // {
+    //     t=0;
+    //     return Now;
+    // }
     t++;
     x=(Tgt-Now)*t/time+Now;
     if (t>=time)
@@ -161,11 +181,11 @@ uint8_t Linear2(uint8_t Tgt,uint8_t Now)
 {
     uint8_t x=0;
     static uint8_t t=0;
-    if (__fabs(last_index-func_index)==3)
-    {
-        t=0;
-        return Tgt;
-    }
+    // if (__fabs(last_index-func_index)==3)
+    // {
+    //     t=0;
+    //     return Now;
+    // }
     t++;
     x=(Tgt-Now)*t/time+Now;
     if (t>=time)
@@ -179,11 +199,11 @@ uint8_t Quadratic(uint8_t Tgt,uint8_t Now)
 {
     uint8_t x=0;
     static float t=0;
-    if (__fabs(last_index-func_index)==3)
-    {
-        t=0;
-        return Tgt;
-    }
+    // if (__fabs(last_index-func_index)==3)
+    // {
+    //     t=0;
+    //     return Tgt;
+    // }
     t++;
     x=(float)(Tgt-Now)*(t/=(float)time)*(t*time)+Now;
     if (t>=time)
@@ -197,11 +217,11 @@ uint8_t Quadratic2(uint8_t Tgt,uint8_t Now)
 {
     uint8_t x=0;
     static float t=0;
-    if (__fabs(last_index-func_index)==3)
-    {
-        t=0;
-        return Tgt;
-    }
+    // if (__fabs(last_index-func_index)==3)
+    // {
+    //     t=0;
+    //     return Tgt;
+    // }
     t++;
     x=(float)(Tgt-Now)*(t/=(float)time)*(t*time)+Now;
     if (t>=time)
@@ -227,25 +247,21 @@ void fun_Cover(void)
  */
 void fun_menu(void)
 {
-    uint8_t i=y,t=0,w1=w;
+    uint8_t y1=y,t=0,w1=w;
     uint8_t w2=strlen(Menu[table[func_index].menu_num][table[func_index].cursor_num])*6+4;
     uint8_t Line_Num=line_num[table[func_index].cursor_num];
     do
     {
         u8g2_ClearBuffer(&u8g2);
         u8g2_SetDrawColor(&u8g2,1);    
-        u8g2_DrawStr(&u8g2,0,line_num[0],Menu[table[func_index].menu_num][0]);
-        u8g2_DrawStr(&u8g2,0,line_num[1],Menu[table[func_index].menu_num][1]);
-        u8g2_DrawStr(&u8g2,0,line_num[2],Menu[table[func_index].menu_num][2]);
-        u8g2_DrawStr(&u8g2,0,line_num[3],Menu[table[func_index].menu_num][3]);
-        i=Linear(Line_Num,i);
-        printf("i=%d",i);
+        for (uint8_t i = 0; i < 4; i++)
+        {
+            u8g2_DrawStr(&u8g2,0,line_num[i],Menu[table[func_index].menu_num][i]);
+        }
+        y1=Linear(Line_Num,y1);
         w1=Linear2(w2,w1);
-        // i=Quadratic(Line_Num,i);
-        // printf("i=%d",i);
-        // w1=Quadratic2(w2,w1);
         u8g2_SetDrawColor(&u8g2,2);
-        u8g2_DrawRBox(&u8g2,0,i-12,w1,14,4);
+        u8g2_DrawRBox(&u8g2,0,y1-12,w1,14,4);
         t++;
         u8g2_SendBuffer(&u8g2);
     } while (t<time);
