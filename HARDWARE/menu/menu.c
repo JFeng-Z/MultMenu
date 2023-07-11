@@ -69,8 +69,6 @@ void DrawPage(uint8_t pos, xpMenu Page, uint8_t LineSpacing)
         }     
 }
 
-const uint8_t time=3;   //运动次数
-
 /**
  * @brief 线性增长函数用于坐标移动
  * 
@@ -83,8 +81,8 @@ uint8_t Line(uint8_t Tgt,uint8_t Now)
     uint8_t x=0;
     static uint8_t t=0;
     t++;
-    x=(Tgt-Now)*t/time+Now;
-    if (t>=time)
+    x=(Tgt-Now)*t/Time+Now;
+    if (t>=Time)
     {
         t=0;
     }
@@ -103,8 +101,8 @@ uint8_t Line2(uint8_t Tgt,uint8_t Now)
     uint8_t x=0;
     static uint8_t t=0;
     t++;
-    x=(Tgt-Now)*t/time+Now;
-    if (t>=time)
+    x=(Tgt-Now)*t/Time+Now;
+    if (t>=Time)
     {
         t=0;
     }
