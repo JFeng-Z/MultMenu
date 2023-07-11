@@ -224,6 +224,20 @@ void Draw_CJLU(u8g2_t *u8g2)
 	u8g2_SendBuffer(u8g2);
 }
 
+void OLED_DisplayScrollingText(u8g2_t *u8g2,uint8_t columns,const char* text, uint16_t delay_ms) 
+{
+	uint8_t speed=2;
+	
+	for (int x = 0; x < 256; x+=speed)
+	{
+		u8g2_ClearBuffer(u8g2);
+		u8g2_DrawStr(u8g2,x,columns,text);
+		u8g2_DrawStr(u8g2,x-128,columns,text);
+		Tims_delay_ms(delay_ms);
+		u8g2_SendBuffer(u8g2);
+	}
+}
+
 void u8g2DrawTest(u8g2_t *u8g2)
 {
 	testDrawProcess(u8g2);

@@ -16,12 +16,15 @@
 #include "test.h"
 #include "u8g2.h"
 #include "GUI.h"
+#include "inv_mpu.h"
 
 #define FirstLine 9
 #define FirstPos 0
 #define Font_Size 12
 #define Menu_Up 0
 #define Menu_Down 1
+
+// #define Head_To_Tail     //首尾链接开关
 
 typedef struct MenuPage *xpMenu;
 typedef struct Item *xpItem;
@@ -57,6 +60,9 @@ extern xItem No3Pageitem1, No3Pageitem2, No3Pageitem3;
 void Menu_Team(void);
 void AddPage(const char *name, xpMenu page);
 void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu NextPage);
+
+uint8_t Line(uint8_t Tgt,uint8_t Now);
+uint8_t Line2(uint8_t Tgt,uint8_t Now);
 
 void DrawPage(uint8_t pos, xpMenu Page, uint8_t LineSpacing);
 void DrawBox(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem item,xpItem next_item);

@@ -318,7 +318,9 @@
           "Libraries/STM32F10x_StdPeriph_Driver/inc",
           "HARDWARE/U8G2/inc",
           "HARDWARE/U8G2/src",
-          "HARDWARE/menu"
+          "HARDWARE/menu",
+          "HARDWARE/MPU6050",
+          "HARDWARE/MPU6050/eMPL"
         ],
         "libList": [],
         "sourceDirList": [],

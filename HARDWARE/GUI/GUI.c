@@ -143,7 +143,7 @@ BaseType_t GUI_Task_Create(void)
 }
 
 uint8_t x,y=3,w;
-const uint8_t time=3;
+const uint8_t tim=3;
 
 /**
  * @brief 线性增长函数用于坐标移动
@@ -162,8 +162,8 @@ uint8_t Linear(uint8_t Tgt,uint8_t Now)
     //     return Now;
     // }
     t++;
-    x=(Tgt-Now)*t/time+Now;
-    if (t>=time)
+    x=(Tgt-Now)*t/tim+Now;
+    if (t>=tim)
     {
         t=0;
     }
@@ -187,8 +187,8 @@ uint8_t Linear2(uint8_t Tgt,uint8_t Now)
     //     return Now;
     // }
     t++;
-    x=(Tgt-Now)*t/time+Now;
-    if (t>=time)
+    x=(Tgt-Now)*t/tim+Now;
+    if (t>=tim)
     {
         t=0;
     }
@@ -205,8 +205,8 @@ uint8_t Quadratic(uint8_t Tgt,uint8_t Now)
     //     return Tgt;
     // }
     t++;
-    x=(float)(Tgt-Now)*(t/=(float)time)*(t*time)+Now;
-    if (t>=time)
+    x=(float)(Tgt-Now)*(t/=(float)tim)*(t*tim)+Now;
+    if (t>=tim)
     {
         t=0;
     }
@@ -223,8 +223,8 @@ uint8_t Quadratic2(uint8_t Tgt,uint8_t Now)
     //     return Tgt;
     // }
     t++;
-    x=(float)(Tgt-Now)*(t/=(float)time)*(t*time)+Now;
-    if (t>=time)
+    x=(float)(Tgt-Now)*(t/=(float)tim)*(t*tim)+Now;
+    if (t>=tim)
     {
         t=0;
     }
@@ -264,7 +264,7 @@ void fun_menu(void)
         u8g2_DrawRBox(&u8g2,0,y1-12,w1,14,4);
         t++;
         u8g2_SendBuffer(&u8g2);
-    } while (t<time);
+    } while (t<tim);
     y=Line_Num;w=w2;
 }
 
