@@ -139,8 +139,10 @@ void DebugMon_Handler(void)
 //  */
 extern void xPortSysTickHandler(void);
 //systick中断服务函数
+volatile unsigned long g_SystemTicks=0;
 void SysTick_Handler(void)
 {	
+  g_SystemTicks++;
     #if (INCLUDE_xTaskGetSchedulerState  == 1 )
       if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
       {

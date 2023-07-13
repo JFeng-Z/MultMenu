@@ -127,7 +127,7 @@ static void GUI_Task(void* parameter)
 void GUI_init(void)
 {
   u8g2Init(&u8g2);
-  testDrawProcess(&u8g2);
+  DrawProcess(&u8g2);
   fun_Cover();
 }
 
@@ -237,7 +237,7 @@ uint8_t Quadratic2(uint8_t Tgt,uint8_t Now)
  */
 void fun_Cover(void)
 {
-    draw(&u8g2);
+    draw_(&u8g2);
     u8g2_SetFont(&u8g2,u8g2_font_profont12_mf);
 }
 

@@ -306,7 +306,6 @@
           "HARDWARE/KEY",
           "HARDWARE/LED",
           "HARDWARE/MY_I2C",
-          "HARDWARE/TEST",
           "HARDWARE/uart",
           "FreeRTOS/include",
           "FreeRTOS/src",
@@ -318,9 +317,11 @@
           "Libraries/STM32F10x_StdPeriph_Driver/inc",
           "HARDWARE/U8G2/inc",
           "HARDWARE/U8G2/src",
-          "HARDWARE/menu",
           "HARDWARE/MPU6050",
-          "HARDWARE/MPU6050/eMPL"
+          "HARDWARE/MPU6050/eMPL",
+          "HARDWARE/U8G2_USER",
+          "HARDWARE/MENU",
+          "HARDWARE/Games"
         ],
         "libList": [],
         "sourceDirList": [],

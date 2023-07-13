@@ -15,6 +15,10 @@
 #define KEY_ON  1
 #define KEY_OFF 0
 
+#define UP 3
+#define DOWN 2
+#define ENTER 1
+
 #define KEY1_PIN    GPIO_Pin_9
 #define KEY1_PORT   GPIOC
 #define KEY1_CLK   RCC_APB2Periph_GPIOC
@@ -31,5 +35,7 @@ void KEY_GPIO_Config(void);
 unsigned char Key_Scan(GPIO_TypeDef *GPIOx,unsigned int GPIO_PIN);
 unsigned char Key_Scan_WK(GPIO_TypeDef *GPIOx,unsigned int GPIO_PIN);
 void LED_TOGGLE(void);
+uint8_t key_read(void);
+void KEY_EXTI_Config(void);
 
 #endif

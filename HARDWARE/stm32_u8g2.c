@@ -68,7 +68,7 @@ void u8g2Init(u8g2_t *u8g2)
 }
 
 
-void draw(u8g2_t *u8g2)
+void draw_(u8g2_t *u8g2)
 {
 	u8g2_ClearBuffer(u8g2); 
 	

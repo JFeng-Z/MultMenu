@@ -5,12 +5,12 @@
 #include <stdio.h>
 #include "u8g2.h"
 #include "stm32f10x.h"
-#include "test.h"
+#include "U8g2_User.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "bsp_key.h"
 #include <string.h>
-#include "menu.h"
+#include "Menu.h"
 
 typedef struct GUI
 {
