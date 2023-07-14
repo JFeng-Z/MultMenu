@@ -362,7 +362,7 @@ void draw_DinoGame(void)
 void DinoGame_Run(void)
 {
     /* set systick and start systick interrupt */
-    // SysTick_Config(SystemCoreClock/SYS_TICK_PER_SECOND);    
+    SysTick_Config(SystemCoreClock/SYS_TICK_PER_SECOND);    
 
     u8g2_InitDisplay(&u8g2);
     u8g2_SetPowerSave(&u8g2, 0);

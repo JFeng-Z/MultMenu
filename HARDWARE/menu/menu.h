@@ -2,7 +2,7 @@
  * @Author: JFeng 2834294740@qq.com
  * @Date: 2023-07-02 23:52:10
  * @LastEditors: JFeng 2834294740@qq.com
- * @LastEditTime: 2023-07-13 20:54:47
+ * @LastEditTime: 2023-07-14 19:55:56
  * @FilePath: \MY_GUI_RTOS\HARDWARE\menu\menu.h
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -25,6 +25,8 @@
 #define Font_Size   12
 #define Menu_Up     0
 #define Menu_Down   1
+
+#define Time 8
 
 #define MENU_RUN    0
 #define APP_RUN     1

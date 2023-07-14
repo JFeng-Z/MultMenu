@@ -2,7 +2,7 @@
 
 void DrawProcess(u8g2_t *u8g2)
 {
-	for(int i=10;i<=80;i=i+5)
+	for(int i=10;i<=80;i=i++)
 	{
 		u8g2_ClearBuffer(u8g2); 
 			

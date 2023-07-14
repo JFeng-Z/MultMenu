@@ -73,7 +73,7 @@ void DrawPage(uint8_t pos, xpMenu Page, uint8_t LineSpacing)
         }     
 }
 
-const uint8_t Time=3;
+// const uint8_t Time=3;
 
 /**
  * @brief 线性增长函数用于坐标移动
@@ -126,6 +126,7 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem item,xpItem
         u8g2_SetDrawColor(&u8g2,1);  
         item_line=Line(t,Item_Num_Next*LineSpacing,item_line);
         item_wide=Line(t,strlen(next_item->itemName)*6+4,item_wide);
+        printf("line=%d",item_line);
         DrawPage(pos,Page,LineSpacing);
         u8g2_SetDrawColor(&u8g2,2);
         u8g2_DrawRBox(&u8g2,pos,item_line-1,item_wide,Font_Size,4);

@@ -315,13 +315,13 @@
           "Libraries/CMSIS",
           "Libraries/STM32F10x_StdPeriph_Driver/src",
           "Libraries/STM32F10x_StdPeriph_Driver/inc",
-          "HARDWARE/U8G2/inc",
-          "HARDWARE/U8G2/src",
           "HARDWARE/MPU6050",
           "HARDWARE/MPU6050/eMPL",
           "HARDWARE/U8G2_USER",
           "HARDWARE/MENU",
-          "HARDWARE/Games"
+          "HARDWARE/Games",
+          "HARDWARE/u8g2lib/inc",
+          "HARDWARE/u8g2lib/src"
         ],
         "libList": [],
         "sourceDirList": [],
