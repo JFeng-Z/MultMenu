@@ -1,6 +1,6 @@
-#include "GUI.h"
+#include "OldMenu.h"
 
-u8g2_t u8g2;
+extern u8g2_t u8g2;
 
 uint8_t func_index=0;
 uint8_t last_index=0;

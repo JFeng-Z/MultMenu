@@ -1,6 +1,7 @@
 #include "Menu.h"
 
-extern u8g2_t u8g2; 
+u8g2_t u8g2; 
+uint8_t Page_State=0;
 extern uint8_t KEY_STATE;
 
 /* Page*/
@@ -59,21 +60,32 @@ void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage)
     item->Num=LocalPage->len;
 }
 
-uint8_t state=0,dir=0;
-
-void DrawPage(uint8_t pos, xpMenu Page, uint8_t LineSpacing)
+void DrawPage(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem item,xpItem next_item)
 {
-    int8_t first_line=FirstLine;
+    static int8_t first_line=FirstLine;
     xpItem temp = Page->itemHead;
-        for (int i = 1; i <= Page->len; i++)
-        {
-            u8g2_DrawStr(&u8g2,pos,first_line,Page->PageName);
-            u8g2_DrawStr(&u8g2,pos,first_line + i * LineSpacing,temp->itemName);
-            temp = temp->nextiTem;
-        }     
-}
+    
+    if(next_item==item->JumpPage->itemHead&&next_item!=item)    //切换页面时变量初始化
+    {first_line=FirstLine;}  
 
-// const uint8_t Time=3;
+    if ((next_item->Num-item->Num>0)&&Page_State==CURSOR_STATIC)
+    {
+        Page_State=MENU_MOVE;
+        first_line-=Font_Size;
+    }
+    else if ((next_item->Num-item->Num<0)&&Page_State==CURSOR_STATIC)
+    {
+        Page_State=MENU_MOVE;
+        first_line+=Font_Size;
+    }
+    for (int i = 1; i <= Page->len; i++)
+    {
+        u8g2_DrawStr(&u8g2,pos,first_line + i * LineSpacing,temp->itemName);
+        temp = temp->nextiTem;
+    }
+    u8g2_DrawStr(&u8g2,pos,FirstLine,Page->PageName); 
+  
+}
 
 /**
  * @brief 线性增长函数用于坐标移动
@@ -83,25 +95,44 @@ void DrawPage(uint8_t pos, xpMenu Page, uint8_t LineSpacing)
  * @param Now 当前值
  * @return uint8_t 
  */
-uint8_t Line(uint8_t Time_Now,uint8_t Tgt,uint8_t Now)
+int8_t Line(uint8_t Time_Now,int8_t Tgt,uint8_t Now)
 {
     return (Tgt-Now)*Time_Now/Time+Now;			//return c * t / d + b;
 }
 
 void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem item,xpItem next_item)
 {
-    uint8_t t=0,Item_Num_Now=item->Num,Item_Num_Next=next_item->Num;
+    uint8_t t=0;
     uint8_t item_wide=strlen(item->itemName)*6+4;
-    uint8_t item_line=0;
-    if (Item_Num_Now>4)
+    static uint8_t item_line=LINE_MIN;
+    static int8_t Tgt_line=0;
+    static uint8_t first=0;     //初始状态
+
+    if(next_item==item->JumpPage->itemHead&&next_item!=item)        //切换页面时变量初始化
+    {item_line=LINE_MIN;Tgt_line=0;first=0;Page_State=0;}
+
+    if ((next_item->Num-item->Num==0&&first==0)||next_item==item->JumpPage->itemHead)
     {
-        Item_Num_Now=4;
+        Tgt_line=LINE_MIN;first=1;
     }
-    if (Item_Num_Next>4)
+    else if (next_item->Num-item->Num>0)
     {
-        Item_Num_Next=4;
+        Tgt_line+=Font_Size;
+        if (Tgt_line>LINE_MAX)
+        {
+            Page_State=CURSOR_STATIC;
+            Tgt_line=LINE_MAX;
+        }
     }
-    item_line=Item_Num_Now*LineSpacing;
+    else if(next_item->Num-item->Num<0)
+    {
+        Tgt_line-=Font_Size;
+        if (Tgt_line<LINE_MIN)
+        {
+            Page_State=CURSOR_STATIC;
+            Tgt_line=LINE_MIN;
+        }
+    }
     #ifdef Head_To_Tail 
     Page->itemTail->nextiTem=Page->itemHead;  
     Page->itemHead->lastiTem=Page->itemTail;
@@ -109,7 +140,7 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem item,xpItem
     {
         u8g2_ClearBuffer(&u8g2);
         u8g2_SetDrawColor(&u8g2,1);  
-        DrawPage(pos,Page,LineSpacing);
+        DrawPage(pos,Page,LineSpacing,item,next_item);
         u8g2_SetDrawColor(&u8g2,2);
         u8g2_DrawRBox(&u8g2,pos,(next_item->Num)*LineSpacing,strlen(next_item->itemName)*6+4,Font_Size,4);
         u8g2_SendBuffer(&u8g2);
@@ -118,16 +149,14 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem item,xpItem
     #else 
     Page->itemTail->nextiTem=item;
     #endif 
-
     do
     {
-		t++;
+        t++;
         u8g2_ClearBuffer(&u8g2);
         u8g2_SetDrawColor(&u8g2,1);  
-        item_line=Line(t,Item_Num_Next*LineSpacing,item_line);
+        item_line=Line(t,Tgt_line,item_line);
         item_wide=Line(t,strlen(next_item->itemName)*6+4,item_wide);
-        printf("line=%d",item_line);
-        DrawPage(pos,Page,LineSpacing);
+        DrawPage(pos,Page,LineSpacing,item,next_item);
         u8g2_SetDrawColor(&u8g2,2);
         u8g2_DrawRBox(&u8g2,pos,item_line-1,item_wide,Font_Size,4);
         u8g2_SendBuffer(&u8g2);
@@ -145,7 +174,7 @@ void Show_MPU6050(void)
         {
             KEY_STATE=RESET;
             break;
-        }
+        } 
         mpu_dmp_get_data(&pitch,&roll,&yaw);
         sprintf(Pi,"Pitch = %.2f",pitch);
         sprintf(Ro,"Roll  = %.2f",roll);
@@ -187,8 +216,10 @@ void Menu_Team(void)
     AddItem(" -Application", &Mainitem1, &MainPage, &Page1);
     AddItem(" -Text", &Mainitem2, &MainPage, &Page2);
     AddItem(" -Image", &Mainitem3, &MainPage, &Page3);
-    // AddItem(" -Reset All", &Mainitem4, &MainPage, &Page4);
+    AddItem(" -Reset All", &Mainitem4, &MainPage, &Page4);
     AddItem(" -About", &Mainitem5, &MainPage, &Page5);
+    AddItem(" -test1", &Mainitem6, &MainPage, &Page5);
+    AddItem(" -test2", &Mainitem7, &MainPage, &Page5);
 
         AddPage("[Application]", &Page1);
         AddItem(" -Data", &Page1item1, &Page1, &No3Page1);

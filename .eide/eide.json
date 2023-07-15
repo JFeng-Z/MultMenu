@@ -319,9 +319,10 @@
           "HARDWARE/MPU6050/eMPL",
           "HARDWARE/U8G2_USER",
           "HARDWARE/MENU",
-          "HARDWARE/Games",
           "HARDWARE/u8g2lib/inc",
-          "HARDWARE/u8g2lib/src"
+          "HARDWARE/u8g2lib/src",
+          "HARDWARE/APP/Games",
+          "HARDWARE/APP/Time"
         ],
         "libList": [],
         "sourceDirList": [],

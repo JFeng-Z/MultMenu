@@ -18,8 +18,6 @@
 #include "bsp_key.h"
 #include "bsp_led.h"
 #include "stm32_u8g2.h"
-#include "GUI.h"
-// #include "rotary_encoder.h"
 #include "Menu.h"
 #include "inv_mpu.h"
 #include "mpu6050.h"

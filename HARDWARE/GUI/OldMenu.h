@@ -1,5 +1,5 @@
-#ifndef _GUI_H_
-#define _GUI_H_
+#ifndef _OldMenu_H_
+#define _OldMenu_H_
 
 #include "stm32_u8g2.h"
 #include <stdio.h>
@@ -10,7 +10,6 @@
 #include "task.h"
 #include "bsp_key.h"
 #include <string.h>
-#include "Menu.h"
 
 typedef struct GUI
 {
