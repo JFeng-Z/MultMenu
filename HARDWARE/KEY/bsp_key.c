@@ -81,6 +81,7 @@ void EXTI0_IRQHandler(void)
 {
     if(EXTI_GetITStatus(EXTI_Line0)==SET)
     {
+        EXTI->IMR&=~(EXTI_Line0);
         KEY_STATE=ENTER;
         EXTI_ClearITPendingBit(EXTI_Line0);
     }
@@ -90,14 +91,23 @@ void EXTI9_5_IRQHandler(void)
 {
     if(EXTI_GetITStatus(EXTI_Line8)==SET)
     {
+        EXTI->IMR&=~(EXTI_Line8);
         KEY_STATE=DOWN;
         EXTI_ClearITPendingBit(EXTI_Line8);
     }
     if(EXTI_GetITStatus(EXTI_Line9)==SET)
     {
+        EXTI->IMR&=~(EXTI_Line9);
         KEY_STATE=UP;
         EXTI_ClearITPendingBit(EXTI_Line9);
     }
+}
+
+void KeyEXTI_Open(void)
+{
+    EXTI->IMR|=EXTI_Line0;
+    EXTI->IMR|=EXTI_Line8;
+    EXTI->IMR|=EXTI_Line9;
 }
 
 unsigned char Key_Scan(GPIO_TypeDef *GPIOx,unsigned int GPIO_PIN)

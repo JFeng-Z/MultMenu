@@ -1465,6 +1465,7 @@ void AirPlane_Run(void)
         if (key_read()==ENTER)
         {
           KEY_STATE=RESET;
+          KeyEXTI_Open();
           break;
         }
         st_Step(y, /* is_auto_fire */ 1, /* is_fire */ 0);

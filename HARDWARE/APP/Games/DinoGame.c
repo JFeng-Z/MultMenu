@@ -377,6 +377,7 @@ void DinoGame_Run(void)
       if (key_read()==ENTER)
       {
         KEY_STATE=RESET;
+        KeyEXTI_Open();
         break;
       }
       u8g2_FirstPage(&u8g2);

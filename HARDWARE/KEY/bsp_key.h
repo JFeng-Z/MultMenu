@@ -37,5 +37,6 @@ unsigned char Key_Scan_WK(GPIO_TypeDef *GPIOx,unsigned int GPIO_PIN);
 void LED_TOGGLE(void);
 uint8_t key_read(void);
 void KEY_EXTI_Config(void);
+void KeyEXTI_Open(void);
 
 #endif

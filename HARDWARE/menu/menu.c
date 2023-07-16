@@ -60,20 +60,20 @@ void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage)
     item->Num=LocalPage->len;
 }
 
-void DrawPage(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem item,xpItem next_item)
+void Draw_Page(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item)
 {
     static int8_t first_line=FirstLine;
     xpItem temp = Page->itemHead;
     
-    if(next_item==item->JumpPage->itemHead&&next_item!=item)    //切换页面时变量初始化
+    if(next_item==now_item->JumpPage->itemHead&&next_item!=now_item)    //切换页面时变量初始化
     {first_line=FirstLine;}  
 
-    if ((next_item->Num-item->Num>0)&&Page_State==CURSOR_STATIC)
+    if ((next_item->Num-now_item->Num>0)&&Page_State==CURSOR_STATIC)
     {
         Page_State=MENU_MOVE;
         first_line-=Font_Size;
     }
-    else if ((next_item->Num-item->Num<0)&&Page_State==CURSOR_STATIC)
+    else if ((next_item->Num-now_item->Num<0)&&Page_State==CURSOR_STATIC)
     {
         Page_State=MENU_MOVE;
         first_line+=Font_Size;
@@ -95,27 +95,39 @@ void DrawPage(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem item,xpItem 
  * @param Now 当前值
  * @return uint8_t 
  */
-int8_t Line(uint8_t Time_Now,int8_t Tgt,uint8_t Now)
+int8_t Line(uint8_t Time_Now,int8_t Tgt,int8_t Now)
 {
     return (Tgt-Now)*Time_Now/Time+Now;			//return c * t / d + b;
 }
 
-void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem item,xpItem next_item)
+void Draw_OptionPlace(xpItem next_item)
+{
+    u8g2_DrawVLine(&u8g2,122,0,64);
+    for (uint8_t i = 0; i < next_item->location->len; i++)
+    {
+        u8g2_DrawHLine(&u8g2,119,i*(64/next_item->location->len),6);
+    }
+    u8g2_DrawBox(&u8g2,118,(next_item->Num-1)*(64/next_item->location->len)-4/2,8,4);
+}
+
+void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item)
 {
     uint8_t t=0;
-    uint8_t item_wide=strlen(item->itemName)*6+4;
+    uint8_t item_wide=strlen(now_item->itemName)*6+4;
     static uint8_t item_line=LINE_MIN;
     static int8_t Tgt_line=0;
     static uint8_t first=0;     //初始状态
 
-    if(next_item==item->JumpPage->itemHead&&next_item!=item)        //切换页面时变量初始化
+    u8g2_SetFont(&u8g2,u8g2_font_profont12_mf);
+    
+    if(next_item==now_item->JumpPage->itemHead&&next_item!=now_item)        //切换页面时变量初始化
     {item_line=LINE_MIN;Tgt_line=0;first=0;Page_State=0;}
 
-    if ((next_item->Num-item->Num==0&&first==0)||next_item==item->JumpPage->itemHead)
+    if ((next_item->Num-now_item->Num==0&&first==0)||next_item==now_item->JumpPage->itemHead)
     {
         Tgt_line=LINE_MIN;first=1;
     }
-    else if (next_item->Num-item->Num>0)
+    else if (next_item->Num-now_item->Num>0)
     {
         Tgt_line+=Font_Size;
         if (Tgt_line>LINE_MAX)
@@ -124,7 +136,7 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem item,xpItem
             Tgt_line=LINE_MAX;
         }
     }
-    else if(next_item->Num-item->Num<0)
+    else if(next_item->Num-now_item->Num<0)
     {
         Tgt_line-=Font_Size;
         if (Tgt_line<LINE_MIN)
@@ -136,29 +148,31 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem item,xpItem
     #ifdef Head_To_Tail 
     Page->itemTail->nextiTem=Page->itemHead;  
     Page->itemHead->lastiTem=Page->itemTail;
-    if (__fabs(next_item->Num-item->Num)==item->location->len-1)
+    if (__fabs(next_item->Num-now_item->Num)==now_item->location->len-1)
     {
         u8g2_ClearBuffer(&u8g2);
         u8g2_SetDrawColor(&u8g2,1);  
-        DrawPage(pos,Page,LineSpacing,item,next_item);
+        Draw_OptionPlace(next_item);
+        Draw_Page(pos,Page,LineSpacing,now_item,next_item);
         u8g2_SetDrawColor(&u8g2,2);
         u8g2_DrawRBox(&u8g2,pos,(next_item->Num)*LineSpacing,strlen(next_item->itemName)*6+4,Font_Size,4);
         u8g2_SendBuffer(&u8g2);
         return ;
     }
     #else 
-    Page->itemTail->nextiTem=item;
+    Page->itemTail->nextiTem=now_item;
     #endif 
     do
     {
-        t++;
         u8g2_ClearBuffer(&u8g2);
-        u8g2_SetDrawColor(&u8g2,1);  
+        t++;
+        u8g2_SetDrawColor(&u8g2,1);
+        Draw_OptionPlace(next_item);
+        Draw_Page(pos,Page,LineSpacing,now_item,next_item);
+        u8g2_SetDrawColor(&u8g2,2);
         item_line=Line(t,Tgt_line,item_line);
         item_wide=Line(t,strlen(next_item->itemName)*6+4,item_wide);
-        DrawPage(pos,Page,LineSpacing,item,next_item);
-        u8g2_SetDrawColor(&u8g2,2);
-        u8g2_DrawRBox(&u8g2,pos,item_line-1,item_wide,Font_Size,4);
+        u8g2_DrawRBox(&u8g2,pos+1,item_line-1,item_wide,Font_Size,4);
         u8g2_SendBuffer(&u8g2);
     } while (t<Time);
 
@@ -173,6 +187,7 @@ void Show_MPU6050(void)
         if (key_read()==ENTER)
         {
             KEY_STATE=RESET;
+            KeyEXTI_Open();
             break;
         } 
         mpu_dmp_get_data(&pitch,&roll,&yaw);
@@ -264,45 +279,48 @@ void Menu_Team(void)
         AddItem(" -Return", &Page5item4, &Page5, &MainPage);
 }
 
-xItem temp;
+xItem temp_item;
 void (*App_Function)();
 
 static void Menu_Task(void* parameter)
 {
 	static uint8_t MENU_STATE=MENU_RUN;
-	temp=Mainitem1;
+	temp_item=Mainitem1;
 	while (1)
 	{
-        u8g2_SetFont(&u8g2,u8g2_font_profont12_mf);
-		if (key_read()==ENTER)
-		{
+        if (key_read()!=0)
+        {
+            switch (key_read())
+            {
+            case ENTER:
+                if (temp_item.JumpPage==NULL)
+                {
+                    App_Function=temp_item.Item_function;
+                    MENU_STATE=APP_RUN;
+                }
+                else 
+                {
+                    MENU_STATE=MENU_RUN;
+                    Draw_Menu(FirstPos,temp_item.JumpPage,Font_Size,&temp_item,temp_item.JumpPage->itemHead);
+                    temp_item=*(temp_item.JumpPage->itemHead);
+                }
+                break;
+            case UP:
+                Draw_Menu(FirstPos,temp_item.location,Font_Size,&temp_item,temp_item.lastiTem);
+                temp_item=*(temp_item.lastiTem);
+                MENU_STATE=MENU_RUN;
+                break;
+            case DOWN:
+                Draw_Menu(FirstPos,temp_item.location,Font_Size,&temp_item,temp_item.nextiTem);
+                temp_item=*(temp_item.nextiTem); 
+                MENU_STATE=MENU_RUN;
+                break;
+            default:
+                break;
+            }
             KEY_STATE=RESET;
-			if (temp.JumpPage==NULL)
-			{
-				App_Function=temp.Item_function;
-				MENU_STATE=APP_RUN;
-			}
-			else 
-			{
-				MENU_STATE=MENU_RUN;
-				Draw_Menu(FirstPos,temp.JumpPage,Font_Size,&temp,temp.JumpPage->itemHead);
-				temp=*(temp.JumpPage->itemHead);
-			}
-		}
-		if (key_read()==UP)
-		{
-            KEY_STATE=RESET;
-			Draw_Menu(FirstPos,temp.location,Font_Size,&temp,temp.lastiTem);
-			temp=*(temp.lastiTem);
-			MENU_STATE=MENU_RUN;
-		}
-		if (key_read()==DOWN)
-		{
-            KEY_STATE=RESET;
-			Draw_Menu(FirstPos,temp.location,Font_Size,&temp,temp.nextiTem);
-			temp=*(temp.nextiTem); 
-			MENU_STATE=MENU_RUN;
-		}
+            KeyEXTI_Open();
+        }
 		if (MENU_STATE==APP_RUN)
 		{MENU_STATE=MENU_RUN;(*App_Function)();}
 	}

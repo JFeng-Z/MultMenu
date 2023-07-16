@@ -302,7 +302,6 @@
           ".eide/deps",
           "HARDWARE",
           "HARDWARE/Encoder",
-          "HARDWARE/GUI",
           "HARDWARE/KEY",
           "HARDWARE/LED",
           "HARDWARE/MY_I2C",
@@ -322,7 +321,8 @@
           "HARDWARE/u8g2lib/inc",
           "HARDWARE/u8g2lib/src",
           "HARDWARE/APP/Games",
-          "HARDWARE/APP/Time"
+          "HARDWARE/APP/Time",
+          "HARDWARE/OldMenu"
         ],
         "libList": [],
         "sourceDirList": [],
