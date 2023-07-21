@@ -9,6 +9,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "bsp_key.h"
+#include "Menu.h"
 #include <string.h>
 
 typedef struct GUI

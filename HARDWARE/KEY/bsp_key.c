@@ -138,6 +138,12 @@ uint8_t key_read(void)
     return 0;
 }
 
+void Key_Open(void)
+{
+    KEY_STATE=RESET;
+    KeyEXTI_Open();
+}
+
 void LED_TOGGLE(void)
 {
     LED_PORT->ODR^=LED_PIN;

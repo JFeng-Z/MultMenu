@@ -1,34 +1,5 @@
 #include "U8g2_User.h"
 
-void DrawProcess(u8g2_t *u8g2)
-{
-	for(int i=10;i<=80;i=i++)
-	{
-		u8g2_ClearBuffer(u8g2); 
-			
-		char buff[6];
-		int hundred = (int)(i/80.0*100)/100%10;   
-		int quotient = (int)(i/80.0*100)/10%10;   
-		int remainder = (int)(i/80.0*100)%10;
-		buff[0] = hundred + '0';  
-		buff[1] = quotient + '0';   
-		buff[2] = remainder + '0';   
-		buff[3] = '%'; 
-		buff[4] = '\0';   
-		
-		u8g2_SetFont(u8g2,u8g2_font_profont15_mf);
-		u8g2_DrawStr(u8g2,32,16,"Mr.JFeng");
-		
-		u8g2_SetFont(u8g2,u8g2_font_profont12_mf);
-		u8g2_DrawStr(u8g2,100,41,buff);
-		
-		u8g2_DrawRBox(u8g2,16,32,i,10,4);
-		u8g2_DrawRFrame(u8g2,16,32,80,10,4);
-		
-		u8g2_SendBuffer(u8g2);
-	}
-}
-
 void testDrawFrame(u8g2_t *u8g2)
 {
 	int t = 1000;

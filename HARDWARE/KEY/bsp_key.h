@@ -38,5 +38,6 @@ void LED_TOGGLE(void);
 uint8_t key_read(void);
 void KEY_EXTI_Config(void);
 void KeyEXTI_Open(void);
+void Key_Open(void);
 
 #endif

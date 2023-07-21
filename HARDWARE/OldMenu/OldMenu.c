@@ -127,7 +127,7 @@ static void GUI_Task(void* parameter)
 void GUI_init(void)
 {
   u8g2Init(&u8g2);
-  DrawProcess(&u8g2);
+  Draw_Process();
   fun_Cover();
 }
 

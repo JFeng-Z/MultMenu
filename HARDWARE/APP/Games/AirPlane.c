@@ -25,7 +25,6 @@
  ******************************************************************************/
 extern unsigned long g_SystemTicks;
 extern u8g2_t u8g2;
-extern uint8_t KEY_STATE;
 
 #define ST_FP 4
 
@@ -1464,8 +1463,7 @@ void AirPlane_Run(void)
     {
         if (key_read()==ENTER)
         {
-          KEY_STATE=RESET;
-          KeyEXTI_Open();
+          Key_Open();
           break;
         }
         st_Step(y, /* is_auto_fire */ 1, /* is_fire */ 0);
@@ -1476,7 +1474,7 @@ void AirPlane_Run(void)
             st_Draw(0);
         } while( u8g2_NextPage(&u8g2) );
 
-        if( key_read() == UP) {KEY_STATE=0;y++;}
-        if( key_read() == DOWN) {KEY_STATE=0;y--;}
+        if( key_read() == UP) {Key_Open();y++;}
+        if( key_read() == DOWN) {Key_Open();y--;}
     }
 }

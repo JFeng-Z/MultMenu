@@ -19,7 +19,6 @@
 #include "task.h"
 #include "Tim_Tick.h"
 
-void DrawProcess(u8g2_t *u8g2);
 void testDrawFrame(u8g2_t *u8g2);
 void testDrawRBox(u8g2_t *u8g2);
 void testDrawCircle(u8g2_t *u8g2);

@@ -25,7 +25,6 @@
  ******************************************************************************/
 extern unsigned long g_SystemTicks;
 extern u8g2_t u8g2;
-extern uint8_t KEY_STATE;
 
 
 /*******************************************************************************
@@ -252,7 +251,7 @@ void keyPress(void)
         jump = true;
         down = true;
     }
-    KEY_STATE=RESET;
+    Key_Open();
 }
 
 //Collision Detecting and Setting HighScore
@@ -376,8 +375,7 @@ void DinoGame_Run(void)
     {
       if (key_read()==ENTER)
       {
-        KEY_STATE=RESET;
-        KeyEXTI_Open();
+        Key_Open();
         break;
       }
       u8g2_FirstPage(&u8g2);

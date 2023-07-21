@@ -2,7 +2,7 @@
  * @Author: JFeng 2834294740@qq.com
  * @Date: 2023-07-02 23:52:10
  * @LastEditors: JFeng 2834294740@qq.com
- * @LastEditTime: 2023-07-16 13:50:15
+ * @LastEditTime: 2023-07-20 17:12:55
  * @FilePath: \MY_GUI_RTOS\HARDWARE\menu\menu.h
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,7 +13,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include <string.h>
-#include "U8g2_User.h"
+#include "stm32_u8g2.h"
 #include "u8g2.h"
 #include "inv_mpu.h"
 #include "DinoGame.h"
@@ -27,7 +27,7 @@
 #define LINE_MAX    48
 #define LINE_MIN    12 
 
-#define Time 6
+// #define Time 6
 
 #define MENU_RUN    0
 #define APP_RUN     1
@@ -75,6 +75,7 @@ void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu NextPage);
 
 int8_t Line(uint8_t Time_Now,int8_t Tgt,int8_t Now);
 
+void Draw_Process(void);
 void Draw_OptionPlace(xpItem next_item);
 void Draw_Page(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item);
 void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item);
