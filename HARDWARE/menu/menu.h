@@ -2,7 +2,7 @@
  * @Author: JFeng 2834294740@qq.com
  * @Date: 2023-07-02 23:52:10
  * @LastEditors: JFeng 2834294740@qq.com
- * @LastEditTime: 2023-07-20 17:12:55
+ * @LastEditTime: 2023-07-24 22:33:24
  * @FilePath: \MY_GUI_RTOS\HARDWARE\menu\menu.h
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -22,17 +22,19 @@
 #define FirstLine   9
 #define FirstPos    0
 #define Font_Size   12
-#define Menu_Up     0
-#define Menu_Down   1
+
 #define LINE_MAX    48
 #define LINE_MIN    12 
 
 // #define Time 6
 
+#define Menu_Up     0
+#define Menu_Down   1
 #define MENU_RUN    0
 #define APP_RUN     1
 
 #define MENU_MOVE 0
+//光标静止
 #define CURSOR_STATIC 1
 
 // #define Head_To_Tail     //首尾链接开关
@@ -51,7 +53,7 @@ typedef struct MenuPage
 typedef struct Item
 {
     const char *itemName;
-    uint8_t Num;
+    uint8_t Number;
     xpMenu location;
     xpMenu JumpPage;
     xpItem lastiTem;
@@ -59,29 +61,21 @@ typedef struct Item
     void(*Item_function)();
 } xItem;
 
-// Page
-extern xMenu MainPage, Page1, Page2, Page3, Page4, Page5, No3Page1, No3Page2;
-extern xpMenu NowPage;
-// item
-extern xpItem Selectitm;
-extern xItem Mainitem1, Mainitem2, Mainitem3, Mainitem4, Mainitem5, Mainitem6;
-extern xItem Page1item1, Page1item2, Page1item3;
-extern xItem Page2item1, Page2item2, Page2item3;
-extern xItem No3Pageitem1, No3Pageitem2, No3Pageitem3;
-
 void Menu_Team(void);
 void AddPage(const char *name, xpMenu page);
 void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu NextPage);
 
-int8_t Line(uint8_t Time_Now,int8_t Tgt,int8_t Now);
+int8_t Line(uint8_t AllTime,uint8_t Time_Now,int8_t Tgt,int8_t Now);
 
 void Draw_Process(void);
-void Draw_OptionPlace(xpItem next_item);
+void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item);
 void Draw_Page(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item);
 void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item);
 
 static void Menu_Task(void* parameter);
 void Menu_Init(void);
 BaseType_t Menu_Task_Create(void);
+void Motor_Stop(void);
+void Motor_Run(void);
 
 #endif

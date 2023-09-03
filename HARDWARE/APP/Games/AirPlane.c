@@ -1461,11 +1461,7 @@ void AirPlane_Run(void)
 
     while(1)
     {
-        if (key_read()==ENTER)
-        {
-          Key_Open();
-          break;
-        }
+        if (key_read()==ENTER)break;
         st_Step(y, /* is_auto_fire */ 1, /* is_fire */ 0);
 
         u8g2_FirstPage(&u8g2);
