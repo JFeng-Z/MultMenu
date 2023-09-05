@@ -37,7 +37,7 @@
 //光标静止
 #define CURSOR_STATIC 1
 
-// #define Head_To_Tail     //首尾链接开关
+// #define Head_To_Tail     //首尾链接
 
 typedef struct MenuPage *xpMenu;
 typedef struct Item *xpItem;

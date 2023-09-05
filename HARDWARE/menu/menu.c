@@ -151,29 +151,6 @@ void DialogScale_Show(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Tgt_w,uint16_t
 
 }
 
-// /**
-//  * @brief 对话框消失函数
-//  * 
-//  * @param u8g2 U8G2
-//  * @param x 初始位置x
-//  * @param y 初始位置y
-//  * @param Tgt_w 目标宽度
-//  * @param Tgt_h 目标高度
-//  */
-// void DialogScale_Dis(u8g2_t *u8g2,uint16_t x,uint16_t InitY,uint16_t TgtY,uint16_t w,uint16_t h)
-// {
-//     uint8_t t=0;
-
-//     do
-//     {
-//         t++;
-//         InitY=Line(Dialog_Time,t,TgtY,InitY);
-//         Draw_DialogBox(u8g2,x,InitY,w,h);
-//         u8g2_SendBuffer(u8g2);
-//     } while (t<Dialog_Time);
-
-// }
-
 void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item)
 {
     static uint8_t now_Y=0;
