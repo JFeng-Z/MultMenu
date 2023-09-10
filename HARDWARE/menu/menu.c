@@ -155,21 +155,23 @@ void DialogScale_Show(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Tgt_w,uint16_t
  * 
  * 
  */
-void ui_disapper(void)
+uint8_t ui_disapper(uint8_t disapper)
 { 
   short disapper_temp = 0;
   int len = 8 * u8g2_GetBufferTileHeight(&u8g2) * u8g2_GetBufferTileWidth(&u8g2);
   u8 *p = u8g2_GetBufferPtr(&u8g2); 
   if(BgColor==0)
 {  for( int i = 0;i< len ;i++) 
-  { p[i] = p[i] & (rand()%0xff) >> disapper_temp; } }
+  { p[i] = p[i] & (rand()%0xff) >> disapper; } }
   else
 {  for( int i = 0;i< len ;i++) 
-  { p[i] = p[i] | (rand()%0xff) >> disapper_temp; } }
-  disapper_temp +=2; 
-  if(disapper_temp > 8) 
-  {disapper_temp = 0; } 
+  { p[i] = p[i] | (rand()%0xff) >> disapper; } }
+  disapper +=2; 
+  if(disapper >= 8) 
+  {disapper = 0; } 
   u8g2_SendBuffer(&u8g2);
+  disapper_temp=disapper;
+  return disapper_temp;
 }
 
 void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item)
@@ -286,7 +288,6 @@ void Show_MPU6050(void)
     static float pitch,roll,yaw; 		//欧拉角
     char Pi[20],Ro[20],Ya[20];
 
-    ui_disapper();
     DialogScale_Show(&u8g2,1,2,100,62);
 
     while (1)
@@ -309,7 +310,6 @@ void Show_GitHub(void)
     const char* GitHub1="https://github.com/";
     const char* GitHub2="JFeng-Z/MY_GUI.git";
 
-    ui_disapper();
     DialogScale_Show(&u8g2,2,12,125,32);
 
     while (1)
@@ -326,7 +326,6 @@ void Setting_Speed(void)
 {
     static char Speed[1],Spd[10];
 
-    ui_disapper();
     DialogScale_Show(&u8g2,4,12,120,32);
 
     while (1)
@@ -446,6 +445,7 @@ void (*App_Function)();
 static void Menu_Task(void* parameter)
 {
     static uint8_t MENU_STATE=MENU_RUN;
+    uint8_t disapper=1;     //渐变函数消失速度，越小越慢，最大值为8
 	temp_item=&Mainitem1;
 	while (1)
 	{
@@ -454,15 +454,19 @@ static void Menu_Task(void* parameter)
             switch (key_read())
             {
             case ENTER:
-                ui_disapper();
                 if (temp_item->JumpPage==NULL)
                 {
-                    App_Function=temp_item->Item_function;
                     MENU_STATE=APP_RUN;
+                    ui_disapper(disapper);
+                    App_Function=temp_item->Item_function;
                 }
                 else 
                 {
                     MENU_STATE=MENU_RUN;
+                    for (size_t i = 0; i < 8; i++)      
+                    {
+                        disapper=ui_disapper(disapper);
+                    }
                     Draw_Menu(FirstPos,temp_item->JumpPage,Font_Size,temp_item,temp_item->JumpPage->itemHead);
                     temp_item=temp_item->JumpPage->itemHead;
                 }
