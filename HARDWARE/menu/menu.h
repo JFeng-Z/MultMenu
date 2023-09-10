@@ -25,8 +25,7 @@
 
 #define LINE_MAX    48
 #define LINE_MIN    12 
-
-// #define Time 6
+#define Max_Visible_Number  4
 
 #define Menu_Up     0
 #define Menu_Down   1
@@ -37,7 +36,7 @@
 //光标静止
 #define CURSOR_STATIC 1
 
-// #define Head_To_Tail     //首尾链接
+#define Head_To_Tail     //首尾链接
 
 typedef struct MenuPage *xpMenu;
 typedef struct Item *xpItem;

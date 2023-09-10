@@ -150,6 +150,27 @@ void DialogScale_Show(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Tgt_w,uint16_t
     } while (t<Dialog_Time);
 
 }
+/**
+ * @brief 渐变消失函数
+ * 
+ * 
+ */
+void ui_disapper(void)
+{ 
+  short disapper_temp = 0;
+  int len = 8 * u8g2_GetBufferTileHeight(&u8g2) * u8g2_GetBufferTileWidth(&u8g2);
+  u8 *p = u8g2_GetBufferPtr(&u8g2); 
+  if(BgColor==0)
+{  for( int i = 0;i< len ;i++) 
+  { p[i] = p[i] & (rand()%0xff) >> disapper_temp; } }
+  else
+{  for( int i = 0;i< len ;i++) 
+  { p[i] = p[i] | (rand()%0xff) >> disapper_temp; } }
+  disapper_temp +=2; 
+  if(disapper_temp > 8) 
+  {disapper_temp = 0; } 
+  u8g2_SendBuffer(&u8g2);
+}
 
 void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item)
 {
@@ -176,16 +197,18 @@ void Draw_Page(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
     if ((next_item->Number-now_item->Number>0)&&Page_State==CURSOR_STATIC)
     {
         Page_State=MENU_MOVE;
-        first_line-=Font_Size;
+        if((next_item->Number-now_item->Number)>(Page->len-Max_Visible_Number))first_line-=((Page->len-Max_Visible_Number)*Font_Size);  //除去不移动时的项目数
+        else first_line-=Font_Size;
     }
     else if ((next_item->Number-now_item->Number<0)&&Page_State==CURSOR_STATIC)
     {
         Page_State=MENU_MOVE;
-        first_line+=Font_Size;
+        if((now_item->Number-next_item->Number)>(Page->len-Max_Visible_Number))first_line+=((Page->len-Max_Visible_Number)*Font_Size);  //除去不移动时的项目数
+        else first_line+=Font_Size;
     }
     for (size_t i = 1; i <= Page->len; i++)
     {
-        if((first_line + i * LineSpacing)<=9);
+        if((first_line + i * LineSpacing)<=FirstLine);      //菜单移动时不让标题移动
         else u8g2_DrawStr(&u8g2,pos,first_line + i * LineSpacing,temp->itemName);
         temp = temp->nextiTem;
     }
@@ -213,8 +236,8 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
     }
     else if (next_item->Number-now_item->Number>0)
     {
-        Tgt_line+=Font_Size;
-        if (Tgt_line>LINE_MAX)
+        Tgt_line+=((next_item->Number-now_item->Number)*Font_Size);
+        if (Tgt_line>LINE_MAX)  //防止光标溢出可视范围
         {
             Page_State=CURSOR_STATIC;
             Tgt_line=LINE_MAX;
@@ -222,8 +245,8 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
     }
     else if(next_item->Number-now_item->Number<0)
     {
-        Tgt_line-=Font_Size;
-        if (Tgt_line<LINE_MIN)
+        Tgt_line-=((now_item->Number-next_item->Number)*Font_Size);
+        if (Tgt_line<LINE_MIN)  //防止光标溢出可视范围
         {
             Page_State=CURSOR_STATIC;
             Tgt_line=LINE_MIN;
@@ -232,19 +255,8 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
     #ifdef Head_To_Tail 
     Page->itemTail->nextiTem=Page->itemHead;  
     Page->itemHead->lastiTem=Page->itemTail;
-    if (__fabs(next_item->Number-now_item->Number)==now_item->location->len-1)
-    {
-        u8g2_ClearBuffer(&u8g2);
-        u8g2_SetDrawColor(&u8g2,1);  
-        Draw_OptionPlace(next_item);
-        Draw_Page(pos,Page,LineSpacing,now_item,next_item);
-        u8g2_SetDrawColor(&u8g2,2);
-        u8g2_DrawRBox(&u8g2,pos,(next_item->Number)*LineSpacing,strlen(next_item->itemName)*6+4,Font_Size,4);
-        u8g2_SendBuffer(&u8g2);
-        return ;
-    }
     #else 
-    Page->itemTail->nextiTem=Page->itemTail;
+    Page->itemTail->nextiTem=Page->itemTail;  
     Page->itemHead->lastiTem=Page->itemHead;
     #endif 
     do
@@ -274,6 +286,7 @@ void Show_MPU6050(void)
     static float pitch,roll,yaw; 		//欧拉角
     char Pi[20],Ro[20],Ya[20];
 
+    ui_disapper();
     DialogScale_Show(&u8g2,1,2,100,62);
 
     while (1)
@@ -288,6 +301,7 @@ void Show_MPU6050(void)
         u8g2_DrawStr(&u8g2,12,58,Ya);
         u8g2_SendBuffer(&u8g2);
     }
+
 }
 
 void Show_GitHub(void)
@@ -295,6 +309,7 @@ void Show_GitHub(void)
     const char* GitHub1="https://github.com/";
     const char* GitHub2="JFeng-Z/MY_GUI.git";
 
+    ui_disapper();
     DialogScale_Show(&u8g2,2,12,125,32);
 
     while (1)
@@ -311,6 +326,7 @@ void Setting_Speed(void)
 {
     static char Speed[1],Spd[10];
 
+    ui_disapper();
     DialogScale_Show(&u8g2,4,12,120,32);
 
     while (1)
@@ -426,7 +442,6 @@ void Menu_Team(void)
 
 xpItem temp_item;
 void (*App_Function)();
-extern TaskHandle_t Control_Task_Handle;
 
 static void Menu_Task(void* parameter)
 {
@@ -439,6 +454,7 @@ static void Menu_Task(void* parameter)
             switch (key_read())
             {
             case ENTER:
+                ui_disapper();
                 if (temp_item->JumpPage==NULL)
                 {
                     App_Function=temp_item->Item_function;
