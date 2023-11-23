@@ -3,12 +3,19 @@
 u8g2_t u8g2; 
 uint8_t Page_State=0;
 //选项缓动动画持续时间（次数）
-uint8_t Options_Time=6;
+uint8_t Options_Time=8;
 //对话框缓动动画持续时间（次数）
 uint8_t Dialog_Time=10;
 //1为白天模式，0为黑夜模式
-uint8_t BgColor=0x00;       
-//菜单状态
+uint8_t BgColor=0x00;     
+typedef struct Error
+{
+    float error;
+    float sum_srror;
+    float last_error;
+}Error;
+
+Error Cursor;
 
 /* Page*/
 xpMenu NowPage;
@@ -71,13 +78,26 @@ void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage)
  * 
  * @param AllTime 总时长
  * @param Time_Now 当前时间
- * @param Tgt 目标值
+ * @param Targrt 目标值
  * @param Now 当前值
  * @return uint8_t 
  */
-int8_t Line(uint8_t AllTime,uint8_t Time_Now,int8_t Tgt,int8_t Now)
+int8_t Line(uint8_t AllTime,uint8_t Time_Now,int8_t Targrt,int8_t Now)
 {
-    return (Tgt-Now)*Time_Now/AllTime+Now;			//return c * t / d + b;
+    return (Targrt-Now)*Time_Now/AllTime+Now;			//return c * t / d + b;
+}
+
+uint8_t PID(int8_t Targrt, int8_t Now, Error *Obj)
+{
+    int x=Now;
+    float Kp=0.5,ki=0.1,kd=0.25;
+    Obj->error = Targrt - x;
+    Obj->sum_srror += Obj->error;
+    float delta_error = Obj->error - Obj->last_error;
+    float velocity = Kp * Obj->error + ki * Obj->sum_srror + kd * delta_error;
+    x += velocity;
+    Obj->last_error = Obj->error;
+    return x;
 }
 
 void Draw_Process(void)
@@ -132,10 +152,10 @@ void Draw_DialogRBox(u8g2_t *u8g2,u8g2_uint_t x,u8g2_uint_t y,u8g2_uint_t w,u8g2
  * @param u8g2 U8G2
  * @param x 初始位置x
  * @param y 初始位置y
- * @param Tgt_w 目标宽度
- * @param Tgt_h 目标高度
+ * @param Targrt_w 目标宽度
+ * @param Targrt_h 目标高度
  */
-void DialogScale_Show(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Tgt_w,uint16_t Tgt_h)
+void DialogScale_Show(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Targrt_w,uint16_t Targrt_h)
 {
     uint8_t t=0;
     uint16_t Init_w=0,Init_h=0;
@@ -143,8 +163,8 @@ void DialogScale_Show(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Tgt_w,uint16_t
     do
     {
         t++;
-        Init_w=Line(Dialog_Time,t,Tgt_w,Init_w);
-        Init_h=Line(Dialog_Time,t,Tgt_h,Init_h);
+        Init_w=Line(Dialog_Time,t,Targrt_w,Init_w);
+        Init_h=Line(Dialog_Time,t,Targrt_h,Init_h);
         Draw_DialogBox(u8g2,x,y,Init_w,Init_h);
         u8g2_SendBuffer(u8g2);
     } while (t<Dialog_Time);
@@ -173,7 +193,13 @@ uint8_t ui_disapper(uint8_t disapper)
   disapper_temp=disapper;
   return disapper_temp;
 }
-
+/**
+ * @brief 选项栏
+ * 
+ * @param now_time 
+ * @param now_item 
+ * @param next_item 
+ */
 void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item)
 {
     static uint8_t now_Y=0;
@@ -223,35 +249,35 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
     uint8_t t=0;
     uint8_t item_wide=strlen(now_item->itemName)*6+4;
     static uint8_t item_line=LINE_MIN;
-    static int8_t Tgt_line=0;
+    static int8_t Targrt_line=0;
     static uint8_t first=0;     //初始状态
 
     u8g2_SetMaxClipWindow(&u8g2);
     u8g2_SetFont(&u8g2,u8g2_font_profont12_mf);
     
     if(next_item==now_item->JumpPage->itemHead&&next_item!=now_item)        //切换页面时变量初始化
-    {item_line=LINE_MIN;Tgt_line=0;first=0;Page_State=0;}
+    {item_line=LINE_MIN;Targrt_line=0;first=0;Page_State=0;}
 
     if ((next_item->Number-now_item->Number==0&&first==0)||next_item==now_item->JumpPage->itemHead)
     {
-        Tgt_line=LINE_MIN;first=1;
+        Targrt_line=LINE_MIN;first=1;
     }
     else if (next_item->Number-now_item->Number>0)
     {
-        Tgt_line+=((next_item->Number-now_item->Number)*Font_Size);
-        if (Tgt_line>LINE_MAX)  //防止光标溢出可视范围
+        Targrt_line+=((next_item->Number-now_item->Number)*Font_Size);
+        if (Targrt_line>LINE_MAX)  //防止光标溢出可视范围
         {
             Page_State=CURSOR_STATIC;
-            Tgt_line=LINE_MAX;
+            Targrt_line=LINE_MAX;
         }
     }
     else if(next_item->Number-now_item->Number<0)
     {
-        Tgt_line-=((now_item->Number-next_item->Number)*Font_Size);
-        if (Tgt_line<LINE_MIN)  //防止光标溢出可视范围
+        Targrt_line-=((now_item->Number-next_item->Number)*Font_Size);
+        if (Targrt_line<LINE_MIN)  //防止光标溢出可视范围
         {
             Page_State=CURSOR_STATIC;
-            Tgt_line=LINE_MIN;
+            Targrt_line=LINE_MIN;
         }
     }
     #ifdef Head_To_Tail 
@@ -271,8 +297,11 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
         Draw_OptionPlace(t,now_item,next_item);
         Draw_Page(pos,Page,LineSpacing,now_item,next_item);
         u8g2_SetDrawColor(&u8g2,2);
-        item_line=Line(Options_Time,t,Tgt_line,item_line);
-        item_wide=Line(Options_Time,t,strlen(next_item->itemName)*6+4,item_wide);
+        item_line = PID(Targrt_line,item_line,&Cursor);
+        if(t>=Options_Time)item_line=Targrt_line;
+        item_wide = PID(strlen(next_item->itemName)*6+4,item_wide,&Cursor);
+        if(t>=Options_Time)item_wide=strlen(next_item->itemName)*6+4;
+        // item_wide = Line(Options_Time,t,strlen(next_item->itemName)*6+4,item_wide);
         u8g2_DrawRBox(&u8g2,pos+1,item_line-1,item_wide,Font_Size,4);
         u8g2_SendBuffer(&u8g2);
     } while (t<Options_Time);
@@ -317,6 +346,21 @@ void Show_GitHub(void)
         if(key_read()==ENTER){break;}
         u8g2_DrawStr(&u8g2,8,25,GitHub1);
         u8g2_DrawStr(&u8g2,8,37,GitHub2);
+        u8g2_SendBuffer(&u8g2);
+    }
+    
+}
+
+void Show_Bilibili(void)
+{
+    const char* Bilibili="BV1Xh4y1N7By";
+
+    DialogScale_Show(&u8g2,22,24,82,20);
+
+    while (1)
+    {
+        if(key_read()==ENTER){break;}
+        u8g2_DrawStr(&u8g2,28,37,Bilibili);
         u8g2_SendBuffer(&u8g2);
     }
     
@@ -368,6 +412,24 @@ void Car_State(void)
     vTaskDelete(NULL);
 }
 
+extern uint8_t RX_Packet[1024];
+extern bool packetReceived;
+
+void Screen(void)
+{
+  while (1)
+  {
+    if(packetReceived)
+    {
+      u8g2_ClearBuffer(&u8g2);
+      u8g2_DrawXBMP(&u8g2,0,0,128,64,RX_Packet);
+      u8g2_SendBuffer(&u8g2);
+      packetReceived=false;
+    }
+    if(key_read()==ENTER){break;}
+  }
+}
+
 void App_Function_Loading(void)
 {
     No3Page1item1.Item_function=Show_MPU6050;
@@ -378,7 +440,10 @@ void App_Function_Loading(void)
     No3Page2item2.Item_function=AirPlane_Run;
     No3Page2item3.Item_function=Car_State;
 
+    Page1item3.Item_function=Screen;
+
     Page5item1.Item_function=Show_GitHub;
+    Page5item2.Item_function=Show_Bilibili;
 }
 
 void Menu_Team(void)
@@ -399,7 +464,7 @@ void Menu_Team(void)
         AddPage("[Application]", &Page1);
         AddItem(" -System", &Page1item1, &Page1, &No3Page1);
         AddItem(" -Games", &Page1item2, &Page1, &No3Page2);
-        AddItem(" -Altium", &Page1item3, &Page1, &No3Page3);
+        AddItem(" -Screen", &Page1item3, &Page1, NULL);
         AddItem(" -Return", &Page1item4, &Page1, &MainPage);
 
             AddPage("[System]", &No3Page1);

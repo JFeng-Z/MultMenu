@@ -74,7 +74,5 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
 static void Menu_Task(void* parameter);
 void Menu_Init(void);
 BaseType_t Menu_Task_Create(void);
-void Motor_Stop(void);
-void Motor_Run(void);
 
 #endif

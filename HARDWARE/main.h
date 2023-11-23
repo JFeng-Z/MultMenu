@@ -21,5 +21,8 @@
 #include "inv_mpu.h"
 #include "mpu6050.h"
 #include "inv_mpu_dmp_motion_driver.h"
+#include "bsp_usart.h"
+#include "ESP8266.h"
+#include "U8g2_User.h"
 
 #endif

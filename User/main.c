@@ -16,7 +16,6 @@ TaskHandle_t AppTaskCreate_Handle;
 void Init(void);
 static void AppTaskCreate(void);
 
-
 int main(void)
 {
     BaseType_t xReturn = pdPASS;
@@ -39,9 +38,10 @@ void Init(void)
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     USART_Config();
     Tim_Tick_Init();
-    MPU_Init();
-    mpu_dmp_init();
+    // MPU_Init();
+    // mpu_dmp_init();
     LED_GPIO_Config();
+    // ESP8266_Init();
     Menu_Init();
     KEY_EXTI_Config();
 }
@@ -50,11 +50,7 @@ TaskHandle_t TestTask_Handle;
 
 static void TestTask(void* parameter)
 {
-  while (1)
-  {
-    printf("Hello World!\r\n");
-    vTaskDelay(5);
-  }
+  
 } 
 
 static void AppTaskCreate(void)
@@ -64,7 +60,7 @@ static void AppTaskCreate(void)
   /* 创建任务 */
   Menu_Task_Create();
   
-  xTaskCreate((TaskFunction_t)TestTask,"TestTask",100,NULL,6,TestTask_Handle);
+  // xTaskCreate((TaskFunction_t)TestTask,"TestTask",100,NULL,6,TestTask_Handle);
 
   vTaskDelete(AppTaskCreate_Handle); //删除AppTaskCreate任务
   

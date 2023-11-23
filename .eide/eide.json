@@ -322,7 +322,8 @@
           "HARDWARE/u8g2lib/src",
           "HARDWARE/APP/Games",
           "HARDWARE/APP/Time",
-          "HARDWARE/OldMenu"
+          "HARDWARE/OldMenu",
+          "HARDWARE/ESP8266"
         ],
         "libList": [],
         "sourceDirList": [],
