@@ -2,8 +2,9 @@
 #define _TIM_TICK_H
 
 #include "stm32f10x.h"   
+#include "multi_button.h"
 
-void Tim_Tick_Init(void);
+void Timer_Init(void);
 void Tims_delay_us(uint16_t nus);
 void Tims_delay_ms(uint32_t xms);
 

@@ -226,7 +226,8 @@ void keyPress(void)
 {
     uint8_t temp;
     
-    temp = key_read();
+    if(Get_Key(Key1)==PRESS_UP)temp = DOWN;
+    if(Get_Key(Key2)==PRESS_UP)temp = UP;
     if(menu & (temp != 0))
     {
         reset();
@@ -251,7 +252,6 @@ void keyPress(void)
         jump = true;
         down = true;
     }
-    Key_Open();
 }
 
 //Collision Detecting and Setting HighScore
@@ -354,7 +354,7 @@ void draw_DinoGame(void)
     dinoTimeToDraw = millis();
   }
 }
-
+extern uint8_t KEYWKUP_LONG_RRESS_START_State;
 /*!
  * @brief DinoGame_Task function
  */
@@ -371,9 +371,10 @@ void DinoGame_Run(void)
     u8g2_SetFontDirection(&u8g2, 0);
     u8g2_SetFontRefHeightAll(&u8g2);
     reset();
+    Tims_delay_ms(20);
     while (1)
     {
-      if (key_read()==ENTER)break;
+      if(Get_Key(KeyWkUp)==PRESS_UP)return;
       u8g2_FirstPage(&u8g2);
       keyPress();
       if ( (!gameOver) && (!menu) )

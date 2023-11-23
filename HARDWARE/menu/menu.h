@@ -9,13 +9,11 @@
 #ifndef __MENU_H__
 #define __MENU_H__
 
-#include "stm32f10x.h"
+#include "main.h"
+#include "Other_Function.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include <string.h>
-#include "stm32_u8g2.h"
-#include "u8g2.h"
-#include "inv_mpu.h"
 #include "DinoGame.h"
 #include "AirPlane.h"
 
@@ -35,8 +33,6 @@
 #define MENU_MOVE 0
 //光标静止
 #define CURSOR_STATIC 1
-
-#define Head_To_Tail     //首尾链接
 
 typedef struct MenuPage *xpMenu;
 typedef struct Item *xpItem;
@@ -68,13 +64,14 @@ int8_t Line(uint8_t AllTime,uint8_t Time_Now,int8_t Tgt,int8_t Now);
 
 void Draw_Process(void);
 void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item);
+void Draw_DialogBox(u8g2_t *u8g2,u8g2_uint_t x,u8g2_uint_t y,u8g2_uint_t w,u8g2_uint_t h);
+void Draw_DialogRBox(u8g2_t *u8g2,u8g2_uint_t x,u8g2_uint_t y,u8g2_uint_t w,u8g2_uint_t h,u8g2_uint_t r);
+void DialogScale_Show(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Targrt_w,uint16_t Targrt_h);
 void Draw_Page(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item);
 void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item);
+uint8_t ui_disapper(uint8_t disapper);
 
-static void Menu_Task(void* parameter);
+void Menu_Task_Create(void);
 void Menu_Init(void);
-BaseType_t Menu_Task_Create(void);
-void Motor_Stop(void);
-void Motor_Run(void);
 
 #endif

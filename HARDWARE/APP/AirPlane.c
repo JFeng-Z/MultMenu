@@ -1458,10 +1458,10 @@ void AirPlane_Run(void)
     st_Setup(&u8g2);
     
     y = 128;
-
+    Tims_delay_ms(20);
     while(1)
     {
-        if (key_read()==ENTER)break;
+        if(Get_Key(KeyWkUp)==PRESS_UP)return;
         st_Step(y, /* is_auto_fire */ 1, /* is_fire */ 0);
 
         u8g2_FirstPage(&u8g2);
@@ -1470,7 +1470,7 @@ void AirPlane_Run(void)
             st_Draw(0);
         } while( u8g2_NextPage(&u8g2) );
 
-        if( key_read() == UP) {Key_Open();y++;}
-        if( key_read() == DOWN) {Key_Open();y--;}
+        if(Get_Key(Key1)==LONG_PRESS_HOLD) {y++;}
+        if(Get_Key(Key2)==LONG_PRESS_HOLD) {y--;}
     }
 }
