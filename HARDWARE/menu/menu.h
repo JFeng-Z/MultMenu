@@ -73,5 +73,9 @@ uint8_t ui_disapper(uint8_t disapper);
 
 void Menu_Task_Create(void);
 void Menu_Init(void);
+<<<<<<< HEAD
+=======
+BaseType_t Menu_Task_Create(void);
+>>>>>>> 3916090fbb8f510b26fd977a25cf20f6156d5a7e
 
 #endif
