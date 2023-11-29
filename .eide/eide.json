@@ -10,26 +10,33 @@
     "files": [],
     "folders": [
       {
-        "name": "CMSIS",
-        "files": [
-          {
-            "path": "Libraries/CMSIS/core_cm3.c"
-          },
-          {
-            "path": "Libraries/CMSIS/system_stm32f10x.c"
-          }
-        ],
-        "folders": []
-      },
-      {
-        "name": "DOC",
-        "files": [],
-        "folders": []
-      },
-      {
         "name": "FREERTOS",
         "files": [],
         "folders": [
+          {
+            "name": "SRC",
+            "files": [
+              {
+                "path": "FreeRTOS/src/croutine.c"
+              },
+              {
+                "path": "FreeRTOS/src/event_groups.c"
+              },
+              {
+                "path": "FreeRTOS/src/list.c"
+              },
+              {
+                "path": "FreeRTOS/src/queue.c"
+              },
+              {
+                "path": "FreeRTOS/src/tasks.c"
+              },
+              {
+                "path": "FreeRTOS/src/timers.c"
+              }
+            ],
+            "folders": []
+          },
           {
             "name": "PORT",
             "files": [],
@@ -59,107 +66,8 @@
                 "folders": []
               }
             ]
-          },
-          {
-            "name": "SRC",
-            "files": [
-              {
-                "path": "FreeRTOS/src/croutine.c"
-              },
-              {
-                "path": "FreeRTOS/src/event_groups.c"
-              },
-              {
-                "path": "FreeRTOS/src/list.c"
-              },
-              {
-                "path": "FreeRTOS/src/queue.c"
-              },
-              {
-                "path": "FreeRTOS/src/tasks.c"
-              },
-              {
-                "path": "FreeRTOS/src/timers.c"
-              }
-            ],
-            "folders": []
           }
         ]
-      },
-      {
-        "name": "FWLIB",
-        "files": [
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/misc.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_adc.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_bkp.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_can.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_crc.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dac.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dbgmcu.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_exti.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_flash.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_fsmc.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_i2c.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_iwdg.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_pwr.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rtc.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_sdio.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c"
-          },
-          {
-            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_wwdg.c"
-          }
-        ],
-        "folders": []
       },
       {
         "name": "HARDWARE",
@@ -170,92 +78,10 @@
         ],
         "folders": [
           {
-            "name": "APP",
+            "name": "UART",
             "files": [
               {
-                "path": "HARDWARE/APP/AirPlane.c"
-              },
-              {
-                "path": "HARDWARE/APP/DinoGame.c"
-              },
-              {
-                "path": "HARDWARE/APP/Other_Function.c"
-              },
-              {
-                "path": "HARDWARE/APP/Time.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "ENCODER",
-            "files": [
-              {
-                "path": "HARDWARE/Encoder/rotary_encoder.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "KEY",
-            "files": [
-              {
-                "path": "HARDWARE/KEY/Key_Driver.c"
-              },
-              {
-                "path": "HARDWARE/KEY/multi_button.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "LED",
-            "files": [
-              {
-                "path": "HARDWARE/LED/bsp_led.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "MENU",
-            "files": [
-              {
-                "path": "HARDWARE/MENU/Menu.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "MPU6050",
-            "files": [
-              {
-                "path": "HARDWARE/MPU6050/mpu6050.c"
-              },
-              {
-                "path": "HARDWARE/MPU6050/mpuiic.c"
-              }
-            ],
-            "folders": [
-              {
-                "name": "EMPL",
-                "files": [
-                  {
-                    "path": "HARDWARE/MPU6050/eMPL/inv_mpu.c"
-                  },
-                  {
-                    "path": "HARDWARE/MPU6050/eMPL/inv_mpu_dmp_motion_driver.c"
-                  }
-                ],
-                "folders": []
-              }
-            ]
-          },
-          {
-            "name": "MY_I2C",
-            "files": [
-              {
-                "path": "HARDWARE/MY_I2C/MyI2C.c"
+                "path": "HARDWARE/uart/bsp_usart.c"
               }
             ],
             "folders": []
@@ -414,24 +240,97 @@
             ]
           },
           {
-            "name": "UART",
+            "name": "MY_I2C",
             "files": [
               {
-                "path": "HARDWARE/uart/bsp_usart.c"
+                "path": "HARDWARE/MY_I2C/MyI2C.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "MPU6050",
+            "files": [
+              {
+                "path": "HARDWARE/MPU6050/mpu6050.c"
+              },
+              {
+                "path": "HARDWARE/MPU6050/mpuiic.c"
+              }
+            ],
+            "folders": [
+              {
+                "name": "EMPL",
+                "files": [
+                  {
+                    "path": "HARDWARE/MPU6050/eMPL/inv_mpu.c"
+                  },
+                  {
+                    "path": "HARDWARE/MPU6050/eMPL/inv_mpu_dmp_motion_driver.c"
+                  }
+                ],
+                "folders": []
+              }
+            ]
+          },
+          {
+            "name": "MENU",
+            "files": [
+              {
+                "path": "HARDWARE/MENU/Menu.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "LED",
+            "files": [
+              {
+                "path": "HARDWARE/LED/bsp_led.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "KEY",
+            "files": [
+              {
+                "path": "HARDWARE/KEY/Key_Driver.c"
+              },
+              {
+                "path": "HARDWARE/KEY/multi_button.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "ENCODER",
+            "files": [
+              {
+                "path": "HARDWARE/Encoder/rotary_encoder.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "APP",
+            "files": [
+              {
+                "path": "HARDWARE/APP/AirPlane.c"
+              },
+              {
+                "path": "HARDWARE/APP/DinoGame.c"
+              },
+              {
+                "path": "HARDWARE/APP/Other_Function.c"
+              },
+              {
+                "path": "HARDWARE/APP/Time.c"
               }
             ],
             "folders": []
           }
         ]
-      },
-      {
-        "name": "STARTUP",
-        "files": [
-          {
-            "path": "Libraries/CMSIS/startup/startup_stm32f10x_hd.s"
-          }
-        ],
-        "folders": []
       },
       {
         "name": "USER",
@@ -453,6 +352,107 @@
           }
         ],
         "folders": []
+      },
+      {
+        "name": "STARTUP",
+        "files": [
+          {
+            "path": "Libraries/CMSIS/startup/startup_stm32f10x_hd.s"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "FWLIB",
+        "files": [
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/misc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_adc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_bkp.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_can.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_crc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dac.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dbgmcu.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_exti.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_flash.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_fsmc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_i2c.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_iwdg.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_pwr.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rtc.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_sdio.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c"
+          },
+          {
+            "path": "Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_wwdg.c"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "DOC",
+        "files": [],
+        "folders": []
+      },
+      {
+        "name": "CMSIS",
+        "files": [
+          {
+            "path": "Libraries/CMSIS/core_cm3.c"
+          },
+          {
+            "path": "Libraries/CMSIS/system_stm32f10x.c"
+          }
+        ],
+        "folders": []
       }
     ]
   },
@@ -460,7 +460,7 @@
   "deviceName": null,
   "packDir": null,
   "miscInfo": {
-    "uid": "4baa8a8234163d89f70046e3568cdfe7"
+    "uid": "9a9446dfc904d325abb64a92eab4c5f0"
   },
   "targets": {
     "STM32F103": {
@@ -579,26 +579,19 @@
         },
         "options": "null"
       },
-      "uploader": "OpenOCD",
+      "uploader": "JLink",
       "uploadConfig": {
         "bin": "",
-        "target": "stm32f1x",
-        "interface": "cmsis-dap",
-        "baseAddr": "0x08000000"
+        "baseAddr": "",
+        "cpuInfo": {
+          "vendor": "null",
+          "cpuName": "null"
+        },
+        "proType": 1,
+        "speed": 8000,
+        "otherCmds": ""
       },
-      "uploadConfigMap": {
-        "JLink": {
-          "bin": "",
-          "baseAddr": "",
-          "cpuInfo": {
-            "vendor": "null",
-            "cpuName": "null"
-          },
-          "proType": 1,
-          "speed": 8000,
-          "otherCmds": ""
-        }
-      },
+      "uploadConfigMap": {},
       "custom_dep": {
         "name": "default",
         "incList": [
