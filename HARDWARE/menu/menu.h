@@ -20,20 +20,24 @@
 #define FirstLine   9
 #define FirstPos    0
 #define Font_Size   12
-
 #define LINE_MAX    48
 #define LINE_MIN    12 
-#define Max_Visible_Number  4
+#define MaxVisible_Number  4
 
-#define Menu_Up     0
-#define Menu_Down   1
-#define MENU_RUN    0
-#define APP_RUN     1
+enum MenuState
+{
+    MENU_RUN,
+    APP_RUN,
+    APP_BREAK,
+    MENU_MOVE,
+    CURSOR_STATIC,
 
-#define MENU_MOVE 0
-//光标静止
-#define CURSOR_STATIC 1
+    MENU_UP,
+    MENU_DOWN,
+    MENU_ENTER
+};
 
+typedef void (*Item_function)(void);
 typedef struct MenuPage *xpMenu;
 typedef struct Item *xpItem;
 typedef struct MenuPage
@@ -59,9 +63,7 @@ typedef struct Item
 void Menu_Team(void);
 void AddPage(const char *name, xpMenu page);
 void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu NextPage);
-
 int8_t Line(uint8_t AllTime,uint8_t Time_Now,int8_t Tgt,int8_t Now);
-
 void Draw_Process(void);
 void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item);
 void Draw_DialogBox(u8g2_t *u8g2,u8g2_uint_t x,u8g2_uint_t y,u8g2_uint_t w,u8g2_uint_t h);
@@ -70,8 +72,9 @@ void DialogScale_Show(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Targrt_w,uint1
 void Draw_Page(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item);
 void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item);
 uint8_t ui_disapper(uint8_t disapper);
-
+void Switch_Menu_State(uint8_t state);
 void Menu_Task_Create(void);
+void U8G2_Init(void);
 void Menu_Init(void);
 
 #endif

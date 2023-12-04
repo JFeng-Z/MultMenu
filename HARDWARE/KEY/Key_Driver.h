@@ -25,5 +25,7 @@
 void KEY_GPIO_Config(void);
 void Key_Loading(void);
 PressEvent Get_Key(uint8_t Key_Number);
+uint8_t Get_Key_Pressed(void);
+void KeyScan_Task_Create(void);
 
 #endif 

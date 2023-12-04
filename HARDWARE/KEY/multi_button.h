@@ -11,7 +11,7 @@
 
 //According to your need to modify the constants.
 #define TICKS_INTERVAL    5	//ms
-#define DEBOUNCE_TICKS    3	//MAX 8
+#define DEBOUNCE_TICKS    5	//MAX 8
 #define SHORT_TICKS       (500 /TICKS_INTERVAL)
 #define LONG_TICKS        (2000 /TICKS_INTERVAL)
 

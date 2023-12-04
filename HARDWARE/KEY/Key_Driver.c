@@ -1,4 +1,6 @@
 #include "Key_Driver.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 struct Button KEY1,KEY2,KEYWKUP;
 
@@ -53,6 +55,14 @@ PressEvent Get_Key(uint8_t Key_Number)
     }
 }
 
+uint8_t Get_Key_Pressed(void)
+{
+    if(Get_Key(Key1)==PRESS_UP)return MENU_UP;
+    else if(Get_Key(Key2)==PRESS_UP)return MENU_DOWN;
+    else if(Get_Key(KeyWkUp)==PRESS_UP)return MENU_ENTER;
+    return 0;
+}
+
 void KEY1_PRESS_UP_Handler(void* btn){}
 void KEY1_LONG_PRESS_HOLD_Handler(void* btn){}
 void KEY1_SINGLE_CLICK_Handler(void* btn){}
@@ -80,4 +90,20 @@ void Key_Loading(void)
 	button_start(&KEY1);
     button_start(&KEY2);
     button_start(&KEYWKUP);
+}
+
+TaskHandle_t KeyScan_TaskHandle;
+
+void KeyScan_Task(void *parameter)
+{
+    while (1)
+    {
+        button_ticks();
+        vTaskDelay(5);
+    }
+}
+
+void KeyScan_Task_Create(void)
+{
+    xTaskCreate((TaskFunction_t)KeyScan_Task,"KeyScan_Task",128,NULL,7,KeyScan_TaskHandle);
 }

@@ -1445,32 +1445,38 @@ void st_Step(uint8_t player_pos, uint8_t is_auto_fire, uint8_t is_fire)
  */
 void AirPlane_Run(void)
 {
-    volatile uint8_t y, k;
-
-    u8g2_InitDisplay(&u8g2);
-    u8g2_SetPowerSave(&u8g2, 0);
-
-    //u8g2_SetFont(&u8g2, u8g2_font_helvB08_tr);
-    u8g2_SetFont(&u8g2, u8g2_font_6x10_tr);
-    u8g2_SetFontDirection(&u8g2, 0);
-    u8g2_SetFontRefHeightAll(&u8g2);
-
-    st_Setup(&u8g2);
-    
-    y = 128;
-    Tims_delay_ms(20);
-    while(1)
+    static uint8_t y;
+    static uint8_t AirPlane_IntoState=false;
+    if(AirPlane_IntoState==false)
     {
-        if(Get_Key(KeyWkUp)==PRESS_UP)return;
-        st_Step(y, /* is_auto_fire */ 1, /* is_fire */ 0);
+        Tims_delay_ms(10);
+        u8g2_InitDisplay(&u8g2);
+        u8g2_SetPowerSave(&u8g2, 0);
 
-        u8g2_FirstPage(&u8g2);
-        do
-        {
-            st_Draw(0);
-        } while( u8g2_NextPage(&u8g2) );
+        //u8g2_SetFont(&u8g2, u8g2_font_helvB08_tr);
+        u8g2_SetFont(&u8g2, u8g2_font_6x10_tr);
+        u8g2_SetFontDirection(&u8g2, 0);
+        u8g2_SetFontRefHeightAll(&u8g2);
 
-        if(Get_Key(Key1)==LONG_PRESS_HOLD) {y++;}
-        if(Get_Key(Key2)==LONG_PRESS_HOLD) {y--;}
+        st_Setup(&u8g2);
+        
+        y = 128;
+        AirPlane_IntoState=true;
     }
+    if(Get_Key_Pressed()==MENU_ENTER)
+    {
+        Switch_Menu_State(APP_BREAK);
+        if(AirPlane_IntoState==true)
+        AirPlane_IntoState=false;
+    }
+    st_Step(y, /* is_auto_fire */ 1, /* is_fire */ 0);
+
+    u8g2_FirstPage(&u8g2);
+    do
+    {
+        st_Draw(0);
+    } while( u8g2_NextPage(&u8g2) );
+
+    if(Get_Key(Key1)==LONG_PRESS_HOLD) {y++;}
+    if(Get_Key(Key2)==LONG_PRESS_HOLD) {y--;}
 }

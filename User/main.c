@@ -25,7 +25,7 @@ int main(void)
     xReturn=xTaskCreate((TaskFunction_t)AppTaskCreate,"AppTaskCreate",128,NULL,3,&AppTaskCreate_Handle);	
     if (pdPASS==xReturn)
     {
-      printf("/******Menu is Successfully loaded!******/");
+      printf("/******Menu is Successfully loaded!******/\r\n");
     }
 														
     vTaskStartScheduler();  
@@ -39,9 +39,21 @@ void Init(void)
     USART_Config();
     Timer_Init();
     LED_GPIO_Config();
+    U8G2_Init();
+    // RTC_Init();
     Menu_Init();
     KEY_GPIO_Config();
     Key_Loading();
+}
+
+TaskHandle_t test_handle;
+
+void test_(void *parameter)
+{
+  while (1)
+  {
+    printf("test\r\n");
+  }
 }
 
 static void AppTaskCreate(void)
@@ -50,7 +62,7 @@ static void AppTaskCreate(void)
 
   /* 创建任务 */
   Menu_Task_Create();
-
+  xTaskCreate((TaskFunction_t)test_,"test",128,NULL,5,test_handle);
   vTaskDelete(AppTaskCreate_Handle); //删除AppTaskCreate任务
   
   taskEXIT_CRITICAL();            //退出临界区

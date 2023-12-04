@@ -24,5 +24,6 @@
 #include "U8g2_User.h"
 #include "multi_button.h"
 #include "Key_Driver.h"
+#include "Time.h"
 
 #endif

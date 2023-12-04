@@ -354,34 +354,41 @@ void draw_DinoGame(void)
     dinoTimeToDraw = millis();
   }
 }
-extern uint8_t KEYWKUP_LONG_RRESS_START_State;
 /*!
  * @brief DinoGame_Task function
  */
 void DinoGame_Run(void)
 {
+    static uint8_t Dino_IntoState=false;
     /* set systick and start systick interrupt */
     // SysTick_Config(SystemCoreClock/SYS_TICK_PER_SECOND);    
-
-    u8g2_InitDisplay(&u8g2);
-    u8g2_SetPowerSave(&u8g2, 0);
-
-    //u8g2_SetFont(&u8g2, u8g2_font_helvB08_tr);
-    u8g2_SetFont(&u8g2, u8g2_font_t0_11_mf);
-    u8g2_SetFontDirection(&u8g2, 0);
-    u8g2_SetFontRefHeightAll(&u8g2);
-    reset();
-    Tims_delay_ms(20);
-    while (1)
+    if(Dino_IntoState==false)
     {
-      if(Get_Key(KeyWkUp)==PRESS_UP)return;
-      u8g2_FirstPage(&u8g2);
-      keyPress();
-      if ( (!gameOver) && (!menu) )
-      {
-        moveObjects();
-      }
-      draw_DinoGame();
-      collision();
-    }   
+        Tims_delay_ms(10);
+        u8g2_InitDisplay(&u8g2);
+        u8g2_SetPowerSave(&u8g2, 0);
+
+        //u8g2_SetFont(&u8g2, u8g2_font_helvB08_tr);
+        u8g2_SetFont(&u8g2, u8g2_font_t0_11_mf);
+        u8g2_SetFontDirection(&u8g2, 0);
+        u8g2_SetFontRefHeightAll(&u8g2);
+        reset();
+        Dino_IntoState=true;
+    }
+
+    if(Get_Key_Pressed()==MENU_ENTER)
+    {
+        Switch_Menu_State(APP_BREAK);
+        if(Dino_IntoState==true)
+        Dino_IntoState=false;
+    }
+
+    u8g2_FirstPage(&u8g2);
+    keyPress();
+    if ( (!gameOver) && (!menu) )
+    {
+      moveObjects();
+    }
+    draw_DinoGame();
+    collision();
 }

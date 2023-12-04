@@ -29,7 +29,7 @@ void Timer_Init(void)
     // 启动定时器2
     TIM_Cmd(TIM2, ENABLE);
 }
-
+volatile unsigned long g_SystemTicks=0;
 // 定时器2中断服务函数
 void TIM2_IRQHandler(void)
 {
@@ -38,6 +38,7 @@ void TIM2_IRQHandler(void)
     {
         // 清除中断标志位
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+        g_SystemTicks++;
         tims++;
         if(tims>5){button_ticks();tims=0;}
     }

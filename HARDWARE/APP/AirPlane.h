@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>  // rand
+#include "Other_Function.h"
 
 void AirPlane_Run(void);
 

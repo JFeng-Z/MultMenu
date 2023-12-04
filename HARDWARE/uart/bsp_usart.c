@@ -158,8 +158,8 @@ int fgetc(FILE *f)
 }
 
 uint8_t RX_Packet[1024];
-volatile int RX_Packet_Length = 0;
-uint8_t RX_State = 0;
+volatile int RX_Packet_Length = 0, Time_Length = 0;
+uint8_t Usart_GetTime[25],GetTime_State=0;
 bool packetReceived = false;  // 添加一个变量用于标识是否接收到完整的数据包
 
 void USART1_IRQHandler(void)
@@ -173,8 +173,13 @@ void USART1_IRQHandler(void)
             case 0:
                 if (RxData == 0xFF)
                 {
-                    RX_Packet_Length = 0;
-                    state = 1;
+                  RX_Packet_Length = 0;
+                  state = 1;
+                }
+                if (RxData == 0x01)
+                {
+                  Time_Length = 0;
+                  state = 3;
                 }
                 break;
             case 1:
@@ -189,8 +194,22 @@ void USART1_IRQHandler(void)
                 if (RxData == 0xFE)  // 数据包尾
                 {
                     state = 0;
-                    RX_State = 1;
                     packetReceived = true;  // 设置标志位表示接收到完整的数据包
+                }
+                break;
+            case 3:
+                  Time_Length++;
+                  Usart_GetTime[Time_Length] = RxData;
+                  if (Time_Length >= 25)
+                  {
+                    state = 4;
+                  }
+                break;
+            case 4:
+                if (RxData == 0x02)
+                {
+                  state = 0;
+                  GetTime_State = 1;
                 }
                 break;
             default:

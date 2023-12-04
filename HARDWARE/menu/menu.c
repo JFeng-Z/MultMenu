@@ -37,7 +37,7 @@ xItem Page3item1, Page3item2, Page3item3, Page3item4;
 xItem Page4item1, Page4item2, Page4item3, Page4item4;
 xItem Page5item1, Page5item2, Page5item3, Page5item4;
 // 三级Page的item
-xItem No3Page1item1, No3Page1item2, No3Page1item3, No3Page1item4,
+xItem No3Page1item1, No3Page1item2, No3Page1item3, No3Page1item4, No3Page1item5,
       No3Page2item1, No3Page2item2, No3Page2item3, No3Page2item4;
 
 void AddPage(const char *name, xpMenu page)
@@ -104,31 +104,22 @@ uint8_t PID(int8_t Targrt, int8_t Now, Error *Obj)
 
 void Draw_Process(void)
 {
-	for(size_t i=10;i<=80;i+=2)
-	{
-		u8g2_ClearBuffer(&u8g2); 
-			
-		char buff[6];
-		int hundred = (int)(i/80.0*100)/100%10;   
-		int quotient = (int)(i/80.0*100)/10%10;   
-		int remainder = (int)(i/80.0*100)%10;
-		buff[0] = hundred + '0';  
-		buff[1] = quotient + '0';   
-		buff[2] = remainder + '0';   
-		buff[3] = '%'; 
-		buff[4] = '\0';   
-		
-		u8g2_SetFont(&u8g2,u8g2_font_profont15_mf);
-		u8g2_DrawStr(&u8g2,32,16,"Mr.JFeng");
-		
-		u8g2_SetFont(&u8g2,u8g2_font_profont12_mf);
-		u8g2_DrawStr(&u8g2,100,41,buff);
-		
-		u8g2_DrawRBox(&u8g2,16,32,i,10,4);
-		u8g2_DrawRFrame(&u8g2,16,32,80,10,4);
-		
-		u8g2_SendBuffer(&u8g2);
-	}
+    u8g2_ClearBuffer(&u8g2);
+    u8g2_SetFont(&u8g2,u8g2_font_profont15_mf);
+    u8g2_DrawStr(&u8g2,32,16,"Mr.JFeng");
+    u8g2_SetFont(&u8g2,u8g2_font_profont12_mf);
+    
+    for(size_t i=10; i<=80; i+=2)
+    {
+        char buff[6];
+        int percentage = (int)(i/80.0*100);
+        sprintf(buff, "%02d%%", percentage);
+        
+        u8g2_DrawStr(&u8g2,100,41,buff);
+        u8g2_DrawRBox(&u8g2,16,32,i,10,4);
+        u8g2_DrawRFrame(&u8g2,16,32,80,10,4);
+        u8g2_SendBuffer(&u8g2);
+    }
 }
 
 void Draw_DialogBox(u8g2_t *u8g2,u8g2_uint_t x,u8g2_uint_t y,u8g2_uint_t w,u8g2_uint_t h)
@@ -227,13 +218,13 @@ void Draw_Page(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
     if ((next_item->Number-now_item->Number>0)&&Page_State==CURSOR_STATIC)
     {
         Page_State=MENU_MOVE;
-        if((next_item->Number-now_item->Number)>(Page->len-Max_Visible_Number))first_line-=((Page->len-Max_Visible_Number)*Font_Size);  //除去不移动时的项目数
+        if((next_item->Number-now_item->Number)>(Page->len-MaxVisible_Number))first_line-=((Page->len-MaxVisible_Number)*Font_Size);  //除去不移动时的项目数
         else first_line-=Font_Size;
     }
     else if ((next_item->Number-now_item->Number<0)&&Page_State==CURSOR_STATIC)
     {
         Page_State=MENU_MOVE;
-        if((now_item->Number-next_item->Number)>(Page->len-Max_Visible_Number))first_line+=((Page->len-Max_Visible_Number)*Font_Size);  //除去不移动时的项目数
+        if((now_item->Number-next_item->Number)>(Page->len-MaxVisible_Number))first_line+=((Page->len-MaxVisible_Number)*Font_Size);  //除去不移动时的项目数
         else first_line+=Font_Size;
     }
     for (size_t i = 1; i <= Page->len; i++)
@@ -308,6 +299,7 @@ void App_Function_Loading(void)
     No3Page1item1.Item_function=Show_MPU6050;
     No3Page1item2.Item_function=Setting_Speed;
     No3Page1item3.Item_function=White_Dark_Day;
+    No3Page1item4.Item_function=Show_Time;
 
     No3Page2item1.Item_function=DinoGame_Run;
     No3Page2item2.Item_function=AirPlane_Run;
@@ -344,7 +336,8 @@ void Menu_Team(void)
             AddItem(" -MPU6050", &No3Page1item1, &No3Page1, NULL);
             AddItem(" -Speed", &No3Page1item2, &No3Page1, NULL);
             AddItem(" -Mode", &No3Page1item3, &No3Page1, NULL);
-            AddItem(" -Return", &No3Page1item4, &No3Page1, &Page1);
+            AddItem(" -Clock", &No3Page1item4, &No3Page1, NULL);
+            AddItem(" -Return", &No3Page1item5, &No3Page1, &Page1);
 
             AddPage("[Games]", &No3Page2);
             AddItem(" -Dino Game", &No3Page2item1, &No3Page2, NULL);
@@ -378,65 +371,108 @@ void Menu_Team(void)
 }
 
 uint8_t MENU_STATE=MENU_RUN;
+uint8_t disapper = 1;
 xpItem temp_item=&Mainitem1;
-void (*App_Function)();
+Item_function App_Function;
+
+void Switch_Menu_State(uint8_t state)
+{
+    MENU_STATE = state;
+}
+
+void Process_Menu_Run(uint8_t Dir)
+{
+    switch (Dir)
+    {
+        case MENU_UP:
+            Draw_Menu(FirstPos, temp_item->location, Font_Size, temp_item, temp_item->lastiTem);
+            temp_item = temp_item->lastiTem;
+            break;
+        case MENU_DOWN:
+            Draw_Menu(FirstPos, temp_item->location, Font_Size, temp_item, temp_item->nextiTem);
+            temp_item = temp_item->nextiTem;
+            break;
+        case MENU_ENTER:
+            if (MENU_STATE == MENU_RUN)
+            {
+                if (temp_item->Item_function != NULL)
+                {
+                    ui_disapper(disapper);
+                    App_Function = temp_item->Item_function;
+                    Switch_Menu_State(APP_RUN);
+                }
+                else
+                {
+                    Switch_Menu_State(MENU_RUN);
+                    for (size_t i = 0; i < 8; i++)
+                    {
+                        disapper = ui_disapper(disapper);
+                    }
+                    Draw_Menu(FirstPos, temp_item->JumpPage, Font_Size, temp_item, temp_item->JumpPage->itemHead);
+                    temp_item = temp_item->JumpPage->itemHead;
+                }
+            }
+            if(MENU_STATE == APP_BREAK)
+            {
+                Switch_Menu_State(MENU_RUN);
+                for (size_t i = 0; i < 8; i++)
+                {
+                    disapper = ui_disapper(disapper);
+                }
+                Draw_Menu(FirstPos, temp_item->location, Font_Size, temp_item, temp_item);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void Process_App_Run(void)
+{
+    (*App_Function)();
+}
 
 TaskHandle_t Menu_TaskHandle;
 
 void Menu_Task(void *parameter)
 {
-    while(1)
+    while (1)
     {
-        if(Get_Key(Key1)==PRESS_UP)
+        uint8_t Dir = Get_Key_Pressed();
+        
+        switch (MENU_STATE)
         {
-            Draw_Menu(FirstPos,temp_item->location,Font_Size,temp_item,temp_item->lastiTem);
-            temp_item=temp_item->lastiTem;
+            case MENU_RUN:
+                Process_Menu_Run(Dir);
+                break;
+                
+            case APP_RUN:
+                Process_App_Run();
+                break;
+                
+            case APP_BREAK:
+                Process_Menu_Run(Dir);
+                break;
+                
+            default:
+                break;
         }
-        if(Get_Key(Key2)==PRESS_UP)
-        {
-            Draw_Menu(FirstPos,temp_item->location,Font_Size,temp_item,temp_item->nextiTem);
-            temp_item=temp_item->nextiTem; 
-        }
-        if(Get_Key(KeyWkUp)==PRESS_UP)
-        {
-            uint8_t disapper=1;     //渐变函数消失速度，越小越慢，最大值为8
-            if (MENU_STATE==APP_RUN)
-            {
-                MENU_STATE=MENU_RUN;
-                Draw_Menu(FirstPos,temp_item->location,Font_Size,temp_item,temp_item);  
-            }
-            else 
-            {        
-                if (temp_item->JumpPage==NULL)
-                    {
-                        ui_disapper(disapper);
-                        App_Function=temp_item->Item_function;
-                        MENU_STATE=APP_RUN;
-                        (*App_Function)();
-                    }
-                else 
-                    {
-                    MENU_STATE=MENU_RUN;
-                    for (size_t i = 0; i < 8; i++)      
-                    {
-                        disapper=ui_disapper(disapper);
-                    }
-                    Draw_Menu(FirstPos,temp_item->JumpPage,Font_Size,temp_item,temp_item->JumpPage->itemHead);
-                    temp_item=temp_item->JumpPage->itemHead;
-                    }
-            }
-        }
+        vTaskDelay(5);
     }
 }
 
 void Menu_Task_Create(void)
 {
-    xTaskCreate((TaskFunction_t)Menu_Task,"Menu_Task",128,NULL,7,Menu_TaskHandle);
+    xTaskCreate((TaskFunction_t)Menu_Task,"Menu_Task",128,NULL,6,Menu_TaskHandle);
+}
+
+void U8G2_Init(void)
+{
+    u8g2Init(&u8g2);    
 }
 
 void Menu_Init(void)
 {
-  u8g2Init(&u8g2);
   Menu_Team();
   Draw_Process();
   Draw_Menu(FirstPos,&MainPage,Font_Size,&Mainitem1,&Mainitem1);

@@ -1,5 +1,7 @@
 import time
+import datetime
 import serial.tools.list_ports
+import keyboard
 
 if __name__ == '__main__':
     # 读取串口列表
@@ -26,10 +28,18 @@ if __name__ == '__main__':
             print("打开串口成功, 串口号: %s" % ser.name)
 
             # 串口发送数据
-            f = open('xi.h', 'r', encoding='utf-8')  # 打开hex图片文本文档，图片文本文档由imageLCD生成，由join together.py合并
+            f = open('Emo.h', 'r', encoding='utf-8')  # 打开hex图片文本文档，图片文本文档由imageLCD生成，由join together.py合并
     j = -1
     t0 = time.time()  # 统计总播放耗时，开始的时间
+    # 获取当前时间
+    current_time = datetime.datetime.now()
+
+    ser.write(bytes.fromhex("01"))  # 发送数据包包头 01
+    time_str = current_time.strftime("%Y-%m-%d-%H-%M-%S-")
+    ser.write(bytes.fromhex("02"))  # 发送数据包包头 02
     while True:
+        # 将时间字符串发送至串口
+        ser.write(time_str.encode())
         j += 1
         
         ta = time.time()  # 统计每帧播放时长，开始计时
@@ -61,3 +71,5 @@ if __name__ == '__main__':
         if j >= 255:
             j = 0
             f.seek(0)  # 将文件指针移回起始位置
+        if  keyboard.is_pressed('esc'):
+            quit()
