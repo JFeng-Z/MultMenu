@@ -1,4 +1,4 @@
-#include "MyI2C.h"
+#include "I2cDrive.h"
 
 void MyI2C_SCL_W_SetState(uint8_t State)
 {
@@ -22,7 +22,7 @@ uint8_t MyI2C_SDA_R_SetState(void)
 
 void MyI2C_Init(void)
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
+    RCC_APB2PeriphClockCmd(I2C_RCC,ENABLE);
 
     GPIO_InitTypeDef GPIO_InitStruct;
     GPIO_InitStruct.GPIO_Mode=GPIO_Mode_Out_OD;

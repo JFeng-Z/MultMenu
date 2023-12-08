@@ -1,5 +1,5 @@
-#ifndef _TIM_TICK_H
-#define _TIM_TICK_H
+#ifndef _TimerTick_H
+#define _TimerTick_H
 
 #include "stm32f10x.h"   
 #include "multi_button.h"

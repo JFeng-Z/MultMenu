@@ -13,11 +13,8 @@
 #define OLED_HEIGHT 64
 
 #include "main.h"
-#include "u8g2.h"
-#include "stm32_u8g2.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "Tim_Tick.h"
 
 void testDrawFrame(u8g2_t *u8g2);
 void testDrawRBox(u8g2_t *u8g2);

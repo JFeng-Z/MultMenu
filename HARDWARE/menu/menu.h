@@ -1,11 +1,3 @@
-/*
- * @Author: JFeng 2834294740@qq.com
- * @Date: 2023-07-02 23:52:10
- * @LastEditors: JFeng 2834294740@qq.com
- * @LastEditTime: 2023-07-24 22:33:24
- * @FilePath: \MY_GUI_RTOS\HARDWARE\menu\menu.h
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 #ifndef __MENU_H__
 #define __MENU_H__
 
@@ -23,6 +15,7 @@
 #define LINE_MAX    48
 #define LINE_MIN    12 
 #define MaxVisible_Number  4
+#define MENU_FONT   u8g2_font_profont12_mf
 
 enum MenuState
 {
@@ -37,7 +30,7 @@ enum MenuState
     MENU_ENTER
 };
 
-typedef void (*Item_function)(void);
+typedef void (*Itemfunction)(void);
 typedef struct MenuPage *xpMenu;
 typedef struct Item *xpItem;
 typedef struct MenuPage
@@ -57,12 +50,12 @@ typedef struct Item
     xpMenu JumpPage;
     xpItem lastiTem;
     xpItem nextiTem;
-    void(*Item_function)();
+    void(*Itemfunction)();
 } xItem;
 
 void Menu_Team(void);
 void AddPage(const char *name, xpMenu page);
-void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu NextPage);
+void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage, Itemfunction function);
 int8_t Line(uint8_t AllTime,uint8_t Time_Now,int8_t Tgt,int8_t Now);
 void Draw_Process(void);
 void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item);

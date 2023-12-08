@@ -47,11 +47,12 @@ void AddPage(const char *name, xpMenu page)
     page->itemTail = NULL;
 }
 
-void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage)
+void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage, Itemfunction function)
 {
     item->itemName = Name;
     item->location = LocalPage;
     item->JumpPage = nextpage;
+    item->Itemfunction = function;
     /* 新建item的下一个肯定是null */
     item->nextiTem = NULL;
     /* 如果可以跳转，那么此item是跳转页面的父级 */
@@ -86,7 +87,7 @@ void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage)
  */
 int8_t Line(uint8_t AllTime,uint8_t Time_Now,int8_t Targrt,int8_t Now)
 {
-    return (Targrt-Now)*Time_Now/AllTime+Now;			//return c * t / d + b;
+    return (Targrt-Now)*Time_Now/AllTime+Now;		
 }
 
 uint8_t PID(int8_t Targrt, int8_t Now, Error *Obj)
@@ -107,7 +108,7 @@ void Draw_Process(void)
     u8g2_ClearBuffer(&u8g2);
     u8g2_SetFont(&u8g2,u8g2_font_profont15_mf);
     u8g2_DrawStr(&u8g2,32,16,"Mr.JFeng");
-    u8g2_SetFont(&u8g2,u8g2_font_profont12_mf);
+    u8g2_SetFont(&u8g2,MENU_FONT);
     
     for(size_t i=10; i<=80; i+=2)
     {
@@ -170,21 +171,21 @@ void DialogScale_Show(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Targrt_w,uint1
  */
 uint8_t ui_disapper(uint8_t disapper)
 { 
-  short disapper_temp = 0;
-  int len = 8 * u8g2_GetBufferTileHeight(&u8g2) * u8g2_GetBufferTileWidth(&u8g2);
-  u8 *p = u8g2_GetBufferPtr(&u8g2); 
-  if(BgColor==0)
-{  for( int i = 0;i< len ;i++) 
-  { p[i] = p[i] & (rand()%0xff) >> disapper; } }
-  else
-{  for( int i = 0;i< len ;i++) 
-  { p[i] = p[i] | (rand()%0xff) >> disapper; } }
-  disapper +=2; 
-  if(disapper >= 8) 
-  {disapper = 0; } 
-  u8g2_SendBuffer(&u8g2);
-  disapper_temp=disapper;
-  return disapper_temp;
+    short disapper_temp = 0;
+    int len = 8 * u8g2_GetBufferTileHeight(&u8g2) * u8g2_GetBufferTileWidth(&u8g2);
+    u8 *p = u8g2_GetBufferPtr(&u8g2); 
+    if(BgColor==0)
+    {  for( int i = 0;i< len ;i++) 
+    { p[i] = p[i] & (rand()%0xff) >> disapper; } }
+    else
+    {  for( int i = 0;i< len ;i++) 
+    { p[i] = p[i] | (rand()%0xff) >> disapper; } }
+    disapper +=2; 
+    if(disapper >= 8) 
+    {disapper = 0; } 
+    u8g2_SendBuffer(&u8g2);
+    disapper_temp=disapper;
+    return disapper_temp;
 }
 /**
  * @brief 选项栏
@@ -213,18 +214,19 @@ void Draw_Page(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
     xpItem temp = Page->itemHead;
     
     if(next_item==now_item->JumpPage->itemHead&&next_item!=now_item)    //切换页面时变量初始化
-    {first_line=FirstLine;}  
-
+    first_line=FirstLine;
     if ((next_item->Number-now_item->Number>0)&&Page_State==CURSOR_STATIC)
     {
         Page_State=MENU_MOVE;
-        if((next_item->Number-now_item->Number)>(Page->len-MaxVisible_Number))first_line-=((Page->len-MaxVisible_Number)*Font_Size);  //除去不移动时的项目数
+        if((next_item->Number-now_item->Number)>(Page->len-MaxVisible_Number))
+        first_line-=((Page->len-MaxVisible_Number)*Font_Size);  //除去不移动时的项目数
         else first_line-=Font_Size;
     }
     else if ((next_item->Number-now_item->Number<0)&&Page_State==CURSOR_STATIC)
     {
         Page_State=MENU_MOVE;
-        if((now_item->Number-next_item->Number)>(Page->len-MaxVisible_Number))first_line+=((Page->len-MaxVisible_Number)*Font_Size);  //除去不移动时的项目数
+        if((now_item->Number-next_item->Number)>(Page->len-MaxVisible_Number))
+        first_line+=((Page->len-MaxVisible_Number)*Font_Size);  //除去不移动时的项目数
         else first_line+=Font_Size;
     }
     for (size_t i = 1; i <= Page->len; i++)
@@ -246,14 +248,19 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
     static uint8_t first=0;     //初始状态
 
     u8g2_SetMaxClipWindow(&u8g2);
-    u8g2_SetFont(&u8g2,u8g2_font_profont12_mf);
+    u8g2_SetFont(&u8g2,MENU_FONT);
     
     if(next_item==now_item->JumpPage->itemHead&&next_item!=now_item)        //切换页面时变量初始化
-    {item_line=LINE_MIN;Targrt_line=0;first=0;Page_State=0;}
-
+    {
+        item_line=LINE_MIN;
+        Targrt_line=0;
+        first=0;
+        Page_State=0;
+    }
     if ((next_item->Number-now_item->Number==0&&first==0)||next_item==now_item->JumpPage->itemHead)
     {
-        Targrt_line=LINE_MIN;first=1;
+        Targrt_line=LINE_MIN;
+        first=1;
     }
     else if (next_item->Number-now_item->Number>0)
     {
@@ -294,23 +301,6 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
     } while (t<Options_Time);
 }
 
-void App_Function_Loading(void)
-{
-    No3Page1item1.Item_function=Show_MPU6050;
-    No3Page1item2.Item_function=Setting_Speed;
-    No3Page1item3.Item_function=White_Dark_Day;
-    No3Page1item4.Item_function=Show_Time;
-
-    No3Page2item1.Item_function=DinoGame_Run;
-    No3Page2item2.Item_function=AirPlane_Run;
-    No3Page2item3.Item_function=Car_State;
-
-    Page1item3.Item_function=Screen;
-
-    Page5item1.Item_function=Show_GitHub;
-    Page5item2.Item_function=Show_Bilibili;
-}
-
 void Menu_Team(void)
 {
     NowPage = &MainPage;
@@ -318,62 +308,62 @@ void Menu_Team(void)
     MainPage.ParentiTem = NULL;
 
     AddPage("[MainPage]", &MainPage);
-    AddItem(" -Application", &Mainitem1, &MainPage, &Page1);
-    AddItem(" -Files", &Mainitem2, &MainPage, &Page2);
-    AddItem(" -Image", &Mainitem3, &MainPage, &Page3);
-    AddItem(" -Reset All", &Mainitem4, &MainPage, &Page4);
-    AddItem(" -About", &Mainitem5, &MainPage, &Page5);
-    AddItem(" -test1", &Mainitem6, &MainPage, &Page5);
-    AddItem(" -test2", &Mainitem7, &MainPage, &Page5);
+    AddItem(" -Application", &Mainitem1, &MainPage, &Page1, NULL);
+    AddItem(" -Files", &Mainitem2, &MainPage, &Page2, NULL);
+    AddItem(" -Image", &Mainitem3, &MainPage, &Page3, NULL);
+    AddItem(" -Reset All", &Mainitem4, &MainPage, &Page4, NULL);
+    AddItem(" -About", &Mainitem5, &MainPage, &Page5, NULL);
+    AddItem(" -test1", &Mainitem6, &MainPage, &Page5, NULL);
+    AddItem(" -test2", &Mainitem7, &MainPage, &Page5, NULL);
 
         AddPage("[Application]", &Page1);
-        AddItem(" -System", &Page1item1, &Page1, &No3Page1);
-        AddItem(" -Games", &Page1item2, &Page1, &No3Page2);
-        AddItem(" -Screen", &Page1item3, &Page1, NULL);
-        AddItem(" -Return", &Page1item4, &Page1, &MainPage);
+        AddItem(" -System", &Page1item1, &Page1, &No3Page1, NULL);
+        AddItem(" -Games", &Page1item2, &Page1, &No3Page2, NULL);
+        AddItem(" -Screen", &Page1item3, &Page1, NULL, Screen);
+        AddItem(" -Return", &Page1item4, &Page1, &MainPage, NULL);
 
             AddPage("[System]", &No3Page1);
-            AddItem(" -MPU6050", &No3Page1item1, &No3Page1, NULL);
-            AddItem(" -Speed", &No3Page1item2, &No3Page1, NULL);
-            AddItem(" -Mode", &No3Page1item3, &No3Page1, NULL);
-            AddItem(" -Clock", &No3Page1item4, &No3Page1, NULL);
-            AddItem(" -Return", &No3Page1item5, &No3Page1, &Page1);
+            AddItem(" -MPU6050", &No3Page1item1, &No3Page1, NULL, Show_MPU6050);
+            AddItem(" -Speed", &No3Page1item2, &No3Page1, NULL, Setting_Speed);
+            AddItem(" -Mode", &No3Page1item3, &No3Page1, NULL, White_Dark_Day);
+            AddItem(" -Clock", &No3Page1item4, &No3Page1, NULL, Show_Time);
+            AddItem(" -Return", &No3Page1item5, &No3Page1, &Page1, NULL);
 
             AddPage("[Games]", &No3Page2);
-            AddItem(" -Dino Game", &No3Page2item1, &No3Page2, NULL);
-            AddItem(" -AirPlane Game", &No3Page2item2, &No3Page2, NULL);
-            AddItem(" -MyCar", &No3Page2item3, &No3Page2, NULL);
-            AddItem(" -Return", &No3Page2item4, &No3Page2, &Page1);
+            AddItem(" -Dino Game", &No3Page2item1, &No3Page2, NULL, DinoGame_Run);
+            AddItem(" -AirPlane Game", &No3Page2item2, &No3Page2, NULL, AirPlane_Run);
+            AddItem(" -MyCar", &No3Page2item3, &No3Page2, NULL, Car_State);
+            AddItem(" -Return", &No3Page2item4, &No3Page2, &Page1, NULL);
 
         AddPage("[Files]", &Page2);
-        AddItem(" -New Project", &Page2item1, &Page2, NULL);
-        AddItem(" -New Project", &Page2item2, &Page2, NULL);
-        AddItem(" -New Project", &Page2item3, &Page2, NULL);
-        AddItem(" -Return", &Page2item4, &Page2, &MainPage);
+        AddItem(" -New Project", &Page2item1, &Page2, NULL, NULL);
+        AddItem(" -New Project", &Page2item2, &Page2, NULL, NULL);
+        AddItem(" -New Project", &Page2item3, &Page2, NULL, NULL);
+        AddItem(" -Return", &Page2item4, &Page2, &MainPage, NULL);
 
         AddPage("[Image]", &Page3);
-        AddItem(" -New Project", &Page3item1, &Page3, NULL);
-        AddItem(" -New Project", &Page3item2, &Page3, NULL);
-        AddItem(" -New Project", &Page3item3, &Page3, NULL);
-        AddItem(" -Return", &Page3item4, &Page3, &MainPage);
+        AddItem(" -New Project", &Page3item1, &Page3, NULL, NULL);
+        AddItem(" -New Project", &Page3item2, &Page3, NULL, NULL);
+        AddItem(" -New Project", &Page3item3, &Page3, NULL, NULL);
+        AddItem(" -Return", &Page3item4, &Page3, &MainPage, NULL);
 
         AddPage("[Reset All]", &Page4);
-        AddItem(" -Reset Name", &Page4item1, &Page4, NULL);
-        AddItem(" -Reset Time", &Page4item2, &Page4, NULL);
-        AddItem(" -Reset Setting", &Page4item3, &Page4, NULL);
-        AddItem(" -Return", &Page4item4, &Page4, &MainPage);
+        AddItem(" -Reset Name", &Page4item1, &Page4, NULL, NULL);
+        AddItem(" -Reset Time", &Page4item2, &Page4, NULL, NULL);
+        AddItem(" -Reset Setting", &Page4item3, &Page4, NULL, NULL);
+        AddItem(" -Return", &Page4item4, &Page4, &MainPage, NULL);
 
         AddPage("[About]", &Page5);
-        AddItem(" -Github", &Page5item1, &Page5, NULL);
-        AddItem(" -Bilibili", &Page5item2, &Page5, NULL);
-        AddItem(" -ReadME", &Page5item3, &Page5, NULL);
-        AddItem(" -Return", &Page5item4, &Page5, &MainPage);
+        AddItem(" -Github", &Page5item1, &Page5, NULL, Show_GitHub);
+        AddItem(" -Bilibili", &Page5item2, &Page5, NULL, Show_Bilibili);
+        AddItem(" -ReadME", &Page5item3, &Page5, NULL, NULL);
+        AddItem(" -Return", &Page5item4, &Page5, &MainPage, NULL);
 }
 
 uint8_t MENU_STATE=MENU_RUN;
 uint8_t disapper = 1;
 xpItem temp_item=&Mainitem1;
-Item_function App_Function;
+Itemfunction App_Function;
 
 void Switch_Menu_State(uint8_t state)
 {
@@ -395,10 +385,10 @@ void Process_Menu_Run(uint8_t Dir)
         case MENU_ENTER:
             if (MENU_STATE == MENU_RUN)
             {
-                if (temp_item->Item_function != NULL)
+                if (temp_item->Itemfunction != NULL)
                 {
                     ui_disapper(disapper);
-                    App_Function = temp_item->Item_function;
+                    App_Function = temp_item->Itemfunction;
                     Switch_Menu_State(APP_RUN);
                 }
                 else
@@ -476,5 +466,4 @@ void Menu_Init(void)
   Menu_Team();
   Draw_Process();
   Draw_Menu(FirstPos,&MainPage,Font_Size,&Mainitem1,&Mainitem1);
-  App_Function_Loading();
 }

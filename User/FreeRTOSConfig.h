@@ -74,164 +74,164 @@
 #include "bsp_usart.h"
 
 
-//��Բ�ͬ�ı��������ò�ͬ��stdint.h�ļ�
+//针对不同的编译器调用不同的stdint.h文件
 #if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
     #include <stdint.h>
     extern uint32_t SystemCoreClock;
 #endif
 
-//����
+//断言
 #define vAssertCalled(char,int) printf("Error:%s,%d\r\n",char,int)
 #define configASSERT(x) if((x)==0) vAssertCalled(__FILE__,__LINE__)
 
 /************************************************************************
- *               FreeRTOS������������ѡ�� 
+ *               FreeRTOS基础配置配置选项 
  *********************************************************************/
-/* ��1��RTOSʹ����ռʽ����������0��RTOSʹ��Э��ʽ��������ʱ��Ƭ��
+/* 置1：RTOS使用抢占式调度器；置0：RTOS使用协作式调度器（时间片）
  * 
- * ע���ڶ�������������ϣ�����ϵͳ���Է�Ϊ��ռʽ��Э��ʽ���֡�
- * Э��ʽ����ϵͳ�����������ͷ�CPU���л�����һ������
- * �����л���ʱ����ȫȡ�����������е�����
+ * 注：在多任务管理机制上，操作系统可以分为抢占式和协作式两种。
+ * 协作式操作系统是任务主动释放CPU后，切换到下一个任务。
+ * 任务切换的时机完全取决于正在运行的任务。
  */
 #define configUSE_PREEMPTION					  1
 
-//1ʹ��ʱ��Ƭ����(Ĭ��ʽʹ�ܵ�)
+//1使能时间片调度(默认式使能的)
 #define configUSE_TIME_SLICING					1		
 
-/* ĳЩ����FreeRTOS��Ӳ�������ַ���ѡ����һ��Ҫִ�е�����
- * ͨ�÷������ض���Ӳ���ķ��������¼�ơ����ⷽ��������
+/* 某些运行FreeRTOS的硬件有两种方法选择下一个要执行的任务：
+ * 通用方法和特定于硬件的方法（以下简称“特殊方法”）。
  * 
- * ͨ�÷�����
- *      1.configUSE_PORT_OPTIMISED_TASK_SELECTION Ϊ 0 ����Ӳ����֧���������ⷽ����
- *      2.������������FreeRTOS֧�ֵ�Ӳ��
- *      3.��ȫ��Cʵ�֣�Ч���Ե������ⷽ����
- *      4.��ǿ��Ҫ���������������ȼ���Ŀ
- * ���ⷽ����
- *      1.���뽫configUSE_PORT_OPTIMISED_TASK_SELECTION����Ϊ1��
- *      2.����һ�������ض��ܹ��Ļ��ָ�һ�������Ƽ���ǰ����[CLZ]ָ���
- *      3.��ͨ�÷�������Ч
- *      4.һ��ǿ���޶����������ȼ���ĿΪ32
- * һ����Ӳ������ǰ����ָ������ʹ�õģ�MCUû����ЩӲ��ָ��Ļ��˺�Ӧ������Ϊ0��
+ * 通用方法：
+ *      1.configUSE_PORT_OPTIMISED_TASK_SELECTION 为 0 或者硬件不支持这种特殊方法。
+ *      2.可以用于所有FreeRTOS支持的硬件
+ *      3.完全用C实现，效率略低于特殊方法。
+ *      4.不强制要求限制最大可用优先级数目
+ * 特殊方法：
+ *      1.必须将configUSE_PORT_OPTIMISED_TASK_SELECTION设置为1。
+ *      2.依赖一个或多个特定架构的汇编指令（一般是类似计算前导零[CLZ]指令）。
+ *      3.比通用方法更高效
+ *      4.一般强制限定最大可用优先级数目为32
+ * 一般是硬件计算前导零指令，如果所使用的，MCU没有这些硬件指令的话此宏应该设置为0！
  */
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION	        1                       
                                                                         
-/* ��1��ʹ�ܵ͹���ticklessģʽ����0������ϵͳ���ģ�tick���ж�һֱ����
- * ���迪���͹��ĵĻ����ܻᵼ�����س������⣬��Ϊ������˯����,�������°취���
+/* 置1：使能低功耗tickless模式；置0：保持系统节拍（tick）中断一直运行
+ * 假设开启低功耗的话可能会导致下载出现问题，因为程序在睡眠中,可用以下办法解决
  * 
- * ���ط�����
- *      1.���������������Ӻ�
- *      2.��ס��λ�������������˲���ɿ���λ����
+ * 下载方法：
+ *      1.将开发版正常连接好
+ *      2.按住复位按键，点击下载瞬间松开复位按键
  *     
- *      1.ͨ������ñ�� BOOT 0 �Ӹߵ�ƽ(3.3V)
- *      2.�����ϵ磬����
+ *      1.通过跳线帽将 BOOT 0 接高电平(3.3V)
+ *      2.重新上电，下载
  *    
- * 			1.ʹ��FlyMcu����һ��оƬ��Ȼ���������
- *			STMISP -> ���оƬ(z)
+ * 			1.使用FlyMcu擦除一下芯片，然后进行下载
+ *			STMISP -> 清除芯片(z)
  */
 #define configUSE_TICKLESS_IDLE													0   
 
 /*
- * д��ʵ�ʵ�CPU�ں�ʱ��Ƶ�ʣ�Ҳ����CPUָ��ִ��Ƶ�ʣ�ͨ����ΪFclk
- * FclkΪ����CPU�ں˵�ʱ���źţ�������˵��cpu��ƵΪ XX MHz��
- * ����ָ�����ʱ���źţ���Ӧ�ģ�1/Fclk��Ϊcpuʱ�����ڣ�
+ * 写入实际的CPU内核时钟频率，也就是CPU指令执行频率，通常称为Fclk
+ * Fclk为供给CPU内核的时钟信号，我们所说的cpu主频为 XX MHz，
+ * 就是指的这个时钟信号，相应的，1/Fclk即为cpu时钟周期；
  */
 #define configCPU_CLOCK_HZ						  (SystemCoreClock)
 
-//RTOSϵͳ�����жϵ�Ƶ�ʡ���һ���жϵĴ�����ÿ���ж�RTOS��������������
+//RTOS系统节拍中断的频率。即一秒中断的次数，每次中断RTOS都会进行任务调度
 #define configTICK_RATE_HZ						  (( TickType_t )1000)
 
-//��ʹ�õ�������ȼ�
+//可使用的最大优先级
 #define configMAX_PRIORITIES					  (32)
 
-//��������ʹ�õĶ�ջ��С
+//空闲任务使用的堆栈大小
 #define configMINIMAL_STACK_SIZE				((unsigned short)128)
   
-//���������ַ�������
+//任务名字字符串长度
 #define configMAX_TASK_NAME_LEN					(16)
 
- //ϵͳ���ļ����������������ͣ�1��ʾΪ16λ�޷������Σ�0��ʾΪ32λ�޷�������
+ //系统节拍计数器变量数据类型，1表示为16位无符号整形，0表示为32位无符号整形
 #define configUSE_16_BIT_TICKS					0                      
 
-//�����������CPUʹ��Ȩ������ͬ���ȼ����û�����
+//空闲任务放弃CPU使用权给其他同优先级的用户任务
 #define configIDLE_SHOULD_YIELD					1           
 
-//���ö���
+//启用队列
 #define configUSE_QUEUE_SETS					  0    
 
-//��������֪ͨ���ܣ�Ĭ�Ͽ���
+//开启任务通知功能，默认开启
 #define configUSE_TASK_NOTIFICATIONS    1   
 
-//ʹ�û����ź���
-#define configUSE_MUTEXES						    1    
+//使用互斥信号量
+#define configUSE_MUTEXES						    0    
 
-//ʹ�õݹ黥���ź���                                            
+//使用递归互斥信号量                                            
 #define configUSE_RECURSIVE_MUTEXES			0   
 
-//Ϊ1ʱʹ�ü����ź���
+//为1时使用计数信号量
 #define configUSE_COUNTING_SEMAPHORES		0
 
-/* ���ÿ���ע����ź�������Ϣ���и��� */
+/* 设置可以注册的信号量和消息队列个数 */
 #define configQUEUE_REGISTRY_SIZE				10                                 
                                                                        
 #define configUSE_APPLICATION_TASK_TAG		  0                       
                       
 
 /*****************************************************************
-              FreeRTOS���ڴ������й�����ѡ��                                               
+              FreeRTOS与内存申请有关配置选项                                               
 *****************************************************************/
-//֧�ֶ�̬�ڴ�����
+//支持动态内存申请
 #define configSUPPORT_DYNAMIC_ALLOCATION        1    
-//֧�־�̬�ڴ�
+//支持静态内存
 #define configSUPPORT_STATIC_ALLOCATION					0					
-//ϵͳ�����ܵĶѴ�С
-#define configTOTAL_HEAP_SIZE					((size_t)(12*1024))    
+//系统所有总的堆大小
+#define configTOTAL_HEAP_SIZE					((size_t)(36*1024))    
 
 
 /***************************************************************
-             FreeRTOS�빳�Ӻ����йص�����ѡ��                                            
+             FreeRTOS与钩子函数有关的配置选项                                            
 **************************************************************/
-/* ��1��ʹ�ÿ��й��ӣ�Idle Hook�����ڻص�����������0�����Կ��й���
+/* 置1：使用空闲钩子（Idle Hook类似于回调函数）；置0：忽略空闲钩子
  * 
- * ������������һ������������������û���ʵ�֣�
- * FreeRTOS�涨�˺��������ֺͲ�����void vApplicationIdleHook(void )��
- * ���������ÿ�������������ڶ��ᱻ����
- * �����Ѿ�ɾ����RTOS���񣬿�����������ͷŷ�������ǵĶ�ջ�ڴ档
- * ��˱��뱣֤����������Ա�CPUִ��
- * ʹ�ÿ��й��Ӻ�������CPU����ʡ��ģʽ�Ǻܳ�����
- * �����Ե��û������������������API����
+ * 空闲任务钩子是一个函数，这个函数由用户来实现，
+ * FreeRTOS规定了函数的名字和参数：void vApplicationIdleHook(void )，
+ * 这个函数在每个空闲任务周期都会被调用
+ * 对于已经删除的RTOS任务，空闲任务可以释放分配给它们的堆栈内存。
+ * 因此必须保证空闲任务可以被CPU执行
+ * 使用空闲钩子函数设置CPU进入省电模式是很常见的
+ * 不可以调用会引起空闲任务阻塞的API函数
  */
 #define configUSE_IDLE_HOOK						0      
 
-/* ��1��ʹ��ʱ��Ƭ���ӣ�Tick Hook������0������ʱ��Ƭ����
+/* 置1：使用时间片钩子（Tick Hook）；置0：忽略时间片钩子
  * 
  * 
- * ʱ��Ƭ������һ������������������û���ʵ�֣�
- * FreeRTOS�涨�˺��������ֺͲ�����void vApplicationTickHook(void )
- * ʱ��Ƭ�жϿ��������Եĵ���
- * ��������ǳ���С�����ܴ���ʹ�ö�ջ��
- * ���ܵ����ԡ�FromISR" �� "FROM_ISR����β��API����
+ * 时间片钩子是一个函数，这个函数由用户来实现，
+ * FreeRTOS规定了函数的名字和参数：void vApplicationTickHook(void )
+ * 时间片中断可以周期性的调用
+ * 函数必须非常短小，不能大量使用堆栈，
+ * 不能调用以”FromISR" 或 "FROM_ISR”结尾的API函数
  */
- /*xTaskIncrementTick��������xPortSysTickHandler�жϺ����б����õġ���ˣ�vApplicationTickHook()����ִ�е�ʱ�����̲ܶ���*/
+ /*xTaskIncrementTick函数是在xPortSysTickHandler中断函数中被调用的。因此，vApplicationTickHook()函数执行的时间必须很短才行*/
 #define configUSE_TICK_HOOK						0           
 
-//ʹ���ڴ�����ʧ�ܹ��Ӻ���
+//使用内存申请失败钩子函数
 #define configUSE_MALLOC_FAILED_HOOK			0 
 
 /*
- * ����0ʱ���ö�ջ�����⹦�ܣ����ʹ�ô˹��� 
- * �û������ṩһ��ջ������Ӻ��������ʹ�õĻ�
- * ��ֵ����Ϊ1����2����Ϊ������ջ�����ⷽ�� */
+ * 大于0时启用堆栈溢出检测功能，如果使用此功能 
+ * 用户必须提供一个栈溢出钩子函数，如果使用的话
+ * 此值可以为1或者2，因为有两种栈溢出检测方法 */
 #define configCHECK_FOR_STACK_OVERFLOW			0   
 
 
 /********************************************************************
-          FreeRTOS������ʱ�������״̬�ռ��йص�����ѡ��   
+          FreeRTOS与运行时间和任务状态收集有关的配置选项   
 **********************************************************************/
-//��������ʱ��ͳ�ƹ���
+//启用运行时间统计功能
 #define configGENERATE_RUN_TIME_STATS	        0             
- //���ÿ��ӻ����ٵ���
+ //启用可视化跟踪调试
 #define configUSE_TRACE_FACILITY				      0    
-/* ���configUSE_TRACE_FACILITYͬʱΪ1ʱ���������3������
+/* 与宏configUSE_TRACE_FACILITY同时为1时会编译下面3个函数
  * prvWriteNameToBuffer()
  * vTaskList(),
  * vTaskGetRunTimeStats()
@@ -240,28 +240,28 @@
                                                                         
                                                                         
 /********************************************************************
-                FreeRTOS��Э���йص�����ѡ��                                                
+                FreeRTOS与协程有关的配置选项                                                
 *********************************************************************/
-//����Э�̣�����Э���Ժ���������ļ�croutine.c
+//启用协程，启用协程以后必须添加文件croutine.c
 #define configUSE_CO_ROUTINES 			          0                 
-//Э�̵���Ч���ȼ���Ŀ
+//协程的有效优先级数目
 #define configMAX_CO_ROUTINE_PRIORITIES       ( 2 )                   
 
 
 /***********************************************************************
-                FreeRTOS��������ʱ���йص�����ѡ��      
+                FreeRTOS与软件定时器有关的配置选项      
 **********************************************************************/
- //����������ʱ��
+ //启用软件定时器
 #define configUSE_TIMERS				            0                              
-//������ʱ�����ȼ�
+//软件定时器优先级
 #define configTIMER_TASK_PRIORITY		        (configMAX_PRIORITIES-1)        
-//������ʱ�����г���
+//软件定时器队列长度
 #define configTIMER_QUEUE_LENGTH		        10                               
-//������ʱ�������ջ��С
+//软件定时器任务堆栈大小
 #define configTIMER_TASK_STACK_DEPTH	      (configMINIMAL_STACK_SIZE*2)    
 
 /************************************************************
-            FreeRTOS��ѡ��������ѡ��                                                     
+            FreeRTOS可选函数配置选项                                                     
 ************************************************************/
 #define INCLUDE_xTaskGetSchedulerState       1                       
 #define INCLUDE_vTaskPrioritySet		         1
@@ -274,22 +274,22 @@
 #define INCLUDE_eTaskGetState			           1
 #define INCLUDE_xTimerPendFunctionCall	     0
 //#define INCLUDE_xTaskGetCurrentTaskHandle       1
-#define INCLUDE_uxTaskGetStackHighWaterMark     1
+//#define INCLUDE_uxTaskGetStackHighWaterMark     0
 //#define INCLUDE_xTaskGetIdleTaskHandle          0
 
 
 /******************************************************************
-            FreeRTOS���ж��йص�����ѡ��                                                 
+            FreeRTOS与中断有关的配置选项                                                 
 ******************************************************************/
 #ifdef __NVIC_PRIO_BITS
 	#define configPRIO_BITS       		__NVIC_PRIO_BITS
 #else
 	#define configPRIO_BITS       		4                  
 #endif
-//�ж�������ȼ�
+//中断最低优先级
 #define configLIBRARY_LOWEST_INTERRUPT_PRIORITY			15     
 
-//ϵͳ�ɹ���������ж����ȼ�
+//系统可管理的最高中断优先级
 #define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY	5 
 
 #define configKERNEL_INTERRUPT_PRIORITY 		( configLIBRARY_LOWEST_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )	/* 240 */
@@ -298,16 +298,16 @@
 
 
 /****************************************************************
-            FreeRTOS���жϷ������йص�����ѡ��                         
+            FreeRTOS与中断服务函数有关的配置选项                         
 ****************************************************************/
 #define xPortPendSVHandler 	PendSV_Handler
 #define vPortSVCHandler 	SVC_Handler
 
 
-/* ����Ϊʹ��Percepio Tracealyzer��Ҫ�Ķ���������Ҫʱ�� configUSE_TRACE_FACILITY ����Ϊ 0 */
+/* 以下为使用Percepio Tracealyzer需要的东西，不需要时将 configUSE_TRACE_FACILITY 定义为 0 */
 #if ( configUSE_TRACE_FACILITY == 1 )
 #include "trcRecorder.h"
-#define INCLUDE_xTaskGetCurrentTaskHandle               1   // ����һ����ѡ�������ú����� TraceԴ��ʹ�ã�Ĭ�ϸ�ֵΪ0 ��ʾ���ã�
+#define INCLUDE_xTaskGetCurrentTaskHandle               1   // 启用一个可选函数（该函数被 Trace源码使用，默认该值为0 表示不用）
 #endif
 
 

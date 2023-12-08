@@ -11,8 +11,8 @@
 
 #include "stm32f10x.h"
 #include "u8g2.h"
-#include "Tim_Tick.h"
-#include "MyI2C.h"
+#include "TimerTick.h"
+#include "I2cDrive.h"
 #include "u8g2.h"
 #include "bsp_led.h"
 #include "stm32_u8g2.h"

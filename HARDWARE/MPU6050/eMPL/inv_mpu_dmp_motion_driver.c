@@ -24,7 +24,7 @@
 #include "dmpKey.h"
 #include "dmpmap.h"
 #include "bsp_usart.h"
-#include "Tim_Tick.h"
+#include "TimerTick.h"
 
 //定义目标板采用MSP430
 #define  MOTION_DRIVER_TARGET_MSP430

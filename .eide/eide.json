@@ -10,33 +10,26 @@
     "files": [],
     "folders": [
       {
+        "name": "CMSIS",
+        "files": [
+          {
+            "path": "Libraries/CMSIS/core_cm3.c"
+          },
+          {
+            "path": "Libraries/CMSIS/system_stm32f10x.c"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "DOC",
+        "files": [],
+        "folders": []
+      },
+      {
         "name": "FREERTOS",
         "files": [],
         "folders": [
-          {
-            "name": "SRC",
-            "files": [
-              {
-                "path": "FreeRTOS/src/croutine.c"
-              },
-              {
-                "path": "FreeRTOS/src/event_groups.c"
-              },
-              {
-                "path": "FreeRTOS/src/list.c"
-              },
-              {
-                "path": "FreeRTOS/src/queue.c"
-              },
-              {
-                "path": "FreeRTOS/src/tasks.c"
-              },
-              {
-                "path": "FreeRTOS/src/timers.c"
-              }
-            ],
-            "folders": []
-          },
           {
             "name": "PORT",
             "files": [],
@@ -66,301 +59,32 @@
                 "folders": []
               }
             ]
-          }
-        ]
-      },
-      {
-        "name": "HARDWARE",
-        "files": [
-          {
-            "path": "HARDWARE/Tim_Tick.c"
-          }
-        ],
-        "folders": [
-          {
-            "name": "UART",
-            "files": [
-              {
-                "path": "HARDWARE/uart/bsp_usart.c"
-              }
-            ],
-            "folders": []
           },
           {
-            "name": "U8G2_USER",
+            "name": "SRC",
             "files": [
               {
-                "path": "HARDWARE/U8G2_USER/stm32_u8g2.c"
+                "path": "FreeRTOS/src/croutine.c"
               },
               {
-                "path": "HARDWARE/U8G2_USER/U8g2_User.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "U8G2LIB",
-            "files": [],
-            "folders": [
-              {
-                "name": "SRC",
-                "files": [
-                  {
-                    "path": "HARDWARE/u8g2lib/src/mui.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/mui_u8g2.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/U8g2lib.cpp"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_bitmap.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_box.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_buffer.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_button.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_circle.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_cleardisplay.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_d_memory.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_d_setup.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_font.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_fonts.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_hvline.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_input_value.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_intersection.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_kerning.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_line.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_ll_hvline.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_message.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_polygon.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_selection_list.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8g2_setup.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8log.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8log_u8g2.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8log_u8x8.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/U8x8lib.cpp"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_8x8.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_byte.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_cad.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_capture.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_debounce.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_display.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_d_ssd1306_128x64_noname.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_fonts.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_gpio.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_input_value.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_message.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_selection_list.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_setup.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_string.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_u16toa.c"
-                  },
-                  {
-                    "path": "HARDWARE/u8g2lib/src/u8x8_u8toa.c"
-                  }
-                ],
-                "folders": []
-              }
-            ]
-          },
-          {
-            "name": "MY_I2C",
-            "files": [
-              {
-                "path": "HARDWARE/MY_I2C/MyI2C.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "MPU6050",
-            "files": [
-              {
-                "path": "HARDWARE/MPU6050/mpu6050.c"
+                "path": "FreeRTOS/src/event_groups.c"
               },
               {
-                "path": "HARDWARE/MPU6050/mpuiic.c"
-              }
-            ],
-            "folders": [
-              {
-                "name": "EMPL",
-                "files": [
-                  {
-                    "path": "HARDWARE/MPU6050/eMPL/inv_mpu.c"
-                  },
-                  {
-                    "path": "HARDWARE/MPU6050/eMPL/inv_mpu_dmp_motion_driver.c"
-                  }
-                ],
-                "folders": []
-              }
-            ]
-          },
-          {
-            "name": "MENU",
-            "files": [
-              {
-                "path": "HARDWARE/MENU/Menu.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "LED",
-            "files": [
-              {
-                "path": "HARDWARE/LED/bsp_led.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "KEY",
-            "files": [
-              {
-                "path": "HARDWARE/KEY/Key_Driver.c"
+                "path": "FreeRTOS/src/list.c"
               },
               {
-                "path": "HARDWARE/KEY/multi_button.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "ENCODER",
-            "files": [
-              {
-                "path": "HARDWARE/Encoder/rotary_encoder.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "APP",
-            "files": [
-              {
-                "path": "HARDWARE/APP/AirPlane.c"
+                "path": "FreeRTOS/src/queue.c"
               },
               {
-                "path": "HARDWARE/APP/DinoGame.c"
+                "path": "FreeRTOS/src/tasks.c"
               },
               {
-                "path": "HARDWARE/APP/Other_Function.c"
-              },
-              {
-                "path": "HARDWARE/APP/Time.c"
+                "path": "FreeRTOS/src/timers.c"
               }
             ],
             "folders": []
           }
         ]
-      },
-      {
-        "name": "USER",
-        "files": [
-          {
-            "path": "User/FreeRTOSConfig.h"
-          },
-          {
-            "path": "User/main.c"
-          },
-          {
-            "path": "User/stm32f10x_conf.h"
-          },
-          {
-            "path": "User/stm32f10x_it.c"
-          },
-          {
-            "path": "User/stm32f10x_it.h"
-          }
-        ],
-        "folders": []
-      },
-      {
-        "name": "STARTUP",
-        "files": [
-          {
-            "path": "Libraries/CMSIS/startup/startup_stm32f10x_hd.s"
-          }
-        ],
-        "folders": []
       },
       {
         "name": "FWLIB",
@@ -438,18 +162,293 @@
         "folders": []
       },
       {
-        "name": "DOC",
+        "name": "HARDWARE",
         "files": [],
+        "folders": [
+          {
+            "name": "APP",
+            "files": [
+              {
+                "path": "HARDWARE/APP/AirPlane.c"
+              },
+              {
+                "path": "HARDWARE/APP/DinoGame.c"
+              },
+              {
+                "path": "HARDWARE/APP/Other_Function.c"
+              },
+              {
+                "path": "HARDWARE/APP/Time.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "ENCODER",
+            "files": [
+              {
+                "path": "HARDWARE/Encoder/rotary_encoder.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "I2cDrive",
+            "files": [
+              {
+                "path": "HARDWARE/I2cDrive/I2cDrive.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "KEY",
+            "files": [
+              {
+                "path": "HARDWARE/KEY/Key_Driver.c"
+              },
+              {
+                "path": "HARDWARE/KEY/multi_button.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "LED",
+            "files": [
+              {
+                "path": "HARDWARE/LED/bsp_led.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "MENU",
+            "files": [
+              {
+                "path": "HARDWARE/MENU/Menu.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "MPU6050",
+            "files": [
+              {
+                "path": "HARDWARE/MPU6050/mpu6050.c"
+              },
+              {
+                "path": "HARDWARE/MPU6050/mpuiic.c"
+              }
+            ],
+            "folders": [
+              {
+                "name": "EMPL",
+                "files": [
+                  {
+                    "path": "HARDWARE/MPU6050/eMPL/inv_mpu.c"
+                  },
+                  {
+                    "path": "HARDWARE/MPU6050/eMPL/inv_mpu_dmp_motion_driver.c"
+                  }
+                ],
+                "folders": []
+              }
+            ]
+          },
+          {
+            "name": "TimerTick",
+            "files": [
+              {
+                "path": "HARDWARE/TimerTick/TimerTick.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "U8G2Drive",
+            "files": [
+              {
+                "path": "HARDWARE/U8G2Drive/stm32_u8g2.c"
+              },
+              {
+                "path": "HARDWARE/U8G2Drive/U8g2_User.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "U8G2LIB",
+            "files": [
+              {
+                "path": "HARDWARE/U8G2LIB/src/mui_u8g2.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/mui.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_bitmap.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_box.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_buffer.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_button.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_circle.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_cleardisplay.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_d_memory.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_d_setup.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_font.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_fonts.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_hvline.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_input_value.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_intersection.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_kerning.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_line.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_ll_hvline.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_message.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_polygon.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_selection_list.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8g2_setup.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/U8g2lib.cpp"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8log_u8g2.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8log_u8x8.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8log.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_8x8.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_byte.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_cad.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_capture.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_d_ssd1306_128x64_noname.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_debounce.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_display.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_fonts.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_gpio.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_input_value.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_message.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_selection_list.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_setup.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_string.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_u16toa.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/u8x8_u8toa.c"
+              },
+              {
+                "path": "HARDWARE/U8G2LIB/src/U8x8lib.cpp"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "UART",
+            "files": [
+              {
+                "path": "HARDWARE/UART/bsp_usart.c"
+              }
+            ],
+            "folders": []
+          }
+        ]
+      },
+      {
+        "name": "STARTUP",
+        "files": [
+          {
+            "path": "Libraries/CMSIS/startup/startup_stm32f10x_hd.s"
+          }
+        ],
         "folders": []
       },
       {
-        "name": "CMSIS",
+        "name": "USER",
         "files": [
           {
-            "path": "Libraries/CMSIS/core_cm3.c"
+            "path": "User/FreeRTOSConfig.h"
           },
           {
-            "path": "Libraries/CMSIS/system_stm32f10x.c"
+            "path": "User/main.c"
+          },
+          {
+            "path": "User/stm32f10x_conf.h"
+          },
+          {
+            "path": "User/stm32f10x_it.c"
+          },
+          {
+            "path": "User/stm32f10x_it.h"
           }
         ],
         "folders": []
@@ -609,8 +608,6 @@
           "HARDWARE/Encoder",
           "HARDWARE/KEY",
           "HARDWARE/LED",
-          "HARDWARE/MY_I2C",
-          "HARDWARE/uart",
           "FreeRTOS/include",
           "FreeRTOS/src",
           "FreeRTOS/port/RVDS/ARM_CM3",
@@ -621,13 +618,15 @@
           "Libraries/STM32F10x_StdPeriph_Driver/inc",
           "HARDWARE/MPU6050",
           "HARDWARE/MPU6050/eMPL",
-          "HARDWARE/U8G2_USER",
           "HARDWARE/MENU",
-          "HARDWARE/u8g2lib/inc",
-          "HARDWARE/u8g2lib/src",
-          "HARDWARE/OldMenu",
           "HARDWARE/APP",
-          "RTE/_STM32F103"
+          "RTE/_STM32F103",
+          "HARDWARE/I2cDrive",
+          "HARDWARE/TimerTick",
+          "HARDWARE/U8G2Drive",
+          "HARDWARE/UART",
+          "HARDWARE/U8G2LIB/src",
+          "HARDWARE/U8G2LIB/inc"
         ],
         "libList": [],
         "sourceDirList": [],

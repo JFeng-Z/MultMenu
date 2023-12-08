@@ -11,9 +11,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "u8g2.h"
-#include "MyI2C.h"
-#include "Tim_Tick.h"
 /* USER CODE BEGIN Includes */
  
 /* USER CODE END Includes */

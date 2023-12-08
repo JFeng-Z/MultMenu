@@ -25,7 +25,7 @@
 #include "inv_mpu.h"
 #include "inv_mpu_dmp_motion_driver.h"
 #include "mpu6050.h"
-#include "Tim_Tick.h"
+#include "TimerTick.h"
 #include "bsp_usart.h"
 
 
