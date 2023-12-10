@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>.cmsis\include;RTE\_Target 1;.eide\deps;HARDWARE;HARDWARE\Encoder;HARDWARE\KEY;HARDWARE\LED;HARDWARE\MY_I2C;HARDWARE\uart;FreeRTOS\include;FreeRTOS\src;FreeRTOS\port\RVDS\ARM_CM3;FreeRTOS\port\MemMang;User;Libraries\CMSIS;Libraries\STM32F10x_StdPeriph_Driver\src;Libraries\STM32F10x_StdPeriph_Driver\inc;HARDWARE\MPU6050;HARDWARE\MPU6050\eMPL;HARDWARE\U8G2_USER;HARDWARE\MENU;HARDWARE\u8g2lib\inc;HARDWARE\u8g2lib\src;HARDWARE\OldMenu;HARDWARE\APP</IncludePath>
+              <IncludePath>.cmsis\include;RTE\_Target 1;.eide\deps;HARDWARE;HARDWARE\Encoder;HARDWARE\KEY;HARDWARE\LED;HARDWARE\uart;FreeRTOS\include;FreeRTOS\src;FreeRTOS\port\RVDS\ARM_CM3;FreeRTOS\port\MemMang;User;Libraries\CMSIS;Libraries\STM32F10x_StdPeriph_Driver\inc;HARDWARE\MPU6050;HARDWARE\MPU6050\eMPL;HARDWARE\MENU;HARDWARE\APP;.\HARDWARE\I2cDrive;.\HARDWARE\U8G2Drive;.\HARDWARE\U8G2LIB\inc;.\HARDWARE\TimerTick</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -433,37 +433,12 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>HARDWARE</GroupName>
-          <Files>
-            <File>
-              <FileName>Tim_Tick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>HARDWARE/Tim_Tick.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>HARDWARE/UART</GroupName>
           <Files>
             <File>
               <FileName>bsp_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>HARDWARE/uart/bsp_usart.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>HARDWARE/U8G2_USER</GroupName>
-          <Files>
-            <File>
-              <FileName>stm32_u8g2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>HARDWARE/U8G2_USER/stm32_u8g2.c</FilePath>
-            </File>
-            <File>
-              <FileName>U8g2_User.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>HARDWARE/U8G2_USER/U8g2_User.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -688,16 +663,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>HARDWARE/MY_I2C</GroupName>
-          <Files>
-            <File>
-              <FileName>MyI2C.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>HARDWARE/MY_I2C/MyI2C.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>HARDWARE/MPU6050</GroupName>
           <Files>
             <File>
@@ -759,16 +724,6 @@
               <FileName>multi_button.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HARDWARE\KEY\multi_button.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>HARDWARE/ENCODER</GroupName>
-          <Files>
-            <File>
-              <FileName>rotary_encoder.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>HARDWARE/Encoder/rotary_encoder.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -979,6 +934,41 @@
               <FileName>Time.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HARDWARE\APP\Time.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>HARDWARE/I2cDrive</GroupName>
+          <Files>
+            <File>
+              <FileName>I2cDrive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HARDWARE\I2cDrive\I2cDrive.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>HARDWARE/U8G2Drive</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32_u8g2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HARDWARE\U8G2Drive\stm32_u8g2.c</FilePath>
+            </File>
+            <File>
+              <FileName>U8g2_User.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HARDWARE\U8G2Drive\U8g2_User.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>HARDWARE/TimerTick</GroupName>
+          <Files>
+            <File>
+              <FileName>TimerTick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HARDWARE\TimerTick\TimerTick.c</FilePath>
             </File>
           </Files>
         </Group>
