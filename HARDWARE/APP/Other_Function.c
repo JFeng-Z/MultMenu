@@ -17,7 +17,7 @@ void DialogScaleShow(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Targrt_w,uint16
 
 void Quit_Inspect(void)
 {
-    if(Get_Key_Pressed()==MENU_ENTER)
+    if(Get_Key(KeyWkUp)==LONG_PRESS_HOLD)
     {
         Switch_Menu_State(APP_BREAK);
         if(IntoState==true)
@@ -40,7 +40,7 @@ void Show_MPU6050(void)
 
     Quit_Inspect();
 
-    mpu_dmp_get_data(&pitch,&roll,&yaw);
+    // mpu_dmp_get_data(&pitch,&roll,&yaw);
     sprintf(Pi,"Pitch = %.2f",pitch);
     sprintf(Ro,"Roll  = %.2f",roll);
     sprintf(Ya,"Yaw   = %.2f",yaw);
@@ -100,21 +100,11 @@ void Setting_Speed(void)
 
 }
 
-void Car_State(void)
-{
-    u8g2_DrawStr(&u8g2,100,45,"ON");
-    u8g2_SendBuffer(&u8g2);
-    printf("Car is ready!!!!\n");
-    // MPU_EXTI_Init();
-    vTaskDelete(NULL);
-}
-
 extern uint8_t RX_Packet[1024];
 extern bool packetReceived;
 
 void Screen(void)
 {
-    if(IntoState==false){Tims_delay_ms(20);IntoState=true;}
     Quit_Inspect();
     if(packetReceived)
     {
@@ -124,3 +114,4 @@ void Screen(void)
         packetReceived=false;
     }
 }
+

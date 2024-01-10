@@ -9,7 +9,7 @@ def capture(left, top, right, bottom):
     img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
     return img
 
-com = serial.Serial('COM15', 115200, timeout=1)
+com = serial.Serial('COM9', 115200, timeout=1)
 com.read()
 
 while True:

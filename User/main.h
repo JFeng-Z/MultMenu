@@ -13,17 +13,11 @@
 #include "u8g2.h"
 #include "TimerTick.h"
 #include "I2cDrive.h"
-#include "u8g2.h"
 #include "bsp_led.h"
 #include "stm32_u8g2.h"
 #include "Menu.h"
-#include "inv_mpu.h"
-#include "mpu6050.h"
-#include "inv_mpu_dmp_motion_driver.h"
 #include "bsp_usart.h"
-#include "U8g2_User.h"
 #include "multi_button.h"
 #include "Key_Driver.h"
-#include "Time.h"
 
 #endif

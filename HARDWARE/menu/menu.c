@@ -58,6 +58,7 @@ void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage, I
     /* 如果可以跳转，那么此item是跳转页面的父级 */
     if (nextpage != NULL)
         nextpage->ParentiTem = item;
+    else nextpage = LocalPage;
     /* 链式结构创建item */
     if (LocalPage->itemHead == NULL) // 如果是第一个iTem
     {
@@ -313,8 +314,6 @@ void Menu_Team(void)
     AddItem(" -Image", &Mainitem3, &MainPage, &Page3, NULL);
     AddItem(" -Reset All", &Mainitem4, &MainPage, &Page4, NULL);
     AddItem(" -About", &Mainitem5, &MainPage, &Page5, NULL);
-    AddItem(" -test1", &Mainitem6, &MainPage, &Page5, NULL);
-    AddItem(" -test2", &Mainitem7, &MainPage, &Page5, NULL);
 
         AddPage("[Application]", &Page1);
         AddItem(" -System", &Page1item1, &Page1, &No3Page1, NULL);
@@ -326,13 +325,11 @@ void Menu_Team(void)
             AddItem(" -MPU6050", &No3Page1item1, &No3Page1, NULL, Show_MPU6050);
             AddItem(" -Speed", &No3Page1item2, &No3Page1, NULL, Setting_Speed);
             AddItem(" -Mode", &No3Page1item3, &No3Page1, NULL, White_Dark_Day);
-            AddItem(" -Clock", &No3Page1item4, &No3Page1, NULL, Show_Time);
             AddItem(" -Return", &No3Page1item5, &No3Page1, &Page1, NULL);
 
             AddPage("[Games]", &No3Page2);
             AddItem(" -Dino Game", &No3Page2item1, &No3Page2, NULL, DinoGame_Run);
             AddItem(" -AirPlane Game", &No3Page2item2, &No3Page2, NULL, AirPlane_Run);
-            AddItem(" -MyCar", &No3Page2item3, &No3Page2, NULL, Car_State);
             AddItem(" -Return", &No3Page2item4, &No3Page2, &Page1, NULL);
 
         AddPage("[Files]", &Page2);
@@ -463,7 +460,7 @@ void U8G2_Init(void)
 
 void Menu_Init(void)
 {
-  Menu_Team();
-  Draw_Process();
-  Draw_Menu(FirstPos,&MainPage,Font_Size,&Mainitem1,&Mainitem1);
+    Menu_Team();
+    Draw_Process();
+    Draw_Menu(FirstPos,&MainPage,Font_Size,&Mainitem1,&Mainitem1);
 }

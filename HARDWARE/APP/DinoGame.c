@@ -365,8 +365,6 @@ void DinoGame_Run(void)
     if(Dino_IntoState==false)
     {
         Tims_delay_ms(10);
-        u8g2_InitDisplay(&u8g2);
-        u8g2_SetPowerSave(&u8g2, 0);
 
         //u8g2_SetFont(&u8g2, u8g2_font_helvB08_tr);
         u8g2_SetFont(&u8g2, u8g2_font_t0_11_mf);
@@ -376,7 +374,7 @@ void DinoGame_Run(void)
         Dino_IntoState=true;
     }
 
-    if(Get_Key_Pressed()==MENU_ENTER)
+    if(Get_Key(KeyWkUp)==LONG_PRESS_HOLD)
     {
         Switch_Menu_State(APP_BREAK);
         if(Dino_IntoState==true)

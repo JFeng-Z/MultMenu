@@ -29,10 +29,9 @@ void Init(void)
 {
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     USART_Config();
-    Timer_Init();
+    // Timer_Init();
     LED_GPIO_Config();
     U8G2_Init();
-    // RTC_Init();
     Menu_Init();
     KEY_GPIO_Config();
     Key_Loading();
@@ -53,8 +52,9 @@ static void AppTaskCreate(void)
   taskENTER_CRITICAL();           //进入临界区
 
   /* 创建任务 */
-  Menu_Task_Create();
   xTaskCreate((TaskFunction_t)test_,"test",128,NULL,5,test_handle);
+  Menu_Task_Create();
+  KeyScan_Task_Create();
   vTaskDelete(AppTaskCreate_Handle); //删除AppTaskCreate任务
   
   taskEXIT_CRITICAL();            //退出临界区

@@ -176,9 +176,6 @@
               },
               {
                 "path": "HARDWARE/APP/Other_Function.c"
-              },
-              {
-                "path": "HARDWARE/APP/Time.c"
               }
             ],
             "folders": []
@@ -230,31 +227,6 @@
               }
             ],
             "folders": []
-          },
-          {
-            "name": "MPU6050",
-            "files": [
-              {
-                "path": "HARDWARE/MPU6050/mpu6050.c"
-              },
-              {
-                "path": "HARDWARE/MPU6050/mpuiic.c"
-              }
-            ],
-            "folders": [
-              {
-                "name": "EMPL",
-                "files": [
-                  {
-                    "path": "HARDWARE/MPU6050/eMPL/inv_mpu.c"
-                  },
-                  {
-                    "path": "HARDWARE/MPU6050/eMPL/inv_mpu_dmp_motion_driver.c"
-                  }
-                ],
-                "folders": []
-              }
-            ]
           },
           {
             "name": "TimerTick",
@@ -616,8 +588,6 @@
           "Libraries/CMSIS",
           "Libraries/STM32F10x_StdPeriph_Driver/src",
           "Libraries/STM32F10x_StdPeriph_Driver/inc",
-          "HARDWARE/MPU6050",
-          "HARDWARE/MPU6050/eMPL",
           "HARDWARE/MENU",
           "HARDWARE/APP",
           "RTE/_STM32F103",

@@ -1463,7 +1463,7 @@ void AirPlane_Run(void)
         y = 128;
         AirPlane_IntoState=true;
     }
-    if(Get_Key_Pressed()==MENU_ENTER)
+    if(Get_Key(KeyWkUp)==LONG_PRESS_HOLD)
     {
         Switch_Menu_State(APP_BREAK);
         if(AirPlane_IntoState==true)
