@@ -19,26 +19,20 @@ typedef struct Error
 
 Error Cursor;
 
-/* Page*/
-xpMenu NowPage;
 xMenu
-    MainPage,                          // 一级Page
-    Page1, Page2, Page3, Page4, Page5, // 二级Page
-    No3Page1, No3Page2, No3Page3;      // 三级Page
+    Main_Page,                          
+    Application_Page, Files_Page, Image_Page, ResetAll_Page, About_Page, 
+    System_Page, Games_Page;     
 
 /* item */
-// 一级Page的item
-xpItem Selectitm;
-xItem Mainitem1, Mainitem2, Mainitem3, Mainitem4, Mainitem5, Mainitem6,Mainitem7;
-// 二级Page的item
-xItem Page1item1, Page1item2, Page1item3, Page1item4;
-xItem Page2item1, Page2item2, Page2item3, Page2item4;
-xItem Page3item1, Page3item2, Page3item3, Page3item4;
-xItem Page4item1, Page4item2, Page4item3, Page4item4;
-xItem Page5item1, Page5item2, Page5item3, Page5item4;
-// 三级Page的item
-xItem No3Page1item1, No3Page1item2, No3Page1item3, No3Page1item4, No3Page1item5,
-      No3Page2item1, No3Page2item2, No3Page2item3, No3Page2item4;
+xItem Application_Item, Files_Item, Image_Item, ResetAll_Item, About_Item;
+xItem System_Item, Games_Item, Screen_Item, ApplicationReturn_Item;
+xItem Files1_Item, Files2_Item, Files3_Item, FilesReturn_Item;
+xItem Image1_Item, Image2_Item, Image3_Item, ImageReturn_Item;
+xItem ResetName_Item, ResetTime_Item, ResetSetting_Item, ResetReturn_Item;
+xItem Github_Item, Bilibili_Item, ReadME_Item, AboutReturn_Item;
+xItem MPU6050_Item, Speed_Item, Mode_Item, SystemReturn_Item,
+      DinoGame_Item, AirPlaneGame_Item, GamesReturn_Item;
 
 void AddPage(const char *name, xpMenu page)
 {
@@ -51,7 +45,6 @@ void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage, I
 {
     item->itemName = Name;
     item->location = LocalPage;
-    item->JumpPage = nextpage;
     item->Itemfunction = function;
     /* 新建item的下一个肯定是null */
     item->nextiTem = NULL;
@@ -59,6 +52,7 @@ void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage, I
     if (nextpage != NULL)
         nextpage->ParentiTem = item;
     else nextpage = LocalPage;
+    item->JumpPage = nextpage;
     /* 链式结构创建item */
     if (LocalPage->itemHead == NULL) // 如果是第一个iTem
     {
@@ -304,62 +298,58 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
 
 void Menu_Team(void)
 {
-    NowPage = &MainPage;
-    Selectitm = &Mainitem1;
-    MainPage.ParentiTem = NULL;
+    AddPage("[MainPage]", &Main_Page);
+    AddItem(" -Application", &Application_Item, &Main_Page, &Application_Page, NULL);
+    AddItem(" -Files", &Files_Item, &Main_Page, &Files_Page, NULL);
+    AddItem(" -Image", &Image_Item, &Main_Page, &Image_Page, NULL);
+    AddItem(" -Reset All", &ResetAll_Item, &Main_Page, &ResetAll_Page, NULL);
+    AddItem(" -About", &About_Item, &Main_Page, &About_Page, NULL);
 
-    AddPage("[MainPage]", &MainPage);
-    AddItem(" -Application", &Mainitem1, &MainPage, &Page1, NULL);
-    AddItem(" -Files", &Mainitem2, &MainPage, &Page2, NULL);
-    AddItem(" -Image", &Mainitem3, &MainPage, &Page3, NULL);
-    AddItem(" -Reset All", &Mainitem4, &MainPage, &Page4, NULL);
-    AddItem(" -About", &Mainitem5, &MainPage, &Page5, NULL);
+        AddPage("[Application]", &Application_Page);
+        AddItem(" -System", &System_Item, &Application_Page, &System_Page, NULL);
+        AddItem(" -Games", &Games_Item, &Application_Page, &Games_Page, NULL);
+        AddItem(" -Screen", &Screen_Item, &Application_Page, NULL, Screen);
+        AddItem(" -Return", &ApplicationReturn_Item, &Application_Page, &Main_Page, NULL);
 
-        AddPage("[Application]", &Page1);
-        AddItem(" -System", &Page1item1, &Page1, &No3Page1, NULL);
-        AddItem(" -Games", &Page1item2, &Page1, &No3Page2, NULL);
-        AddItem(" -Screen", &Page1item3, &Page1, NULL, Screen);
-        AddItem(" -Return", &Page1item4, &Page1, &MainPage, NULL);
+            AddPage("[System]", &System_Page);
+            AddItem(" -MPU6050", &MPU6050_Item, &System_Page, NULL, Show_MPU6050);
+            AddItem(" -Speed", &Speed_Item, &System_Page, NULL, Setting_Speed);
+            AddItem(" -Mode", &Mode_Item, &System_Page, NULL, White_Dark_Day);
+            AddItem(" -Return", &SystemReturn_Item, &System_Page, &Application_Page, NULL);
 
-            AddPage("[System]", &No3Page1);
-            AddItem(" -MPU6050", &No3Page1item1, &No3Page1, NULL, Show_MPU6050);
-            AddItem(" -Speed", &No3Page1item2, &No3Page1, NULL, Setting_Speed);
-            AddItem(" -Mode", &No3Page1item3, &No3Page1, NULL, White_Dark_Day);
-            AddItem(" -Return", &No3Page1item5, &No3Page1, &Page1, NULL);
+            AddPage("[Games]", &Games_Page);
+            AddItem(" -Dino Game", &DinoGame_Item, &Games_Page, NULL, DinoGame_Run);
+            AddItem(" -AirPlane Game", &AirPlaneGame_Item, &Games_Page, NULL, AirPlane_Run);
+            AddItem(" -Return", &GamesReturn_Item, &Games_Page, &Application_Page, NULL);
 
-            AddPage("[Games]", &No3Page2);
-            AddItem(" -Dino Game", &No3Page2item1, &No3Page2, NULL, DinoGame_Run);
-            AddItem(" -AirPlane Game", &No3Page2item2, &No3Page2, NULL, AirPlane_Run);
-            AddItem(" -Return", &No3Page2item4, &No3Page2, &Page1, NULL);
+        AddPage("[Files]", &Files_Page);
+        AddItem(" -New Project", &Files1_Item, &Files_Page, NULL, NULL);
+        AddItem(" -New Project", &Files2_Item, &Files_Page, NULL, NULL);
+        AddItem(" -New Project", &Files3_Item, &Files_Page, NULL, NULL);
+        AddItem(" -Return", &FilesReturn_Item, &Files_Page, &Main_Page, NULL);
 
-        AddPage("[Files]", &Page2);
-        AddItem(" -New Project", &Page2item1, &Page2, NULL, NULL);
-        AddItem(" -New Project", &Page2item2, &Page2, NULL, NULL);
-        AddItem(" -New Project", &Page2item3, &Page2, NULL, NULL);
-        AddItem(" -Return", &Page2item4, &Page2, &MainPage, NULL);
+        AddPage("[Image]", &Image_Page);
+        AddItem(" -New Project", &Image1_Item, &Image_Page, NULL, NULL);
+        AddItem(" -New Project", &Image2_Item, &Image_Page, NULL, NULL);
+        AddItem(" -New Project", &Image3_Item, &Image_Page, NULL, NULL);
+        AddItem(" -Return", &ImageReturn_Item, &Image_Page, &Main_Page, NULL);
 
-        AddPage("[Image]", &Page3);
-        AddItem(" -New Project", &Page3item1, &Page3, NULL, NULL);
-        AddItem(" -New Project", &Page3item2, &Page3, NULL, NULL);
-        AddItem(" -New Project", &Page3item3, &Page3, NULL, NULL);
-        AddItem(" -Return", &Page3item4, &Page3, &MainPage, NULL);
+        AddPage("[Reset All]", &ResetAll_Page);
+        AddItem(" -Reset Name", &ResetName_Item, &ResetAll_Page, NULL, NULL);
+        AddItem(" -Reset Time", &ResetTime_Item, &ResetAll_Page, NULL, NULL);
+        AddItem(" -Reset Setting", &ResetSetting_Item, &ResetAll_Page, NULL, NULL);
+        AddItem(" -Return", &ResetReturn_Item, &ResetAll_Page, &Main_Page, NULL);
 
-        AddPage("[Reset All]", &Page4);
-        AddItem(" -Reset Name", &Page4item1, &Page4, NULL, NULL);
-        AddItem(" -Reset Time", &Page4item2, &Page4, NULL, NULL);
-        AddItem(" -Reset Setting", &Page4item3, &Page4, NULL, NULL);
-        AddItem(" -Return", &Page4item4, &Page4, &MainPage, NULL);
-
-        AddPage("[About]", &Page5);
-        AddItem(" -Github", &Page5item1, &Page5, NULL, Show_GitHub);
-        AddItem(" -Bilibili", &Page5item2, &Page5, NULL, Show_Bilibili);
-        AddItem(" -ReadME", &Page5item3, &Page5, NULL, NULL);
-        AddItem(" -Return", &Page5item4, &Page5, &MainPage, NULL);
+        AddPage("[About]", &About_Page);
+        AddItem(" -Github", &Github_Item, &About_Page, NULL, Show_GitHub);
+        AddItem(" -Bilibili", &Bilibili_Item, &About_Page, NULL, Show_Bilibili);
+        AddItem(" -ReadME", &ReadME_Item, &About_Page, NULL, NULL);
+        AddItem(" -Return", &AboutReturn_Item, &About_Page, &Main_Page, NULL);
 }
 
 uint8_t MENU_STATE=MENU_RUN;
 uint8_t disapper = 1;
-xpItem temp_item=&Mainitem1;
+xpItem temp_item=&Application_Item;
 Itemfunction App_Function;
 
 void Switch_Menu_State(uint8_t state)
@@ -462,5 +452,5 @@ void Menu_Init(void)
 {
     Menu_Team();
     Draw_Process();
-    Draw_Menu(FirstPos,&MainPage,Font_Size,&Mainitem1,&Mainitem1);
+    Draw_Menu(FirstPos,&Main_Page,Font_Size,&Application_Item,&Application_Item);
 }

@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>.cmsis\include;RTE\_Target 1;.eide\deps;HARDWARE;HARDWARE\Encoder;HARDWARE\KEY;HARDWARE\LED;HARDWARE\uart;FreeRTOS\include;FreeRTOS\src;FreeRTOS\port\RVDS\ARM_CM3;FreeRTOS\port\MemMang;User;Libraries\CMSIS;Libraries\STM32F10x_StdPeriph_Driver\inc;HARDWARE\MPU6050;HARDWARE\MPU6050\eMPL;HARDWARE\MENU;HARDWARE\APP;.\HARDWARE\I2cDrive;.\HARDWARE\U8G2Drive;.\HARDWARE\U8G2LIB\inc;.\HARDWARE\TimerTick</IncludePath>
+              <IncludePath>.cmsis\include;RTE\_Target 1;.eide\deps;HARDWARE;HARDWARE\KEY;HARDWARE\LED;FreeRTOS\include;FreeRTOS\src;FreeRTOS\port\RVDS\ARM_CM3;FreeRTOS\port\MemMang;User;Libraries\CMSIS;Libraries\STM32F10x_StdPeriph_Driver\inc;HARDWARE\MENU;HARDWARE\APP;.\HARDWARE\I2cDrive;.\HARDWARE\U8G2Drive;.\HARDWARE\U8G2LIB\inc;.\HARDWARE\TimerTick;.\HARDWARE\UART</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -663,36 +663,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>HARDWARE/MPU6050</GroupName>
-          <Files>
-            <File>
-              <FileName>mpu6050.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>HARDWARE/MPU6050/mpu6050.c</FilePath>
-            </File>
-            <File>
-              <FileName>mpuiic.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>HARDWARE/MPU6050/mpuiic.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>HARDWARE/MPU6050/EMPL</GroupName>
-          <Files>
-            <File>
-              <FileName>inv_mpu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>HARDWARE/MPU6050/eMPL/inv_mpu.c</FilePath>
-            </File>
-            <File>
-              <FileName>inv_mpu_dmp_motion_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>HARDWARE/MPU6050/eMPL/inv_mpu_dmp_motion_driver.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>HARDWARE/MENU</GroupName>
           <Files>
             <File>
@@ -930,11 +900,6 @@
               <FileType>1</FileType>
               <FilePath>.\HARDWARE\APP\Other_Function.c</FilePath>
             </File>
-            <File>
-              <FileName>Time.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HARDWARE\APP\Time.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -954,11 +919,6 @@
               <FileName>stm32_u8g2.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HARDWARE\U8G2Drive\stm32_u8g2.c</FilePath>
-            </File>
-            <File>
-              <FileName>U8g2_User.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HARDWARE\U8G2Drive\U8g2_User.c</FilePath>
             </File>
           </Files>
         </Group>
