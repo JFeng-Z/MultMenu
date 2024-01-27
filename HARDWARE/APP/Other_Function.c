@@ -25,10 +25,17 @@ void Quit_Inspect(void)
     }
 }
 
+void AppBreak(void)
+{
+    Switch_Menu_State(APP_BREAK);
+    if(IntoState==true)
+    IntoState=false;
+}
+
 void White_Dark_Day(void)
 {
     BgColor=BgColor^0x01;
-    Switch_Menu_State(APP_BREAK);
+    AppBreak();
 }
 
 void Show_MPU6050(void)
@@ -58,12 +65,11 @@ void Show_GitHub(void)
 
     DialogScaleShow(&u8g2,2,12,125,32);
 
-    Quit_Inspect();
-
     u8g2_DrawStr(&u8g2,8,25,GitHub1);
     u8g2_DrawStr(&u8g2,8,37,GitHub2);
     u8g2_SendBuffer(&u8g2);
-    
+
+    AppBreak();
 }
 
 void Show_Bilibili(void)
@@ -72,10 +78,10 @@ void Show_Bilibili(void)
 
     DialogScaleShow(&u8g2,22,24,82,20);
 
-    Quit_Inspect();
     u8g2_DrawStr(&u8g2,28,37,Bilibili);
     u8g2_SendBuffer(&u8g2);
     
+    AppBreak();
 }
 
 extern uint8_t Options_Time;
