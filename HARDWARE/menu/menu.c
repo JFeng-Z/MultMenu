@@ -68,7 +68,7 @@ void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage, I
         LocalPage->itemTail = LocalPage->itemTail->nextiTem; // 让尾巴指向新的item
         LocalPage->len++;
     }
-    item->Number=LocalPage->len;
+    item->id=LocalPage->len;
 }
 
 /**
@@ -183,17 +183,17 @@ uint8_t ui_disapper(uint8_t disapper)
     return disapper_temp;
 }
 /**
- * @brief 选项栏
+ * @brief 选项栏样式1
  * 
  * @param now_time 
  * @param now_item 
  * @param next_item 
  */
-void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item)
+void Draw_OptionPlace1(uint8_t now_time, xpItem now_item, xpItem next_item)
 {
     static uint8_t now_Y=0;
     static uint8_t next_Y=0;
-    next_Y=(next_item->Number-1)*(64/next_item->location->len);
+    next_Y=(next_item->id-1)*(64/next_item->location->len);
     u8g2_DrawVLine(&u8g2,122,2,64);
     for (size_t i = 0; i < next_item->location->len; i++)
     {
@@ -203,28 +203,44 @@ void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item)
     u8g2_DrawBox(&u8g2,118,now_Y,8,4);
 }
 
+/**
+ * @brief 选项栏样式2
+ * 
+ * @param now_time 
+ * @param now_item 
+ * @param next_item 
+ */
+void Draw_OptionPlace2(uint8_t now_time, xpItem now_item, xpItem next_item)
+{
+    static uint8_t Now_Lenght;
+    static uint8_t Next_Lenght;
+    Next_Lenght = (VER_RES / (float)(next_item->location->len)) * next_item->id;
+    Now_Lenght = Line(Options_Time, now_time, Next_Lenght, Now_Lenght);
+    u8g2_DrawBox(&u8g2, HOR_RES - 10, 0, 5, Now_Lenght);
+}
+
 void Draw_Page(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item)
 {
-    static int8_t first_line=FirstLine;
+    static int16_t first_line=FirstLine;
     xpItem temp = Page->itemHead;
     
     if(next_item==now_item->JumpPage->itemHead&&next_item!=now_item)    //切换页面时变量初始化
     first_line=FirstLine;
-    if ((next_item->Number-now_item->Number>0)&&Page_State==CURSOR_STATIC)
+    if ((next_item->id-now_item->id>0)&&Page_State==CURSOR_STATIC)
     {
         Page_State=MENU_MOVE;
-        if((next_item->Number-now_item->Number)>(Page->len-MaxVisible_Number))
+        if((next_item->id-now_item->id)>(Page->len-MaxVisible_Number))
         first_line-=((Page->len-MaxVisible_Number)*Font_Size);  //除去不移动时的项目数
         else first_line-=Font_Size;
     }
-    else if ((next_item->Number-now_item->Number<0)&&Page_State==CURSOR_STATIC)
+    else if ((next_item->id-now_item->id<0)&&Page_State==CURSOR_STATIC)
     {
         Page_State=MENU_MOVE;
-        if((now_item->Number-next_item->Number)>(Page->len-MaxVisible_Number))
+        if((now_item->id-next_item->id)>(Page->len-MaxVisible_Number))
         first_line+=((Page->len-MaxVisible_Number)*Font_Size);  //除去不移动时的项目数
         else first_line+=Font_Size;
     }
-    for (size_t i = 1; i <= Page->len; i++)
+    for (uint16_t i = 1; i <= Page->len; i++)
     {
         if((first_line + i * LineSpacing)<=FirstLine);      //菜单移动时不让标题移动
         else u8g2_DrawStr(&u8g2,pos,first_line + i * LineSpacing,temp->itemName);
@@ -239,7 +255,7 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
     uint8_t t=0;
     uint8_t item_wide=strlen(now_item->itemName)*6+4;
     static uint8_t item_line=LINE_MIN;
-    static int8_t Targrt_line=0;
+    static int16_t Targrt_line=0;
     static uint8_t first=0;     //初始状态
 
     u8g2_SetMaxClipWindow(&u8g2);
@@ -252,23 +268,23 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
         first=0;
         Page_State=0;
     }
-    if ((next_item->Number-now_item->Number==0&&first==0)||next_item==now_item->JumpPage->itemHead)
+    if ((next_item->id-now_item->id==0&&first==0)||next_item==now_item->JumpPage->itemHead)
     {
         Targrt_line=LINE_MIN;
         first=1;
     }
-    else if (next_item->Number-now_item->Number>0)
+    else if (next_item->id-now_item->id>0)
     {
-        Targrt_line+=((next_item->Number-now_item->Number)*Font_Size);
+        Targrt_line+=((next_item->id-now_item->id)*Font_Size);
         if (Targrt_line>LINE_MAX)  //防止光标溢出可视范围
         {
             Page_State=CURSOR_STATIC;
             Targrt_line=LINE_MAX;
         }
     }
-    else if(next_item->Number-now_item->Number<0)
+    else if(next_item->id-now_item->id<0)
     {
-        Targrt_line-=((now_item->Number-next_item->Number)*Font_Size);
+        Targrt_line-=((now_item->id-next_item->id)*Font_Size);
         if (Targrt_line<LINE_MIN)  //防止光标溢出可视范围
         {
             Page_State=CURSOR_STATIC;
@@ -284,7 +300,7 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
         u8g2_SetDrawColor(&u8g2,BgColor);
         u8g2_DrawBox(&u8g2,0,0,128,64);
         u8g2_SetDrawColor(&u8g2,BgColor^0x01);
-        Draw_OptionPlace(t,now_item,next_item);
+        Draw_OptionPlace2(t,now_item,next_item);
         Draw_Page(pos,Page,LineSpacing,now_item,next_item);
         u8g2_SetDrawColor(&u8g2,2);
         item_line = PID(Targrt_line,item_line,&Cursor);

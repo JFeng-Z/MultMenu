@@ -4,7 +4,7 @@ extern u8g2_t u8g2;
 //1为白天模式，0为黑夜模式
 extern uint8_t BgColor;  
 
-uint8_t IntoState=false;
+bool IntoState=false;
 
 void DialogScaleShow(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Targrt_w,uint16_t Targrt_h)
 {
@@ -82,7 +82,7 @@ extern uint8_t Options_Time;
 
 void Setting_Speed(void)
 {
-    static char Speed[1],Spd[10];
+    static char Spd[20];
 
     DialogScaleShow(&u8g2,4,12,120,32);
 
@@ -90,9 +90,8 @@ void Setting_Speed(void)
 
     if((Get_Key(Key1)==PRESS_UP)&&Options_Time<30)Options_Time++;
     if((Get_Key(Key2)==PRESS_UP)&&Options_Time>2)Options_Time--;
-    Speed[0]=Options_Time;
     Draw_DialogBox(&u8g2,0,12,127,32);
-    sprintf(Spd,"Speed = %d",Speed[0]);
+    sprintf(Spd,"Speed = %d",Options_Time);
     u8g2_DrawStr(&u8g2,8,25,Spd);
     u8g2_DrawRBox(&u8g2,8,30,Options_Time*3,6,3);
     u8g2_DrawRFrame(&u8g2,8,30,90,6,3);

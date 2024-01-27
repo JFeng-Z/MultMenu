@@ -9,6 +9,9 @@
 #include "DinoGame.h"
 #include "AirPlane.h"
 
+#define HOR_RES     128
+#define VER_RES     64
+
 #define FirstLine   9
 #define FirstPos    0
 #define Font_Size   12
@@ -45,7 +48,7 @@ typedef struct MenuPage
 typedef struct Item
 {
     const char *itemName;
-    uint8_t Number;
+    uint8_t id;
     xpMenu location;
     xpMenu JumpPage;
     xpItem lastiTem;
@@ -58,7 +61,8 @@ void AddPage(const char *name, xpMenu page);
 void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage, Itemfunction function);
 int8_t Line(uint8_t AllTime,uint8_t Time_Now,int8_t Tgt,int8_t Now);
 void Draw_Process(void);
-void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item);
+void Draw_OptionPlace1(uint8_t now_time, xpItem now_item, xpItem next_item);
+void Draw_OptionPlace2(uint8_t now_time, xpItem now_item, xpItem next_item);
 void Draw_DialogBox(u8g2_t *u8g2,u8g2_uint_t x,u8g2_uint_t y,u8g2_uint_t w,u8g2_uint_t h);
 void Draw_DialogRBox(u8g2_t *u8g2,u8g2_uint_t x,u8g2_uint_t y,u8g2_uint_t w,u8g2_uint_t h,u8g2_uint_t r);
 void DialogScale_Show(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Targrt_w,uint16_t Targrt_h);
