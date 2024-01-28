@@ -157,64 +157,10 @@ int fgetc(FILE *f)
 		return (int)USART_ReceiveData(DEBUG_USARTx);
 }
 
-uint8_t RX_Packet[1024];
-volatile int RX_Packet_Length = 0, Time_Length = 0;
-uint8_t Usart_GetTime[25],GetTime_State=0;
-bool packetReceived = false;  // 添加一个变量用于标识是否接收到完整的数据包
-
 void USART1_IRQHandler(void)
 {
-    static uint8_t state = 0;
     if (USART_GetITStatus(USART1, USART_IT_RXNE) == SET)
     {
-        uint8_t RxData = USART_ReceiveData(USART1);
-        switch (state)
-        {
-            case 0:
-                if (RxData == 0xFF)
-                {
-                  RX_Packet_Length = 0;
-                  state = 1;
-                }
-                if (RxData == 0x01)
-                {
-                  Time_Length = 0;
-                  state = 3;
-                }
-                break;
-            case 1:
-                RX_Packet[RX_Packet_Length] = RxData;
-                RX_Packet_Length++;
-                if (RX_Packet_Length >= 1024)  // 数据字节数
-                {
-                    state = 2;
-                }
-                break;
-            case 2:
-                if (RxData == 0xFE)  // 数据包尾
-                {
-                    state = 0;
-                    packetReceived = true;  // 设置标志位表示接收到完整的数据包
-                }
-                break;
-            case 3:
-                  Time_Length++;
-                  Usart_GetTime[Time_Length] = RxData;
-                  if (Time_Length >= 25)
-                  {
-                    state = 4;
-                  }
-                break;
-            case 4:
-                if (RxData == 0x02)
-                {
-                  state = 0;
-                  GetTime_State = 1;
-                }
-                break;
-            default:
-                break;
-        }
         USART_ClearITPendingBit(USART1, USART_IT_RXNE);
     }
 }

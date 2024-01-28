@@ -26,7 +26,7 @@ xMenu
 
 /* item */
 xItem Application_Item, Files_Item, Image_Item, ResetAll_Item, About_Item;
-xItem System_Item, Games_Item, Screen_Item, ApplicationReturn_Item;
+xItem System_Item, Games_Item, ApplicationReturn_Item;
 xItem Files1_Item, Files2_Item, Files3_Item, FilesReturn_Item;
 xItem Image1_Item, Image2_Item, Image3_Item, ImageReturn_Item;
 xItem ResetName_Item, ResetTime_Item, ResetSetting_Item, ResetReturn_Item;
@@ -324,7 +324,6 @@ void Menu_Team(void)
         AddPage("[Application]", &Application_Page);
         AddItem(" -System", &System_Item, &Application_Page, &System_Page, NULL);
         AddItem(" -Games", &Games_Item, &Application_Page, &Games_Page, NULL);
-        AddItem(" -Screen", &Screen_Item, &Application_Page, NULL, Screen);
         AddItem(" -Return", &ApplicationReturn_Item, &Application_Page, &Main_Page, NULL);
 
             AddPage("[System]", &System_Page);

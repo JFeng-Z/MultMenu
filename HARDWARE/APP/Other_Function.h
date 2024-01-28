@@ -11,6 +11,5 @@ void Show_MPU6050(void);
 void Show_GitHub(void);
 void Show_Bilibili(void);
 void Setting_Speed(void);
-void Screen(void);
 
 #endif

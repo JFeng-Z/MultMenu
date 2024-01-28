@@ -104,19 +104,3 @@ void Setting_Speed(void)
     u8g2_SendBuffer(&u8g2);
 
 }
-
-extern uint8_t RX_Packet[1024];
-extern bool packetReceived;
-
-void Screen(void)
-{
-    Quit_Inspect();
-    if(packetReceived)
-    {
-        u8g2_ClearBuffer(&u8g2);
-        u8g2_DrawXBMP(&u8g2,0,0,128,64,RX_Packet);
-        u8g2_SendBuffer(&u8g2);
-        packetReceived=false;
-    }
-}
-
