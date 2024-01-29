@@ -6,7 +6,7 @@ void KEY_GPIO_Config(void)
 
     RCC_APB2PeriphClockCmd(KEY1_CLK,ENABLE);
     RCC_APB2PeriphClockCmd(KEY2_CLK,ENABLE);
-    RCC_APB2PeriphClockCmd(KeyWkUp_CLK,ENABLE);
+    RCC_APB2PeriphClockCmd(KEY3_CLK,ENABLE);
 
     GPIO_InitStruct.GPIO_Pin=KEY1_PIN;
     GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPU;
@@ -16,9 +16,9 @@ void KEY_GPIO_Config(void)
     GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPU;
     GPIO_Init(KEY2_PORT,&GPIO_InitStruct);
 
-    GPIO_InitStruct.GPIO_Pin=KeyWkUp_PIN;
+    GPIO_InitStruct.GPIO_Pin=KEY3_PIN;
     GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPD;
-    GPIO_Init(KeyWkUp_PORT,&GPIO_InitStruct);
+    GPIO_Init(KEY3_PORT,&GPIO_InitStruct);
 }
 
 void KEY_EXTI_Config(void)

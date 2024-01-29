@@ -5,7 +5,7 @@
 
 #define Key1    1
 #define Key2    2
-#define KeyWkUp 3
+#define key3    3
 
 #define UP 3
 #define DOWN 2
@@ -18,14 +18,13 @@
 #define KEY2_PORT   GPIOC
 #define KEY2_CLK   RCC_APB2Periph_GPIOC
 
-#define KeyWkUp_PIN    GPIO_Pin_0
-#define KeyWkUp_PORT   GPIOA
-#define KeyWkUp_CLK   RCC_APB2Periph_GPIOA
+#define KEY3_PIN    GPIO_Pin_0
+#define KEY3_PORT   GPIOA
+#define KEY3_CLK   RCC_APB2Periph_GPIOA
 
 void KEY_GPIO_Config(void);
 void Key_Loading(void);
 PressEvent Get_Key(uint8_t Key_Number);
-uint8_t Get_Key_Pressed(void);
 void KeyScan_Task_Create(void);
 
 #endif 

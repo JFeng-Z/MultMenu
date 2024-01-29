@@ -17,7 +17,7 @@ void DialogScaleShow(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Targrt_w,uint16
 
 void Quit_Inspect(void)
 {
-    if(Get_Key(KeyWkUp)==LONG_PRESS_HOLD)
+    if(Get_Key(key3)==LONG_PRESS_HOLD)
     {
         Switch_Menu_State(APP_BREAK);
         if(IntoState==true)

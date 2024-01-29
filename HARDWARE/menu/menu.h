@@ -20,7 +20,7 @@
 #define MaxVisible_Number  4
 #define MENU_FONT   u8g2_font_profont12_mf
 
-enum MenuState
+typedef enum menu_state
 {
     MENU_RUN,
     APP_RUN,
@@ -30,8 +30,16 @@ enum MenuState
 
     MENU_UP,
     MENU_DOWN,
-    MENU_ENTER
-};
+    MENU_ENTER,
+    MENU_NONE
+}Menu_State;
+
+typedef struct pid_error
+{
+    float error;
+    float sum_srror;
+    float last_error;
+}Pid_Error;
 
 typedef void (*Itemfunction)(void);
 typedef struct MenuPage *xpMenu;
@@ -60,16 +68,15 @@ void Menu_Team(void);
 void AddPage(const char *name, xpMenu page);
 void AddItem(const char *Name, xpItem item, xpMenu LocalPage, xpMenu nextpage, Itemfunction function);
 int8_t Line(uint8_t AllTime,uint8_t Time_Now,int8_t Tgt,int8_t Now);
-void Draw_Process(void);
-void Draw_OptionPlace1(uint8_t now_time, xpItem now_item, xpItem next_item);
-void Draw_OptionPlace2(uint8_t now_time, xpItem now_item, xpItem next_item);
+void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item);
 void Draw_DialogBox(u8g2_t *u8g2,u8g2_uint_t x,u8g2_uint_t y,u8g2_uint_t w,u8g2_uint_t h);
 void Draw_DialogRBox(u8g2_t *u8g2,u8g2_uint_t x,u8g2_uint_t y,u8g2_uint_t w,u8g2_uint_t h,u8g2_uint_t r);
 void DialogScale_Show(u8g2_t *u8g2,uint16_t x,uint16_t y,uint16_t Targrt_w,uint16_t Targrt_h);
 void Draw_Page(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item);
 void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item);
 uint8_t ui_disapper(uint8_t disapper);
-void Switch_Menu_State(uint8_t state);
+void Switch_Menu_State(Menu_State state);
+Menu_State Get_Key_Pressed(void);
 void Menu_Task_Create(void);
 void U8G2_Init(void);
 void Menu_Init(void);

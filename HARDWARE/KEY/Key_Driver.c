@@ -2,7 +2,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-struct Button KEY1,KEY2,KEYWKUP;
+struct Button KEY1,KEY2,KEY3;
 
 void KEY_GPIO_Config(void)
 {
@@ -10,7 +10,7 @@ void KEY_GPIO_Config(void)
 
     RCC_APB2PeriphClockCmd(KEY1_CLK,ENABLE);
     RCC_APB2PeriphClockCmd(KEY2_CLK,ENABLE);
-    RCC_APB2PeriphClockCmd(KeyWkUp_CLK,ENABLE);
+    RCC_APB2PeriphClockCmd(KEY3_CLK,ENABLE);
 
     GPIO_InitStruct.GPIO_Pin=KEY1_PIN;
     GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPU;
@@ -20,9 +20,9 @@ void KEY_GPIO_Config(void)
     GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPU;
     GPIO_Init(KEY2_PORT,&GPIO_InitStruct);
 
-    GPIO_InitStruct.GPIO_Pin=KeyWkUp_PIN;
+    GPIO_InitStruct.GPIO_Pin=KEY3_PIN;
     GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPD;
-    GPIO_Init(KeyWkUp_PORT,&GPIO_InitStruct);
+    GPIO_Init(KEY3_PORT,&GPIO_InitStruct);
 }
 
 uint8_t READ_KEY1_GPIO()
@@ -37,7 +37,7 @@ uint8_t READ_KEY2_GPIO()
 
 uint8_t READ_KEYWKUP_GPIO()
 {
-	return GPIO_ReadInputDataBit(KeyWkUp_PORT, KeyWkUp_PIN);
+	return GPIO_ReadInputDataBit(KEY3_PORT, KEY3_PIN);
 }
 
 PressEvent Get_Key(uint8_t Key_Number)
@@ -49,18 +49,10 @@ PressEvent Get_Key(uint8_t Key_Number)
     case 2: 
         return get_button_event(&KEY2);
     case 3:
-        return get_button_event(&KEYWKUP);
+        return get_button_event(&KEY3);
     default :
         return NONE_PRESS;
     }
-}
-
-uint8_t Get_Key_Pressed(void)
-{
-    if(Get_Key(Key1)==PRESS_UP)return MENU_UP;
-    else if(Get_Key(Key2)==PRESS_UP)return MENU_DOWN;
-    else if(Get_Key(KeyWkUp)==PRESS_UP)return MENU_ENTER;
-    return 0;
 }
 
 void KEY1_PRESS_UP_Handler(void* btn){}
@@ -75,7 +67,7 @@ void Key_Loading(void)
 {
     button_init(&KEY1,READ_KEY1_GPIO,0);
     button_init(&KEY2,READ_KEY2_GPIO,0);
-    button_init(&KEYWKUP,READ_KEYWKUP_GPIO,1);
+    button_init(&KEY3,READ_KEYWKUP_GPIO,1);
     
     button_attach(&KEY1,PRESS_UP,KEY1_PRESS_UP_Handler);
     button_attach(&KEY1,LONG_PRESS_HOLD,KEY1_LONG_PRESS_HOLD_Handler);
@@ -85,11 +77,11 @@ void Key_Loading(void)
     button_attach(&KEY2,LONG_PRESS_HOLD,KEY2_LONG_PRESS_HOLD_Handler);
     button_attach(&KEY2,SINGLE_CLICK,KEY2_SINGLE_CLICK_Handler);
 
-    button_attach(&KEYWKUP,PRESS_UP,KEYWKUP_PRESS_UP_Handler);
+    button_attach(&KEY3,PRESS_UP,KEYWKUP_PRESS_UP_Handler);
 
 	button_start(&KEY1);
     button_start(&KEY2);
-    button_start(&KEYWKUP);
+    button_start(&KEY3);
 }
 
 TaskHandle_t KeyScan_TaskHandle;

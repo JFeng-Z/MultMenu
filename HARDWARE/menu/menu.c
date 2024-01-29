@@ -10,17 +10,10 @@ uint8_t Options_Time=8;
 //对话框缓动动画持续时间（次数）
 uint8_t Dialog_Time=10;
 
-typedef struct Error
-{
-    float error;
-    float sum_srror;
-    float last_error;
-}Error;
-
-Error Cursor;
+Pid_Error Cursor;
 
 xMenu
-    Main_Page,                          
+    Home_Page,                          
     Application_Page, Files_Page, Image_Page, ResetAll_Page, About_Page, 
     System_Page, Games_Page;     
 
@@ -85,7 +78,7 @@ int8_t Line(uint8_t AllTime,uint8_t Time_Now,int8_t Targrt,int8_t Now)
     return (Targrt-Now)*Time_Now/AllTime+Now;		
 }
 
-uint8_t PID(int8_t Targrt, int8_t Now, Error *Obj)
+uint8_t PID(int8_t Targrt, int8_t Now, Pid_Error *Obj)
 {
     int x=Now;
     float Kp=0.5,ki=0.1,kd=0.25;
@@ -98,22 +91,14 @@ uint8_t PID(int8_t Targrt, int8_t Now, Error *Obj)
     return x;
 }
 
-void Draw_Process(void)
+//首页
+void Draw_Home(void)
 {
-    u8g2_ClearBuffer(&u8g2);
-    u8g2_SetFont(&u8g2,u8g2_font_profont15_mf);
-    u8g2_DrawStr(&u8g2,32,16,"Mr.JFeng");
-    u8g2_SetFont(&u8g2,MENU_FONT);
-    
-    for(size_t i=10; i<=80; i+=2)
+    u8g2_SetFont(&u8g2, u8g2_font_10x20_me);
+    for (size_t i = 0; i < 40; i++)
     {
-        char buff[6];
-        int percentage = (int)(i/80.0*100);
-        sprintf(buff, "%02d%%", percentage);
-        
-        u8g2_DrawStr(&u8g2,100,41,buff);
-        u8g2_DrawRBox(&u8g2,16,32,i,10,4);
-        u8g2_DrawRFrame(&u8g2,16,32,80,10,4);
+        u8g2_ClearBuffer(&u8g2);
+        u8g2_DrawStr(&u8g2, 25, i, "MultMenu");
         u8g2_SendBuffer(&u8g2);
     }
 }
@@ -182,41 +167,22 @@ uint8_t ui_disapper(uint8_t disapper)
     disapper_temp=disapper;
     return disapper_temp;
 }
-/**
- * @brief 选项栏样式1
- * 
- * @param now_time 
- * @param now_item 
- * @param next_item 
- */
-void Draw_OptionPlace1(uint8_t now_time, xpItem now_item, xpItem next_item)
-{
-    static uint8_t now_Y=0;
-    static uint8_t next_Y=0;
-    next_Y=(next_item->id-1)*(64/next_item->location->len);
-    u8g2_DrawVLine(&u8g2,122,2,64);
-    for (size_t i = 0; i < next_item->location->len; i++)
-    {
-        u8g2_DrawHLine(&u8g2,119,i*(64/next_item->location->len)+2,6);
-    }
-    now_Y=Line(Options_Time,now_time,next_Y,now_Y);
-    u8g2_DrawBox(&u8g2,118,now_Y,8,4);
-}
 
 /**
- * @brief 选项栏样式2
+ * @brief 导航栏
  * 
  * @param now_time 
  * @param now_item 
  * @param next_item 
  */
-void Draw_OptionPlace2(uint8_t now_time, xpItem now_item, xpItem next_item)
+void Draw_OptionPlace(uint8_t now_time, xpItem now_item, xpItem next_item)
 {
     static uint8_t Now_Lenght;
     static uint8_t Next_Lenght;
     Next_Lenght = (VER_RES / (float)(next_item->location->len)) * next_item->id;
     Now_Lenght = Line(Options_Time, now_time, Next_Lenght, Now_Lenght);
-    u8g2_DrawBox(&u8g2, HOR_RES - 10, 0, 5, Now_Lenght);
+    u8g2_DrawLine(&u8g2, HOR_RES - 7, 0, HOR_RES - 7, 64);
+    u8g2_DrawBox(&u8g2, HOR_RES - 10, 0, 6, Now_Lenght);
 }
 
 void Draw_Page(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item)
@@ -300,7 +266,7 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
         u8g2_SetDrawColor(&u8g2,BgColor);
         u8g2_DrawBox(&u8g2,0,0,128,64);
         u8g2_SetDrawColor(&u8g2,BgColor^0x01);
-        Draw_OptionPlace2(t,now_item,next_item);
+        Draw_OptionPlace(t,now_item,next_item);
         Draw_Page(pos,Page,LineSpacing,now_item,next_item);
         u8g2_SetDrawColor(&u8g2,2);
         item_line = PID(Targrt_line,item_line,&Cursor);
@@ -312,19 +278,27 @@ void Draw_Menu(uint8_t pos, xpMenu Page, uint8_t LineSpacing, xpItem now_item,xp
     } while (t<Options_Time);
 }
 
+Menu_State Get_Key_Pressed(void)
+{
+    if(Get_Key(Key1) == PRESS_UP)return MENU_UP;
+    else if(Get_Key(Key2) == PRESS_UP)return MENU_DOWN;
+    else if(Get_Key(key3) == PRESS_UP)return MENU_ENTER;
+    return MENU_NONE;
+}
+
 void Menu_Team(void)
 {
-    AddPage("[MainPage]", &Main_Page);
-    AddItem(" -Application", &Application_Item, &Main_Page, &Application_Page, NULL);
-    AddItem(" -Files", &Files_Item, &Main_Page, &Files_Page, NULL);
-    AddItem(" -Image", &Image_Item, &Main_Page, &Image_Page, NULL);
-    AddItem(" -Reset All", &ResetAll_Item, &Main_Page, &ResetAll_Page, NULL);
-    AddItem(" -About", &About_Item, &Main_Page, &About_Page, NULL);
+    AddPage("[MainPage]", &Home_Page);
+    AddItem(" -Application", &Application_Item, &Home_Page, &Application_Page, NULL);
+    AddItem(" -Files", &Files_Item, &Home_Page, &Files_Page, NULL);
+    AddItem(" -Image", &Image_Item, &Home_Page, &Image_Page, NULL);
+    AddItem(" -Reset All", &ResetAll_Item, &Home_Page, &ResetAll_Page, NULL);
+    AddItem(" -About", &About_Item, &Home_Page, &About_Page, NULL);
 
         AddPage("[Application]", &Application_Page);
         AddItem(" -System", &System_Item, &Application_Page, &System_Page, NULL);
         AddItem(" -Games", &Games_Item, &Application_Page, &Games_Page, NULL);
-        AddItem(" -Return", &ApplicationReturn_Item, &Application_Page, &Main_Page, NULL);
+        AddItem(" -Return", &ApplicationReturn_Item, &Application_Page, &Home_Page, NULL);
 
             AddPage("[System]", &System_Page);
             AddItem(" -MPU6050", &MPU6050_Item, &System_Page, NULL, Show_MPU6050);
@@ -341,39 +315,39 @@ void Menu_Team(void)
         AddItem(" -New Project", &Files1_Item, &Files_Page, NULL, NULL);
         AddItem(" -New Project", &Files2_Item, &Files_Page, NULL, NULL);
         AddItem(" -New Project", &Files3_Item, &Files_Page, NULL, NULL);
-        AddItem(" -Return", &FilesReturn_Item, &Files_Page, &Main_Page, NULL);
+        AddItem(" -Return", &FilesReturn_Item, &Files_Page, &Home_Page, NULL);
 
         AddPage("[Image]", &Image_Page);
         AddItem(" -New Project", &Image1_Item, &Image_Page, NULL, NULL);
         AddItem(" -New Project", &Image2_Item, &Image_Page, NULL, NULL);
         AddItem(" -New Project", &Image3_Item, &Image_Page, NULL, NULL);
-        AddItem(" -Return", &ImageReturn_Item, &Image_Page, &Main_Page, NULL);
+        AddItem(" -Return", &ImageReturn_Item, &Image_Page, &Home_Page, NULL);
 
         AddPage("[Reset All]", &ResetAll_Page);
         AddItem(" -Reset Name", &ResetName_Item, &ResetAll_Page, NULL, NULL);
         AddItem(" -Reset Time", &ResetTime_Item, &ResetAll_Page, NULL, NULL);
         AddItem(" -Reset Setting", &ResetSetting_Item, &ResetAll_Page, NULL, NULL);
-        AddItem(" -Return", &ResetReturn_Item, &ResetAll_Page, &Main_Page, NULL);
+        AddItem(" -Return", &ResetReturn_Item, &ResetAll_Page, &Home_Page, NULL);
 
         AddPage("[About]", &About_Page);
         AddItem(" -Github", &Github_Item, &About_Page, NULL, Show_GitHub);
         AddItem(" -Bilibili", &Bilibili_Item, &About_Page, NULL, Show_Bilibili);
         AddItem(" -ReadME", &ReadME_Item, &About_Page, NULL, NULL);
-        AddItem(" -Return", &AboutReturn_Item, &About_Page, &Main_Page, NULL);
+        AddItem(" -Return", &AboutReturn_Item, &About_Page, &Home_Page, NULL);
 }
 
-uint8_t MENU_STATE=MENU_RUN;
-uint8_t disapper = 1;
-xpItem temp_item=&Application_Item;
+Menu_State MENU_STATE = MENU_RUN;
+xpItem temp_item = &Application_Item;
 Itemfunction App_Function;
 
-void Switch_Menu_State(uint8_t state)
+void Switch_Menu_State(Menu_State state)
 {
     MENU_STATE = state;
 }
 
-void Process_Menu_Run(uint8_t Dir)
+void Process_Menu_Run(Menu_State Dir)
 {
+    uint8_t disapper = 1;
     switch (Dir)
     {
         case MENU_UP:
@@ -428,26 +402,36 @@ TaskHandle_t Menu_TaskHandle;
 
 void Menu_Task(void *parameter)
 {
+    static bool Start = false;
     while (1)
     {
-        uint8_t Dir = Get_Key_Pressed();
+        Menu_State Dir = Get_Key_Pressed();
         
-        switch (MENU_STATE)
+        if (Start == true)
         {
-            case MENU_RUN:
-                Process_Menu_Run(Dir);
-                break;
-                
-            case APP_RUN:
-                Process_App_Run();
-                break;
-                
-            case APP_BREAK:
-                Process_Menu_Run(Dir);
-                break;
-                
-            default:
-                break;
+            switch (MENU_STATE)
+            {
+                case MENU_RUN:
+                    Process_Menu_Run(Dir);
+                    break;
+                    
+                case APP_RUN:
+                    Process_App_Run();
+                    break;
+                    
+                case APP_BREAK:
+                    Process_Menu_Run(Dir);
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+
+        if (Dir != MENU_NONE && Start == false)
+        {
+            Draw_Menu(FirstPos, &Home_Page, Font_Size, &Application_Item, &Application_Item);
+            Start = true;
         }
         vTaskDelay(5);
     }
@@ -466,6 +450,5 @@ void U8G2_Init(void)
 void Menu_Init(void)
 {
     Menu_Team();
-    Draw_Process();
-    Draw_Menu(FirstPos,&Main_Page,Font_Size,&Application_Item,&Application_Item);
+    Draw_Home();
 }

@@ -374,7 +374,7 @@ void DinoGame_Run(void)
         Dino_IntoState=true;
     }
 
-    if(Get_Key(KeyWkUp)==LONG_PRESS_HOLD)
+    if(Get_Key(key3)==LONG_PRESS_HOLD)
     {
         Switch_Menu_State(APP_BREAK);
         if(Dino_IntoState==true)
