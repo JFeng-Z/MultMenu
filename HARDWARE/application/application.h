@@ -1,8 +1,8 @@
-#ifndef _Other_Function_H
-#define _Other_Function_H
+#ifndef _APPLICATION_H
+#define _APPLICATION_H
 
 #include "main.h"
-#include "MenuConfig.h"
+#include "menuConfig.h"
 
 void DialogScaleShow(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 void Draw_Scrollbar(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t r, double min, double max, uint16_t NowValue);

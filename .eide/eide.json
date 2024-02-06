@@ -166,35 +166,44 @@
         "files": [],
         "folders": [
           {
-            "name": "APP",
+            "name": "applictaion",
             "files": [
               {
-                "path": "HARDWARE/APP/AirPlane.c"
+                "path": "HARDWARE/Application/AirPlane.c"
               },
               {
-                "path": "HARDWARE/APP/DinoGame.c"
+                "path": "HARDWARE/Application/application.c"
               },
               {
-                "path": "HARDWARE/APP/Other_Function.c"
+                "path": "HARDWARE/Application/DinoGame.c"
               }
             ],
             "folders": []
           },
           {
-            "name": "ENCODER",
+            "name": "botton",
             "files": [
               {
-                "path": "HARDWARE/Encoder/rotary_encoder.c"
+                "path": "HARDWARE/button/keyDriver.c"
+              },
+              {
+                "path": "HARDWARE/button/multi_button.c"
               }
             ],
             "folders": []
           },
           {
-            "name": "I2cDrive",
+            "name": "disp",
             "files": [
               {
-                "path": "HARDWARE/I2cDrive/disp_dirver.c"
-              },
+                "path": "HARDWARE/disp/dispDirver.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "i2cDrive",
+            "files": [
               {
                 "path": "HARDWARE/I2cDrive/I2cDrive.c"
               }
@@ -202,19 +211,7 @@
             "folders": []
           },
           {
-            "name": "KEY",
-            "files": [
-              {
-                "path": "HARDWARE/KEY/Key_Driver.c"
-              },
-              {
-                "path": "HARDWARE/KEY/multi_button.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "LED",
+            "name": "led",
             "files": [
               {
                 "path": "HARDWARE/LED/bsp_led.c"
@@ -223,7 +220,7 @@
             "folders": []
           },
           {
-            "name": "MENU",
+            "name": "menu",
             "files": [
               {
                 "path": "HARDWARE/MENU/Menu.c"
@@ -232,7 +229,7 @@
             "folders": []
           },
           {
-            "name": "TimerTick",
+            "name": "timerTick",
             "files": [
               {
                 "path": "HARDWARE/TimerTick/TimerTick.c"
@@ -241,19 +238,16 @@
             "folders": []
           },
           {
-            "name": "U8G2Drive",
+            "name": "u8g2Drive",
             "files": [
               {
                 "path": "HARDWARE/U8G2Drive/stm32_u8g2.c"
-              },
-              {
-                "path": "HARDWARE/U8G2Drive/U8g2_User.c"
               }
             ],
             "folders": []
           },
           {
-            "name": "U8G2LIB",
+            "name": "u8g2Lib",
             "files": [
               {
                 "path": "HARDWARE/U8G2LIB/src/mui_u8g2.c"
@@ -388,7 +382,7 @@
             "folders": []
           },
           {
-            "name": "UART",
+            "name": "uart",
             "files": [
               {
                 "path": "HARDWARE/UART/bsp_usart.c"
@@ -580,9 +574,6 @@
           "RTE/_Target 1",
           ".eide/deps",
           "HARDWARE",
-          "HARDWARE/Encoder",
-          "HARDWARE/KEY",
-          "HARDWARE/LED",
           "FreeRTOS/include",
           "FreeRTOS/src",
           "FreeRTOS/port/RVDS/ARM_CM3",
@@ -591,15 +582,18 @@
           "Libraries/CMSIS",
           "Libraries/STM32F10x_StdPeriph_Driver/src",
           "Libraries/STM32F10x_StdPeriph_Driver/inc",
-          "HARDWARE/MENU",
-          "HARDWARE/APP",
           "RTE/_STM32F103",
-          "HARDWARE/I2cDrive",
-          "HARDWARE/TimerTick",
-          "HARDWARE/U8G2Drive",
-          "HARDWARE/UART",
-          "HARDWARE/U8G2LIB/src",
-          "HARDWARE/U8G2LIB/inc"
+          "HARDWARE/application",
+          "HARDWARE/button",
+          "HARDWARE/disp",
+          "HARDWARE/i2cDrive",
+          "HARDWARE/led",
+          "HARDWARE/menu",
+          "HARDWARE/timerTick",
+          "HARDWARE/u8g2Drive",
+          "HARDWARE/u8g2Lib/inc",
+          "HARDWARE/u8g2Lib/src",
+          "HARDWARE/uart"
         ],
         "libList": [],
         "sourceDirList": [],

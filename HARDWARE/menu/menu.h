@@ -3,7 +3,7 @@
 
 #include "stm32f10x.h"
 #include "stdbool.h"
-#include "MenuConfig.h"
+#include "menuConfig.h"
 
 void Menu_Team(void);
 void AddPage(const char *name, xpPage page);
