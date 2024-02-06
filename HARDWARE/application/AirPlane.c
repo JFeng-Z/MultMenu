@@ -1449,7 +1449,6 @@ void AirPlane_Run(xpItem item)
     static uint8_t AirPlane_IntoState=false;
     if(AirPlane_IntoState==false)
     {
-        Tims_delay_ms(20);
         u8g2_InitDisplay(&u8g2);
         u8g2_SetPowerSave(&u8g2, 0);
 

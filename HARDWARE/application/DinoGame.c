@@ -364,8 +364,6 @@ void DinoGame_Run(xpItem item)
     // SysTick_Config(SystemCoreClock/SYS_TICK_PER_SECOND);    
     if(Dino_IntoState==false)
     {
-        Tims_delay_ms(20);
-
         //u8g2_SetFont(&u8g2, u8g2_font_helvB08_tr);
         u8g2_SetFont(&u8g2, u8g2_font_t0_11_mf);
         u8g2_SetFontDirection(&u8g2, 0);

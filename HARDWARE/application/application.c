@@ -26,7 +26,7 @@ void Draw_Scrollbar(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t r, doub
 
 bool Quit_Inspect(void)
 {
-    if(BtnScan() == MENU_ENTER)
+    if(Get_Key(key3) == LONG_PRESS_HOLD)
     {
         Switch_Menu_State(APP_BREAK);
         if(IntoState == true)
