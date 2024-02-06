@@ -31,7 +31,6 @@ void Init(void)
     USART_Config();
     // Timer_Init();
     LED_GPIO_Config();
-    U8G2_Init();
     Menu_Init();
     KEY_GPIO_Config();
     Key_Loading();

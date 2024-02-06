@@ -1443,13 +1443,13 @@ void st_Step(uint8_t player_pos, uint8_t is_auto_fire, uint8_t is_fire)
 /*!
  * @brief Main function
  */
-void AirPlane_Run(void)
+void AirPlane_Run(xpItem item)
 {
     static uint8_t y;
     static uint8_t AirPlane_IntoState=false;
     if(AirPlane_IntoState==false)
     {
-        Tims_delay_ms(10);
+        Tims_delay_ms(20);
         u8g2_InitDisplay(&u8g2);
         u8g2_SetPowerSave(&u8g2, 0);
 
@@ -1463,12 +1463,7 @@ void AirPlane_Run(void)
         y = 128;
         AirPlane_IntoState=true;
     }
-    if(Get_Key(key3)==LONG_PRESS_HOLD)
-    {
-        Switch_Menu_State(APP_BREAK);
-        if(AirPlane_IntoState==true)
-        AirPlane_IntoState=false;
-    }
+
     st_Step(y, /* is_auto_fire */ 1, /* is_fire */ 0);
 
     u8g2_FirstPage(&u8g2);

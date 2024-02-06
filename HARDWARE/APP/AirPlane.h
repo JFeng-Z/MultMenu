@@ -10,6 +10,6 @@
 #include <stdlib.h>  // rand
 #include "Other_Function.h"
 
-void AirPlane_Run(void);
+void AirPlane_Run(xpItem item);
 
 #endif

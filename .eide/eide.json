@@ -193,6 +193,9 @@
             "name": "I2cDrive",
             "files": [
               {
+                "path": "HARDWARE/I2cDrive/disp_dirver.c"
+              },
+              {
                 "path": "HARDWARE/I2cDrive/I2cDrive.c"
               }
             ],

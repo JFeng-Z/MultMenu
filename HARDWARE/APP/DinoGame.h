@@ -10,6 +10,6 @@
 #include <stdlib.h>  // rand
 #include "Other_Function.h"
 
-void DinoGame_Run(void);
+void DinoGame_Run(xpItem item);
 
 #endif

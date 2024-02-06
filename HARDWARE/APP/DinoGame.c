@@ -357,14 +357,14 @@ void draw_DinoGame(void)
 /*!
  * @brief DinoGame_Task function
  */
-void DinoGame_Run(void)
+void DinoGame_Run(xpItem item)
 {
     static uint8_t Dino_IntoState=false;
     /* set systick and start systick interrupt */
     // SysTick_Config(SystemCoreClock/SYS_TICK_PER_SECOND);    
     if(Dino_IntoState==false)
     {
-        Tims_delay_ms(10);
+        Tims_delay_ms(20);
 
         //u8g2_SetFont(&u8g2, u8g2_font_helvB08_tr);
         u8g2_SetFont(&u8g2, u8g2_font_t0_11_mf);
@@ -372,13 +372,6 @@ void DinoGame_Run(void)
         u8g2_SetFontRefHeightAll(&u8g2);
         reset();
         Dino_IntoState=true;
-    }
-
-    if(Get_Key(key3)==LONG_PRESS_HOLD)
-    {
-        Switch_Menu_State(APP_BREAK);
-        if(Dino_IntoState==true)
-        Dino_IntoState=false;
     }
 
     u8g2_FirstPage(&u8g2);
