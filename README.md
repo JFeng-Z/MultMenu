@@ -3,5 +3,5 @@
 开源项目MorepUI，按键检测使用了multibutton库
 按键数为3个，分别为上、下和确认按键，长按确认按键为退出APP
 ## 效果如下
-![image](https://github.com/JFeng-Z/MultMenu/blob/master/Image/img1.jpg)
-![image](https://github.com/JFeng-Z/MultMenu/blob/master/Image/img2.jpg)
+![image](https://github.com/JFeng-Z/MultMenu/blob/master/Image/img1.png)
+![image](https://github.com/JFeng-Z/MultMenu/blob/master/Image/img2.png)
