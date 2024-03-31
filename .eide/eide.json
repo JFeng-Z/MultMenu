@@ -35,6 +35,15 @@
             "files": [],
             "folders": [
               {
+                "name": "MEMMANG",
+                "files": [
+                  {
+                    "path": "FreeRTOS/port/MemMang/heap_4.c"
+                  }
+                ],
+                "folders": []
+              },
+              {
                 "name": "RVDS",
                 "files": [],
                 "folders": [
@@ -48,15 +57,6 @@
                     "folders": []
                   }
                 ]
-              },
-              {
-                "name": "MEMMANG",
-                "files": [
-                  {
-                    "path": "FreeRTOS/port/MemMang/heap_4.c"
-                  }
-                ],
-                "folders": []
               }
             ]
           },
