@@ -8,13 +8,13 @@
 
 #define delay_us(x) Tims_delay_us(x)
 
-void MyI2C_SCL_W_SetState(uint8_t State)
+static void MyI2C_SCL_W_SetState(uint8_t State)
 {
 	GPIO_WriteBit(I2C_PORT, I2C_SCL, (BitAction)State);
 	delay_us(10);
 }
 
-void MyI2C_SDA_W_SetState(uint8_t State)
+static void MyI2C_SDA_W_SetState(uint8_t State)
 {
 	GPIO_WriteBit(I2C_PORT, I2C_SDA, (BitAction)State);
 	delay_us(10);
@@ -41,7 +41,7 @@ void MyI2C_Init(void)
     GPIO_SetBits(I2C_PORT,I2C_SCL|I2C_SDA);
 }
 
-void MyI2C_Start(void)
+static void MyI2C_Start(void)
 {
     MyI2C_SDA_W_SetState(1);
     MyI2C_SCL_W_SetState(1);
@@ -49,14 +49,14 @@ void MyI2C_Start(void)
     MyI2C_SCL_W_SetState(0);
 }
 
-void MyI2C_Stop(void)
+static void MyI2C_Stop(void)
 {
     MyI2C_SDA_W_SetState(0);
     MyI2C_SCL_W_SetState(1);
     MyI2C_SDA_W_SetState(1);
 }
 
-void MyI2C_SendByte(uint8_t Byte)
+static void MyI2C_SendByte(uint8_t Byte)
 {
     uint8_t i;
     for ( i = 0; i < 8; i++)
@@ -80,7 +80,7 @@ uint8_t MyI2C_ResetByte(void)
     return Byte;
 }
 
-void MyI2C_SendAck(uint8_t AckBit)
+static void MyI2C_SendAck(uint8_t AckBit)
 {
     MyI2C_SDA_W_SetState(AckBit);
     MyI2C_SCL_W_SetState(1);

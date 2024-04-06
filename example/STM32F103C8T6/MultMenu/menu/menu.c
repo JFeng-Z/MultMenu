@@ -23,18 +23,7 @@ xItem HomeHead_Item, SystemHead_Item, GamesHead_Item, System_Item, Games_Item, S
 xItem MPU6050_Item, LineKp_Item, LineKi_Item, LineKd_Item, WideKp_Item, WideKi_Item, WideKd_Item, Mode_Item, Contrast_Item, Power_Item, SystemReturn_Item;
 xItem Dino_Item, AirPlane_Item, GamesReturn_Item;
 
-void AddPage(const char *name, xpPage page, xpItem item, xpPage LocalPage, xpPage nextpage, ItemFunction function)
-{
-    static uint8_t ID = 0;
-    page->pageName = name;
-    page->itemHead = NULL;
-    page->itemTail = NULL;
-    page->id = ID++;
-    if (page->id == 0)AddItem(name, LOOP_FUNCTION, NULL, item, LocalPage, nextpage, function);
-    else AddItem(name, PARENTS, NULL, item, LocalPage, nextpage, function);
-}
-
-void AddItem(const char *Name, Item_Type Type, int *Data, xpItem item, xpPage LocalPage, xpPage nextpage, ItemFunction function)
+static void AddItem(const char *Name, Item_Type Type, int *Data, xpItem item, xpPage LocalPage, xpPage nextpage, ItemFunction function)
 {
     item->ItemName = Name;
     item->ItemType = Type;
@@ -66,6 +55,17 @@ void AddItem(const char *Name, Item_Type Type, int *Data, xpItem item, xpPage Lo
     item->id = LocalPage->length;
 }
 
+static void AddPage(const char *name, xpPage page, xpItem item, xpPage LocalPage, xpPage nextpage, ItemFunction function)
+{
+    static uint8_t ID = 0;
+    page->pageName = name;
+    page->itemHead = NULL;
+    page->itemTail = NULL;
+    page->id = ID++;
+    if (page->id == 0)AddItem(name, LOOP_FUNCTION, NULL, item, LocalPage, nextpage, function);
+    else AddItem(name, PARENTS, NULL, item, LocalPage, nextpage, function);
+}
+
 /**
  * @brief 线性增长函数用于坐标移动
  * 
@@ -75,12 +75,12 @@ void AddItem(const char *Name, Item_Type Type, int *Data, xpItem item, xpPage Lo
  * @param Now 当前值
  * @return uint8_t 
  */
-int8_t Line(uint8_t AllTime, uint8_t Time_Now, int8_t Targrt, int8_t Now)
+static int8_t Line(uint8_t AllTime, uint8_t Time_Now, int8_t Targrt, int8_t Now)
 {
     return (Targrt - Now)*Time_Now/AllTime + Now;		
 }
 
-int PID(int Targrt, int Now, Pid_Error *Obj)
+static int PID(int Targrt, int Now, Pid_Error *Obj)
 {
     int x = Now;
     float Kp = (float)(Obj->kp)/1000.00, Ki = (float)(Obj->ki)/1000.00, Kd = (float)(Obj->kd)/1000.00;
@@ -112,14 +112,6 @@ void Draw_DialogBox(uint16_t x,uint16_t y,uint16_t w,uint16_t h)
     OLED_SetDrawColor(BgColor^0x01);
 }
 
-void Draw_DialogRBox(uint16_t x,uint16_t y,uint16_t w,uint16_t h,uint16_t r)
-{
-    OLED_SetDrawColor(BgColor^0x01);
-    OLED_DrawRFrame(x, y, w, h, r);
-    OLED_SetDrawColor(BgColor);
-    OLED_DrawRBox(x+1, y+1, w-2, h-2, r);
-    OLED_SetDrawColor(BgColor^0x01);
-}
 /**
  * @brief 对话框出现函数
  * 
@@ -144,12 +136,22 @@ void DialogScale_Show(uint8_t x,uint8_t y,uint8_t Targrt_w,uint8_t Targrt_h)
     } while (t < Dialog_Time);
 
 }
+
+void Draw_DialogRBox(uint16_t x,uint16_t y,uint16_t w,uint16_t h,uint16_t r)
+{
+    OLED_SetDrawColor(BgColor^0x01);
+    OLED_DrawRFrame(x, y, w, h, r);
+    OLED_SetDrawColor(BgColor);
+    OLED_DrawRBox(x+1, y+1, w-2, h-2, r);
+    OLED_SetDrawColor(BgColor^0x01);
+}
+
 /**
  * @brief 渐变消失函数
  * 
  * 
  */
-uint8_t ui_disapper(uint8_t disapper)
+static uint8_t ui_disapper(uint8_t disapper)
 { 
     short disapper_temp = 0;
     int length = 8 * OLED_GetBufferTileHeight() * OLED_GetBufferTileWidth();
@@ -175,7 +177,7 @@ uint8_t ui_disapper(uint8_t disapper)
  * @param now_item 
  * @param next_item 
  */
-bool Draw_OptionPlace(xpItem now_item, xpItem next_item)
+static bool Draw_OptionPlace(xpItem now_item, xpItem next_item)
 {
     static uint8_t t;
     static uint8_t Now_Lenght;
@@ -193,7 +195,7 @@ bool Draw_OptionPlace(xpItem now_item, xpItem next_item)
     return false;
 }
 
-void Draw_Page(uint8_t pos, xpPage Page, uint8_t LineSpacing, xpItem now_item, xpItem next_item)
+static void Draw_Page(uint8_t pos, xpPage Page, uint8_t LineSpacing, xpItem now_item, xpItem next_item)
 {
     char Data[10] = {0};
     static int16_t first_line = FirstLine;
@@ -225,7 +227,7 @@ void Draw_Page(uint8_t pos, xpPage Page, uint8_t LineSpacing, xpItem now_item, x
     }
 }
 
-void Draw_Menu(uint8_t pos, xpPage Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item)
+static void Draw_Menu(uint8_t pos, xpPage Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item)
 {
     int item_wide = strlen(now_item->ItemName)*6 + 4;
     int item_line = 0;
@@ -287,7 +289,7 @@ void Draw_Menu(uint8_t pos, xpPage Page, uint8_t LineSpacing, xpItem now_item,xp
 
 int Contrast = 255;
 
-void Menu_Team(void)
+static void Menu_Team(void)
 {
     AddPage("[HomePage]", &Home_Page, &HomeHead_Item, &Home_Page, NULL, Draw_Home);
         AddItem(" +System", PARENTS, NULL, &System_Item, &Home_Page, &System_Page, NULL);
@@ -321,7 +323,7 @@ void Switch_Menu_State(Menu_State state)
     MENU_STATE = state;
 }
 /* 填入按键扫描程序 */
-Menu_State BtnScan(void)
+static Menu_State BtnScan(void)
 {
     if(RXD_GetReceiveFlag() == 1)
     {

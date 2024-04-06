@@ -1,5 +1,6 @@
 #include "application.h"
 #include "dispDirver.h"
+#include "bsp_usart.h"
 
 //1为白天模式，0为黑夜模式
 extern uint8_t BgColor;  

@@ -1,6 +1,7 @@
 #include "stm32_u8g2.h"
 #include "menuConfig.h"
 #include "I2cDrive.h"
+#include "TimerTick.h"
 
 #define HARDWARE_I2C
 // #define SOFTWARE_I2C
@@ -114,7 +115,7 @@ void HardWare_I2C2_GPIOInit(void)
 #endif 
 
 #ifdef SOFTWARE_I2C
-uint8_t u8x8_gpio_and_delay(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
+static uint8_t u8x8_gpio_and_delay(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
 {
     switch (msg)
     {
@@ -191,7 +192,7 @@ void u8g2Init(u8g2_t *u8g2)
 }
 
 
-void draw_(u8g2_t *u8g2)
+void Draw_U8G2(u8g2_t *u8g2)
 {
 	u8g2_ClearBuffer(u8g2); 
 	
