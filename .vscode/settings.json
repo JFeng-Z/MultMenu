@@ -1,1 +1,6 @@
-{}
+{
+    "files.associations": {
+        "menuconfig.h": "c",
+        "multi_button.h": "c"
+    }
+}
