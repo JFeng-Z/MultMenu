@@ -5,7 +5,7 @@
 
 u8g2_t u8g2;
 
-void disp_init(void)
+void Disp_Init(void)
 {
     u8g2Init(&u8g2);
     OLED_SetFont(MENU_FONT);

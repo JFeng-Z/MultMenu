@@ -1455,7 +1455,7 @@ void AirPlane_Run(xpItem item)
         u8g2_SetPowerSave(&u8g2, 0);
 
         //u8g2_SetFont(&u8g2, u8g2_font_helvB08_tr);
-        u8g2_SetFont(&u8g2, u8g2_font_6x10_tr);
+        u8g2_SetFont(&u8g2, MENU_FONT);
         u8g2_SetFontDirection(&u8g2, 0);
         u8g2_SetFontRefHeightAll(&u8g2);
 

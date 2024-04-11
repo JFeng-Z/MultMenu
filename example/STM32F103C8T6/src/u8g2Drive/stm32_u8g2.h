@@ -13,7 +13,5 @@
 #include "u8g2.h"
  
 void u8g2Init(u8g2_t *u8g2);
-void Draw_U8G2(u8g2_t *u8g2);
-void testDrawPixelToFillScreen(u8g2_t *u8g2);
 
 #endif

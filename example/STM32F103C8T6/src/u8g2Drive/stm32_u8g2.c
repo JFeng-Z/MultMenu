@@ -22,7 +22,7 @@
 #define OLED_DATA  0x40  
 
 #ifdef HARDWARE_I2C
-uint8_t u8x8_byte_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr) {
+static uint8_t u8x8_byte_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr) {
     uint8_t* data = (uint8_t*) arg_ptr;
     switch(msg) {
         case U8X8_MSG_BYTE_SEND:
@@ -66,7 +66,7 @@ uint8_t u8x8_byte_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_p
     }
     return 1;
 }
-uint8_t u8x8_gpio_and_delay_hw(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr) {
+static uint8_t u8x8_gpio_and_delay_hw(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr) {
     switch (msg) {
         case U8X8_MSG_DELAY_100NANO: // delay arg_int * 100 nano seconds
             break;
@@ -100,7 +100,7 @@ uint8_t u8x8_gpio_and_delay_hw(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
     return 1;
 }
 
-void HardWare_I2C2_GPIOInit(void)
+static void HardWare_I2C2_GPIOInit(void)
 {
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2,ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
@@ -189,50 +189,4 @@ void u8g2Init(u8g2_t *u8g2)
 	u8g2_InitDisplay(u8g2);                                                                       
 	u8g2_SetPowerSave(u8g2, 0);                                                                   
 	u8g2_ClearBuffer(u8g2);
-}
-
-
-void Draw_U8G2(u8g2_t *u8g2)
-{
-	u8g2_ClearBuffer(u8g2); 
-	
-    u8g2_SetFontMode(u8g2, 1); 
-    u8g2_SetFontDirection(u8g2, 0); 
-    u8g2_SetFont(u8g2, u8g2_font_inb24_mf); 
-    u8g2_DrawStr(u8g2, 0, 20, "U");
-    
-    u8g2_SetFontDirection(u8g2, 1);
-    u8g2_SetFont(u8g2, u8g2_font_inb30_mn);
-    u8g2_DrawStr(u8g2, 21,8,"8");
-        
-    u8g2_SetFontDirection(u8g2, 0);
-    u8g2_SetFont(u8g2, u8g2_font_inb24_mf);
-    u8g2_DrawStr(u8g2, 51,30,"g");
-    u8g2_DrawStr(u8g2, 67,30,"\xb2");
-    
-    u8g2_DrawHLine(u8g2, 2, 35, 47);
-    u8g2_DrawHLine(u8g2, 3, 36, 47);
-    u8g2_DrawVLine(u8g2, 45, 32, 12);
-    u8g2_DrawVLine(u8g2, 46, 33, 12);
-  
-    u8g2_SetFont(u8g2, MENU_FONT);
-    u8g2_DrawStr(u8g2, 1,54,"github.com/olikraus/u8g2");
-		
-	u8g2_SendBuffer(u8g2);
-	delay_ms(1000);
-}
-
-
-void testDrawPixelToFillScreen(u8g2_t *u8g2)
-{
-	u8g2_ClearBuffer(u8g2);
-
-  for (int j = 0; j < 64; j++)
-  {
-    for (int i = 0; i < 128; i++)
-    {
-      u8g2_DrawPixel(u8g2,i, j);
-    }
-  }
-  delay_ms(1000);
 }

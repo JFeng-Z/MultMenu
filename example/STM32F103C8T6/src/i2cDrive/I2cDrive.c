@@ -1,11 +1,6 @@
 #include "I2cDrive.h"
 #include "TimerTick.h"
 
-#define I2C_PORT GPIOB
-#define I2C_SCL GPIO_Pin_11
-#define I2C_SDA GPIO_Pin_10
-#define I2C_RCC RCC_APB2Periph_GPIOB
-
 #define delay_us(x) Tims_delay_us(x)
 
 static void MyI2C_SCL_W_SetState(uint8_t State)

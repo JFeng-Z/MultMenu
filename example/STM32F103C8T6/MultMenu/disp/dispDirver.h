@@ -3,7 +3,7 @@
 
 #include "stm32f10x.h"
 
-void disp_init(void);
+void Disp_Init(void);
 void OLED_ClearBuffer(void);
 void OLED_SendBuffer(void);
 uint16_t OLED_GetStrWidth(const char *s);
