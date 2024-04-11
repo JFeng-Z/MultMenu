@@ -7,7 +7,7 @@
 4. SWITCH：  开关型
 5. DATA：  可调参数型  
 - 光标移动使用非线性动画，菜单指示器使用线性动画。
-在菜单数据结构上参考开源项目MorepUI
+在菜单数据结构上参考开源项目：https://github.com/morepray/MorepUI
 # 移植准备
 - 往dispDirver.c中替换你的屏幕驱动，亦可使用example中的移植好的u8g2库。
 - 需在Menu_State BtnScan(void)函数中放入按键扫描程序。
