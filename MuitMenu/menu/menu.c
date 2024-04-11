@@ -3,34 +3,28 @@
 #include "stdlib.h"
 #include "application.h"
 
-Menu_State Page_State;
 //1为白天模式，0为黑夜模式
-uint8_t BgColor = 0x00;  
+uint8_t BgColor;  
 //对话框缓动动画持续时间（次数）
-uint8_t Dialog_Time = 5;
+uint8_t Dialog_Time = 10;
 
-Pid_Error Cursor_Line = {900, 370, 30, 0, 0, 0}, Cursor_Wide = {450, 370, 30, 0, 0, 0};
+Pid_Error Cursor_Line = {600, 370, 30, 0, 0, 0}, Cursor_Wide = {250, 370, 30, 0, 0, 0};
+Animation_Param AnimationParam = {0, 0, 0, 0, 0, 0, 0, false};
 
 /* Page*/
 xPage
     Home_Page, 
-    System_Page;
+    System_Page,
+    Games_Page;
 /* item */
-xItem HomeHead_Item, SystemHead_Item, GamesHead_Item, System_Item, Games_Item, ShowLogo_Item, Github_Item, Bilibili_Item, ReadME_Item;
-xItem MPU6050_Item, LineKp_Item, LineKi_Item, LineKd_Item, WideKp_Item, WideKi_Item, WideKd_Item, Mode_Item, Contrast_Item, Power_Item;
+xItem HomeHead_Item, SystemHead_Item, GamesHead_Item, System_Item, Games_Item, ShowLogo_Item, Github_Item, Bilibili_Item, ReadME_Item, SWITCH1_Item, SWITCH2_Item, SWITCH3_Item, SWITCH4_Item, SWITCH5_Item;
+xItem MPU6050_Item, LineKp_Item, LineKi_Item, LineKd_Item, WideKp_Item, WideKi_Item, WideKd_Item, Mode_Item, Contrast_Item, Power_Item, SystemReturn_Item;
+Menu_State MENU_STATE = MENU_INIT;
+Page_State PAGE_STATE = PAGE_STATIC;
+//初始化为开始菜单项
+xpItem temp_item = &HomeHead_Item, old_item = &HomeHead_Item;
 
-void AddPage(const char *name, xpPage page, xpItem item, xpPage LocalPage, xpPage nextpage, ItemFunction function)
-{
-    static uint8_t ID = 0;
-    page->pageName = name;
-    page->itemHead = NULL;
-    page->itemTail = NULL;
-    page->id = ID++;
-    if (page->id == 0)AddItem(name, LOOP_FUNCTION, NULL, item, LocalPage, nextpage, function);
-    else AddItem(name, PARENTS, NULL, item, LocalPage, nextpage, function);
-}
-
-void AddItem(const char *Name, Item_Type Type, int *Data, xpItem item, xpPage LocalPage, xpPage nextpage, ItemFunction function)
+static void AddItem(const char *Name, Item_Type Type, int *Data, xpItem item, xpPage LocalPage, xpPage nextpage, ItemFunction function)
 {
     item->ItemName = Name;
     item->ItemType = Type;
@@ -60,6 +54,19 @@ void AddItem(const char *Name, Item_Type Type, int *Data, xpItem item, xpPage Lo
         LocalPage->length++;
     }
     item->id = LocalPage->length;
+    LocalPage->itemTail->nextiTem = LocalPage->itemHead;  
+    LocalPage->itemHead->lastiTem = LocalPage->itemTail;
+}
+
+static void AddPage(const char *name, xpPage page, xpItem item, xpPage LocalPage, xpPage nextpage, ItemFunction function)
+{
+    static uint8_t ID;
+    page->pageName = name;
+    page->itemHead = NULL;
+    page->itemTail = NULL;
+    page->id = ID++;
+    if (page->id == 0)AddItem(name, LOOP_FUNCTION, NULL, item, LocalPage, nextpage, function);  //第一页的头跳转至首页
+    else AddItem(name, PARENTS, NULL, item, LocalPage, nextpage, function);
 }
 
 /**
@@ -69,14 +76,14 @@ void AddItem(const char *Name, Item_Type Type, int *Data, xpItem item, xpPage Lo
  * @param Time_Now 当前时间
  * @param Targrt 目标值
  * @param Now 当前值
- * @return uint8_t 
+ * @return int8_t 
  */
-int8_t Line(uint8_t AllTime, uint8_t Time_Now, int8_t Targrt, int8_t Now)
+static int8_t Linear(uint8_t AllTime, uint8_t Time_Now, int8_t Targrt, int8_t Now)
 {
     return (Targrt - Now)*Time_Now/AllTime + Now;		
 }
 
-int PID(int Targrt, int Now, Pid_Error *Obj)
+static int PID(int Targrt, int Now, Pid_Error *Obj)
 {
     int x = Now;
     float Kp = (float)(Obj->kp)/1000.00, Ki = (float)(Obj->ki)/1000.00, Kd = (float)(Obj->kd)/1000.00;
@@ -88,8 +95,50 @@ int PID(int Targrt, int Now, Pid_Error *Obj)
     Obj->last_error = Obj->error;
     return x;
 }
+
+static void Change_MenuState(Menu_State state)
+{
+    MENU_STATE = state;
+}
+
+void Switch_Widget(xpItem item)
+{
+    
+}
+
+void ParamSet_Widget(xpItem item)
+{
+    
+}
+
+static void Item_AnimationParam_Init(void)
+{
+    AnimationParam.Item_NowLine = 0;
+    AnimationParam.Item_NowWide = 0;
+    AnimationParam.Item_TargrtLine = 0;
+    AnimationParam.Item_TargrtWide = 0;
+    AnimationParam.OptionState = false;
+}
+
+static void PID_Param_Init(void)
+{
+    Cursor_Line.error = 0;
+    Cursor_Line.sum_srror = 0;
+    Cursor_Line.last_error = 0;
+    Cursor_Wide.error = 0;
+    Cursor_Wide.sum_srror = 0;
+    Cursor_Wide.last_error = 0;
+}
+
+static void DialogScale_AnimationParam_Init(void)
+{
+    AnimationParam.DialogScale_InitHigh = 0;
+    AnimationParam.DialogScale_InitWide = 0;
+    AnimationParam.DialogScale_time = 0;
+}
+
 //首页
-void Draw_Home(xpItem item)
+static void Draw_Home(xpItem item)
 {
     OLED_ClearBuffer();
     OLED_DrawStr(0, Font_Size, "MultMenu");
@@ -108,44 +157,60 @@ void Draw_DialogBox(uint16_t x,uint16_t y,uint16_t w,uint16_t h)
     OLED_SetDrawColor(BgColor^0x01);
 }
 
-void Draw_DialogRBox(uint16_t x,uint16_t y,uint16_t w,uint16_t h,uint16_t r)
-{
-    OLED_SetDrawColor(BgColor^0x01);
-    OLED_DrawRFrame(x, y, w, h, r);
-    OLED_SetDrawColor(BgColor);
-    OLED_DrawRBox(x+1, y+1, w-2, h-2, r);
-    OLED_SetDrawColor(BgColor^0x01);
-}
 /**
  * @brief 对话框出现函数
  * 
- * @param u8g2 U8G2
  * @param x 初始位置x
  * @param y 初始位置y
  * @param Targrt_w 目标宽度
  * @param Targrt_h 目标高度
  */
-void DialogScale_Show(uint8_t x,uint8_t y,uint8_t Targrt_w,uint8_t Targrt_h)
+bool DialogScale_Show(uint8_t x,uint8_t y,uint8_t Targrt_w,uint8_t Targrt_h)
 {
-    uint8_t t = 0;
-    uint8_t Init_w = 0,Init_h = 0;
-
-    do
+    if (MENU_STATE == APP_DRAWING)
     {
-        t++;
-        Init_w=Line(Dialog_Time, t, Targrt_w, Init_w);
-        Init_h=Line(Dialog_Time, t, Targrt_h, Init_h);
-        Draw_DialogBox(x, y, Init_w, Init_h);
-        OLED_SendBuffer();
-    } while (t < Dialog_Time);
-
+        AnimationParam.DialogScale_time++;
+        AnimationParam.DialogScale_InitWide = Linear(Dialog_Time, AnimationParam.DialogScale_time, Targrt_w, AnimationParam.DialogScale_InitWide);
+        AnimationParam.DialogScale_InitHigh = Linear(Dialog_Time, AnimationParam.DialogScale_time, Targrt_h, AnimationParam.DialogScale_InitHigh);
+        Draw_DialogBox(x, y, AnimationParam.DialogScale_InitWide, AnimationParam.DialogScale_InitHigh);
+    }
+    if (AnimationParam.DialogScale_time == Dialog_Time)
+    {
+        Change_MenuState(APP_RUN);
+        return true;
+    }
+    OLED_SendBuffer();
+    return false;
 }
+
+void Draw_DialogRBox(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r)
+{
+    OLED_SetDrawColor(BgColor^0x01);
+    OLED_DrawRFrame(x, y, w, h, r);
+    OLED_SetDrawColor(BgColor);
+    OLED_DrawRBox(x + 1, y + 1, w - 2, h - 2, r);
+    OLED_SetDrawColor(BgColor^0x01);
+}
+
+void Set_BgColor(uint8_t color)
+{
+    BgColor = color;
+}
+
+//绘制滚动条函数
+void Draw_Scrollbar(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t r, double min, double max, uint16_t NowValue)
+{
+    double value = NowValue * ((w - 6)/(max - min)) + 6;
+    OLED_DrawRBox( x, y, (uint16_t)value, h, r);
+    OLED_DrawRFrame( x, y, w, h, r);
+}
+
 /**
  * @brief 渐变消失函数
  * 
  * 
  */
-uint8_t ui_disapper(uint8_t disapper)
+static uint8_t ui_disapper(uint8_t disapper)
 { 
     short disapper_temp = 0;
     int length = 8 * OLED_GetBufferTileHeight() * OLED_GetBufferTileWidth();
@@ -171,15 +236,15 @@ uint8_t ui_disapper(uint8_t disapper)
  * @param now_item 
  * @param next_item 
  */
-bool Draw_OptionPlace(xpItem now_item, xpItem next_item)
+static bool Draw_OptionPlace(xpItem now_item, xpItem next_item)
 {
     static uint8_t t;
     static uint8_t Now_Lenght;
     static uint8_t Next_Lenght;
     Next_Lenght = (VER_RES / (float)(next_item->location->length)) * next_item->id;
     t++;
-    Now_Lenght = Line(Dialog_Time, t, Next_Lenght, Now_Lenght);
-    OLED_DrawLine(HOR_RES - 7, 0, HOR_RES - 7, 64);
+    Now_Lenght = Linear(Dialog_Time, t, Next_Lenght, Now_Lenght);
+    OLED_DrawLine(HOR_RES - 7, 0, HOR_RES - 7, VER_RES);
     OLED_DrawBox(HOR_RES - 10, 0, 6, Now_Lenght);
     if(t == Dialog_Time)
     {
@@ -189,22 +254,25 @@ bool Draw_OptionPlace(xpItem now_item, xpItem next_item)
     return false;
 }
 
-void Draw_Page(uint8_t pos, xpPage Page, uint8_t LineSpacing, xpItem now_item, xpItem next_item)
+static void Draw_Page(uint8_t pos, xpPage Page, uint8_t LineSpacing, xpItem now_item, xpItem next_item)
 {
     char Data[10] = {0};
     static int16_t first_line = FirstLine;
     xpItem temp = Page->itemHead;
-    //切换页面时变量初始化
-    if(next_item->location != now_item->location)first_line = FirstLine;
-
-    if (Page_State == CURSOR_STATIC)
+    //初次载入时计算坐标
+    if(MENU_STATE == MENU_RUN)
     {
-        if ((next_item->id - now_item->id) > 0)first_line -= ((next_item->id - now_item->id) > (Page->length - MaxVisible_Number)) ? ((Page->length - MaxVisible_Number) * Font_Size) : Font_Size;
-        else first_line += ((now_item->id - next_item->id) > (Page->length - MaxVisible_Number)) ? ((Page->length - MaxVisible_Number) * Font_Size) : Font_Size;
-        Page_State = MENU_MOVE;
-    }
+        //切换页面时变量初始化
+        if(next_item->location != now_item->location)first_line = FirstLine;
 
-    for (uint16_t i = 0; i <= Page->length; i++)
+        if (PAGE_STATE == PAGE_MOVE)
+        {
+            if ((next_item->id - now_item->id) > 0)first_line -= ((next_item->id - now_item->id) > (Page->length - MaxVisible_Number)) ? ((Page->length - MaxVisible_Number) * Font_Size) : Font_Size;
+            else first_line += ((now_item->id - next_item->id) > (Page->length - MaxVisible_Number)) ? ((Page->length - MaxVisible_Number) * Font_Size) : Font_Size;
+            PAGE_STATE = PAGE_STATIC;
+        }
+    }
+   for (uint16_t i = 0; i <= Page->length; i++)
     {
         OLED_DrawStr(pos, first_line + i * LineSpacing, temp->ItemName);
         if(temp->ItemType == SWITCH)
@@ -221,77 +289,70 @@ void Draw_Page(uint8_t pos, xpPage Page, uint8_t LineSpacing, xpItem now_item, x
     }
 }
 
-void Draw_Menu(uint8_t pos, xpPage Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item)
+static void Draw_Menu(uint8_t pos, xpPage Page, uint8_t LineSpacing, xpItem now_item,xpItem next_item)
 {
-    int item_wide = strlen(now_item->ItemName)*6 + 4;
-    int item_line = 0;
-    static int Targrt_line, Targrt_wide;
-    static bool first = true;     //初始状态
-
-    OLED_SetMaxClipWindow();
-
-    Page->itemTail->nextiTem = Page->itemHead;  
-    Page->itemHead->lastiTem = Page->itemTail;
-    
-    if(next_item->location != now_item->location)        //切换页面时变量初始化
+    //初次载入时计算坐标
+    if(MENU_STATE == MENU_RUN)
     {
-        item_line = 0;
-        Targrt_line = 0;
-        first = true;
-        Page_State = MENU_RUN;
-    }
-    if ((next_item->id == now_item->id && first == true) || next_item->location != now_item->location)
-    {
-        Targrt_line = 0;
-        first = false;
-    }
-    else if (next_item->id > now_item->id)
-    {
-        Targrt_line += ((next_item->id - now_item->id)*Font_Size);
-        if (Targrt_line > LINE_MAX)  //防止光标溢出可视范围
+        AnimationParam.Item_NowWide  = strlen(now_item->ItemName)*6 + 4;
+        if(next_item->location != now_item->location)        //切换页面时变量初始化
         {
-            Page_State = CURSOR_STATIC;
-            Targrt_line = LINE_MAX;
+            Item_AnimationParam_Init();
+            PAGE_STATE = PAGE_STATIC;
+        }
+        else if (next_item->id > now_item->id)
+        {
+            AnimationParam.Item_TargrtLine += ((next_item->id - now_item->id)*Font_Size);
+            if (AnimationParam.Item_TargrtLine > LINE_MAX)  //防止光标溢出可视范围
+            {
+                PAGE_STATE = PAGE_MOVE;
+                AnimationParam.Item_TargrtLine = LINE_MAX;
+            }
+        }
+        else if(next_item->id < now_item->id)
+        {
+            AnimationParam.Item_TargrtLine -= ((now_item->id - next_item->id)*Font_Size);
+            if (AnimationParam.Item_TargrtLine < 0)  //防止光标溢出可视范围
+            {
+                PAGE_STATE = PAGE_MOVE;
+                AnimationParam.Item_TargrtLine = 0;
+            }
         }
     }
-    else if(next_item->id < now_item->id)
+
+    AnimationParam.Item_TargrtWide = OLED_GetStrWidth(next_item->ItemName) + 3;
+
+    //整体菜单绘制
+    OLED_ClearBuffer();
+    OLED_SetDrawColor(BgColor);
+    OLED_DrawBox(0, 0, 128, 64);
+    OLED_SetDrawColor(BgColor^0x01);
+    AnimationParam.OptionState = Draw_OptionPlace(now_item, next_item);
+    Draw_Page(pos, Page, LineSpacing, now_item, next_item);
+    OLED_SetDrawColor(2);
+    AnimationParam.Item_NowLine = PID(AnimationParam.Item_TargrtLine, AnimationParam.Item_NowLine, &Cursor_Line);
+    AnimationParam.Item_NowWide = PID(AnimationParam.Item_TargrtWide, AnimationParam.Item_NowWide, &Cursor_Wide);
+    OLED_DrawRBox(pos+1, AnimationParam.Item_NowLine+1, AnimationParam.Item_NowWide, Font_Size, 4);
+    OLED_SendBuffer();
+
+    Change_MenuState(MENU_DRAWING);
+    if ((AnimationParam.Item_NowLine == AnimationParam.Item_TargrtLine) && (AnimationParam.Item_NowWide == AnimationParam.Item_TargrtWide) && (AnimationParam.OptionState == true))
     {
-        Targrt_line -= ((now_item->id - next_item->id)*Font_Size);
-        if (Targrt_line < 0)  //防止光标溢出可视范围
-        {
-            Page_State = CURSOR_STATIC;
-            Targrt_line = 0;
-        }
-    }
-    Targrt_wide = OLED_GetStrWidth(next_item->ItemName) + 3;
-    bool OpState = false;
-    while (item_line != Targrt_line || OpState == false || item_wide != Targrt_wide)
-    {       
-        OLED_ClearBuffer();
-        OLED_SetDrawColor(BgColor);
-        OLED_DrawBox(0, 0, 128, 64);
-        OLED_SetDrawColor(BgColor^0x01);
-        OpState = Draw_OptionPlace(now_item, next_item);
-        Draw_Page(pos, Page, LineSpacing, now_item, next_item);
-        OLED_SetDrawColor(2);
-        item_line = PID(Targrt_line, item_line, &Cursor_Line);
-        item_wide = PID(Targrt_wide, item_wide, &Cursor_Wide);
-        OLED_DrawRBox(pos+1, item_line+1, item_wide, Font_Size, 4);
-        OLED_SendBuffer();
+        Change_MenuState(MENU_RUN);
     }
 }
 
 int Contrast = 255;
 
-void Menu_Team(void)
+static void Menu_Team(void)
 {
     AddPage("[HomePage]", &Home_Page, &HomeHead_Item, &Home_Page, NULL, Draw_Home);
         AddItem(" +System", PARENTS, NULL, &System_Item, &Home_Page, &System_Page, NULL);
             AddPage("[System]", &System_Page, &SystemHead_Item, &System_Page, &Home_Page, NULL);
                 AddItem(" -MPU6050", LOOP_FUNCTION, NULL, &MPU6050_Item, &System_Page, NULL, Show_MPU6050);
-                AddItem(" -Line Kp", DATA, &Cursor_Line.kp, &LineKp_Item, &System_Page, NULL, Setting_Pid);
-                AddItem(" -Line Ki", DATA, &Cursor_Line.ki, &LineKi_Item, &System_Page, NULL, Setting_Pid);
-                AddItem(" -Line Kd", DATA, &Cursor_Line.kd, &LineKd_Item, &System_Page, NULL, Setting_Pid);
+                AddItem(" -Linear Kp", DATA, &Cursor_Line.kp, &LineKp_Item, &System_Page, NULL, Setting_Pid);
+                AddItem(" -Linear Ki", DATA, &Cursor_Line.ki, &LineKi_Item, &System_Page, NULL, Setting_Pid);
+                AddItem(" -Linear Kd", DATA, &Cursor_Line.kd, &LineKd_Item, &System_Page, NULL, Setting_Pid);
                 AddItem(" -Wide Kp", DATA, &Cursor_Wide.kp, &WideKp_Item, &System_Page, NULL, Setting_Pid);
                 AddItem(" -Wide Ki", DATA, &Cursor_Wide.ki, &WideKi_Item, &System_Page, NULL, Setting_Pid);
                 AddItem(" -Wide Kd", DATA, &Cursor_Wide.kd, &WideKd_Item, &System_Page, NULL, Setting_Pid);
@@ -302,87 +363,94 @@ void Menu_Team(void)
         AddItem(" -Github", LOOP_FUNCTION, NULL, &Github_Item, &Home_Page, NULL, Show_GitHub);
         AddItem(" -Bilibili", LOOP_FUNCTION, NULL, &Bilibili_Item, &Home_Page, NULL, Show_Bilibili);
         AddItem(" -ReadME", LOOP_FUNCTION, NULL, &ReadME_Item, &Home_Page, NULL, Show_Bilibili);
+        AddItem(" -SWITCH1", SWITCH, NULL, &SWITCH1_Item, &Home_Page, NULL, NULL);
+        AddItem(" -SWITCH2", SWITCH, NULL, &SWITCH2_Item, &Home_Page, NULL, NULL);
+        AddItem(" -SWITCH3", SWITCH, NULL, &SWITCH3_Item, &Home_Page, NULL, NULL);
+        AddItem(" -SWITCH4", SWITCH, NULL, &SWITCH4_Item, &Home_Page, NULL, NULL);
+        AddItem(" -SWITCH5", SWITCH, NULL, &SWITCH5_Item, &Home_Page, NULL, NULL);
 }
 
-Menu_State MENU_STATE = MENU_RUN;
-//初始化为开始菜单项
-xpItem temp_item = &HomeHead_Item;
-
-void Switch_Menu_State(Menu_State state)
-{
-    MENU_STATE = state;
-}
 /* 填入按键扫描程序 */
-Menu_State BtnScan(void)
+static Menu_Direction BtnScan(void)
 {
-    if(RXD_GetReceiveFlag() == 1)
-    {
-        uint8_t data = RXD_GetReceiveData();
-        switch (data)
-        {
-        case MENU_UP:
-            return MENU_UP;
-        case MENU_DOWN:
-            return MENU_DOWN;
-        case MENU_ENTER:
-            return MENU_ENTER;
-        default:
-            break;
-        }
-    }
-    return MENU_NONE;
+    // if(RXD_GetReceiveFlag() == 1)
+    // {
+    //     uint8_t data = RXD_GetReceiveData();
+    //     switch (data)
+    //     {
+    //     case MENU_UP:
+    //         return MENU_UP;
+    //     case MENU_DOWN:
+    //         return MENU_DOWN;
+    //     case MENU_ENTER:
+    //         return MENU_ENTER;
+    //     default:
+    //         break;
+    //     }
+    // }
+    // return MENU_NONE;
 }
 
-void Process_Menu_Run(Menu_State Dir)
+void Process_Menu_Run(Menu_Direction Dir)
 {
-    uint8_t disapper = 1;
+    uint8_t disapper = 0;
     if (MENU_STATE == MENU_RUN)
     {
         switch (Dir)
         {
         case MENU_UP:
             Draw_Menu(FirstPos, temp_item->location, Font_Size, temp_item, temp_item->lastiTem);
+            old_item = temp_item;
             temp_item = temp_item->lastiTem;
             break;
         case MENU_DOWN:
             Draw_Menu(FirstPos, temp_item->location, Font_Size, temp_item, temp_item->nextiTem);
+            old_item = temp_item;
             temp_item = temp_item->nextiTem;
             break;
         case MENU_ENTER:
             if(temp_item->ItemType == PARENTS)
             {
-                Switch_Menu_State(MENU_RUN);
+                Change_MenuState(MENU_RUN);
                 for (size_t i = 0; i < 8; i++)
                 {
                     disapper = ui_disapper(disapper);
                 }
                 Draw_Menu(FirstPos, temp_item->JumpPage, Font_Size, temp_item, temp_item->JumpPage->itemHead);
+                old_item = temp_item;
                 temp_item = temp_item->JumpPage->itemHead;
             }
             else
             {
-                ui_disapper(disapper);
-                Switch_Menu_State(APP_RUN);
+                ui_disapper(1);
+                Change_MenuState(APP_DRAWING);
             }
         default:
             break;
         }
     }
-    else if(MENU_STATE == APP_BREAK)
+    else if(MENU_STATE == APP_QUIT)
     {
-        if(Dir == MENU_ENTER)
+        DialogScale_AnimationParam_Init();
+        Change_MenuState(MENU_RUN);
+        for (size_t i = 0; i < 8; i++)
         {
-            Switch_Menu_State(MENU_RUN);
-            for (size_t i = 0; i < 8; i++)
-            {
-                disapper = ui_disapper(disapper);
-            }
-            Draw_Menu(FirstPos, temp_item->location, Font_Size, temp_item, temp_item);
+            disapper = ui_disapper(disapper);
+        }
+        Draw_Menu(FirstPos, temp_item->location, Font_Size, temp_item, temp_item);
+    }
+    else if (MENU_STATE == MENU_DRAWING)
+    {
+        Draw_Menu(FirstPos, temp_item->location, Font_Size, old_item, temp_item);
+        if (Dir != MENU_NONE)
+        {
+            Change_MenuState(MENU_RUN);
+            Process_Menu_Run(Dir);
         }
     }
 }
 
-void Process_App_Run(xpItem item, Menu_State State)
+void Process_App_Run(xpItem item, Menu_Direction State)
 {
     item->state = State;
     switch (item->ItemType)
@@ -390,13 +458,13 @@ void Process_App_Run(xpItem item, Menu_State State)
     case DATA:
     case LOOP_FUNCTION:
         (item->itemFunction)(item);
-        if(item->state == MENU_ENTER)AppBreak();
+        if(item->state == MENU_ENTER)Change_MenuState(APP_QUIT);
         break;
     case SWITCH:
         item->SwitchState = ! item->SwitchState;
     case ONCE_FUNCTION:
-        (item->itemFunction)(item);
-        AppBreak();
+        if (item->itemFunction != NULL)(item->itemFunction)(item);
+        Change_MenuState(APP_QUIT);
         break;
     default:
         break;
@@ -405,31 +473,30 @@ void Process_App_Run(xpItem item, Menu_State State)
 
 void Menu_Task(void)
 {
-    static bool Start;
-    Menu_State Dir = BtnScan();
-    if (Start == true)
+    Menu_Direction Dir = BtnScan();
+    if (MENU_STATE == MENU_INIT && Dir != MENU_NONE)
+    {
+        Draw_Menu(FirstPos, temp_item->location, Font_Size, temp_item, temp_item);
+    }
+    else
     {
         switch (MENU_STATE)
         {
-            case APP_RUN:
+            case APP_RUN:case APP_DRAWING:
                 Process_App_Run(temp_item, Dir);
-            case MENU_RUN:case APP_BREAK:
+            case MENU_RUN:case APP_QUIT:case MENU_DRAWING:
                 Process_Menu_Run(Dir);
                 break;
             default:
                 break;
         }
     }
-    if (Dir != MENU_NONE && Start == false)
-    {
-        Draw_Menu(FirstPos, temp_item->location, Font_Size, temp_item, temp_item);
-        Start = true;
-    }
 }
 
 void Menu_Init(void)
 {
-    disp_init();
+    Disp_Init();
     Menu_Team();
     Draw_Home(NULL);
+    printf("MultMenu demo\n");
 }
