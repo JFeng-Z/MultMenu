@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>lib\cmsis;.eide\deps;MultMenu\application;MultMenu\disp;MultMenu\menu;src;src\u8g2Drive;src\u8g2Lib\inc;src\led;src\uart;src\button;src\timerTick;src\u8g2Lib\src;src\i2cDrive;hal\STM32F10x_StdPeriph_Driver;hal\STM32F10x_StdPeriph_Driver\src;hal\STM32F10x_StdPeriph_Driver\inc</IncludePath>
+              <IncludePath>lib\cmsis;.eide\deps;MultMenu\application;MultMenu\disp;MultMenu\menu;src;src\u8g2Drive;src\u8g2Lib\inc;src\led;src\uart;src\button;src\timerTick;src\SEGGER_RTT;src\encoder;src\u8g2Lib\src;src\i2cDrive;hal\STM32F10x_StdPeriph_Driver;hal\STM32F10x_StdPeriph_Driver\src;hal\STM32F10x_StdPeriph_Driver\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -367,7 +367,7 @@
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>d:\MultMenu\example\STM32F103C8T6\undefined</ScatterFile>
+            <ScatterFile>undefined</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -384,16 +384,6 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>src/main.c</FilePath>
-            </File>
-            <File>
-              <FileName>SEGGER_RTT.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>src/SEGGER_RTT.c</FilePath>
-            </File>
-            <File>
-              <FileName>SEGGER_RTT_printf.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>src/SEGGER_RTT_printf.c</FilePath>
             </File>
             <File>
               <FileName>startup_stm32f10x_md.s</FileName>
@@ -658,12 +648,17 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>SRC/LED</GroupName>
+          <GroupName>SRC/SEGGER_RTT</GroupName>
           <Files>
             <File>
-              <FileName>bsp_led.c</FileName>
+              <FileName>SEGGER_RTT.c</FileName>
               <FileType>1</FileType>
-              <FilePath>src/led/bsp_led.c</FilePath>
+              <FilePath>src/SEGGER_RTT/SEGGER_RTT.c</FilePath>
+            </File>
+            <File>
+              <FileName>SEGGER_RTT_printf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>src/SEGGER_RTT/SEGGER_RTT_printf.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -678,17 +673,12 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>SRC/BUTTON</GroupName>
+          <GroupName>SRC/ENCODER</GroupName>
           <Files>
             <File>
-              <FileName>keyDriver.c</FileName>
+              <FileName>rotary_encoder.c</FileName>
               <FileType>1</FileType>
-              <FilePath>src/button/keyDriver.c</FilePath>
-            </File>
-            <File>
-              <FileName>multi_button.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>src/button/multi_button.c</FilePath>
+              <FilePath>src/encoder/rotary_encoder.c</FilePath>
             </File>
           </Files>
         </Group>
