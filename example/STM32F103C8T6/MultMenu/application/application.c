@@ -4,7 +4,7 @@
 
 void White_Dark_Day(xpItem item)
 {
-    Set_BgColor(item->SwitchState);
+    Set_BgColor(item->switchState);
 }
 
 void Show_MPU6050(xpItem item)
@@ -59,11 +59,11 @@ void Setting_Pid(xpItem item)
     
     if (DialogScale_Show(4, 12, 120, 32))
     {
-        if(item->state == MENU_UP){item->state = MENU_NONE;(*item->data) += 10;}
-        if(item->state == MENU_DOWN){item->state = MENU_NONE;(*item->data) -= 10;}
-        sprintf(value, "Value: %d", (*item->data));
+        if(item->state == MENU_UP){item->state = MENU_NONE;(*item->data.ptr) += 10;}
+        if(item->state == MENU_DOWN){item->state = MENU_NONE;(*item->data.ptr) -= 10;}
+        sprintf(value, "Value: %d", (*item->data.ptr));
         OLED_DrawStr(8, 25, value);
-        Draw_Scrollbar(8, 30, 90, 6, 3, -1000, 1000, (*item->data));
+        Draw_Scrollbar(8, 30, 90, 6, 3, -1000, 1000, (*item->data.ptr));
         OLED_SendBuffer();
     }
 
@@ -116,19 +116,19 @@ void Setting_Contrast(xpItem item)
     char contrast[20];
     if(DialogScale_Show(4, 12, 120, 32))
     {
-        if((item->state == MENU_UP) && (*item->data) < 255)(*item->data) ++;
-        if((item->state == MENU_DOWN) && (*item->data) > 0)(*item->data) --;
+        if((item->state == MENU_UP) && (*item->data.ptr) < 255)(*item->data.ptr) ++;
+        if((item->state == MENU_DOWN) && (*item->data.ptr) > 0)(*item->data.ptr) --;
 
-        sprintf(contrast, "Contrast = %d", (*item->data));
+        sprintf(contrast, "Contrast = %d", (*item->data.ptr));
         OLED_DrawStr(8, 25, contrast);
 
-        Draw_Scrollbar(8, 30, 90, 6, 3, 0, 255, (*item->data));
-        OLED_SetContrast((*item->data));
+        Draw_Scrollbar(8, 30, 90, 6, 3, 0, 255, (*item->data.ptr));
+        OLED_SetContrast((*item->data.ptr));
         OLED_SendBuffer();
     }
 }
 
 void PowerSave(xpItem item)
 {
-    OLED_SetPowerSave(item->SwitchState);
+    OLED_SetPowerSave(item->switchState);
 }

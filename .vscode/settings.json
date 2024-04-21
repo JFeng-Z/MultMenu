@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "menuconfig.h": "c",
-        "multi_button.h": "c"
+        "multi_button.h": "c",
+        "stdbool.h": "c"
     }
 }
