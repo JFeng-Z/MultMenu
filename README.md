@@ -16,9 +16,9 @@
 # Example
 基于STM32F103C8T6，使用硬件I2C2驱动0.96寸OLED(SSD1306)，按键为串口虚拟按键
 其中：
-- 0x00为上移按键
-- 0x01为下移按键
-- 0x02为确认按键
+- 0x01为上移按键
+- 0x02为下移按键
+- 0x03为确认按键
 # 效果如下
 ![image](https://github.com/JFeng-Z/MultMenu/blob/master/Image/img1.png)
 ![image](https://github.com/JFeng-Z/MultMenu/blob/master/Image/img2.png)
