@@ -2,7 +2,6 @@
 #include "bsp_usart.h"
 #include "TimerTick.h"
 #include "menu.h"
-
 int main()
 {
     USART_Config();

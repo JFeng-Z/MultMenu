@@ -39,9 +39,9 @@ void TIM2_IRQHandler(void)
     {
         // 清除中断标志位
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-        g_SystemTicks++;
-        tims++;
-        if(tims>5){Menu_Task();tims=0;}
+        g_SystemTicks ++;
+        tims ++;
+        if(tims > 10){Menu_Task();tims = 0;}
     }
 }
 
