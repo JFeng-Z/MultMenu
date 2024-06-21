@@ -5,14 +5,16 @@
 2. LOOP_FUNCTION： 循环运行某项功能
 3. ONCE_FUNCTION：  单次运行某项功能
 4. SWITCH：  开关型
-5. DATA：  可调参数型  
-- 光标移动使用非线性动画，菜单指示器使用线性动画。
+5. DATA：  可调参数型
+6. RETURN:  用于上级返回
+- 全局使用非线性动画（类PID控制器）
 在菜单数据结构上参考开源项目：https://github.com/morepray/MorepUI
 # 移植准备
-- 往dispDirver.c中替换你的屏幕驱动，亦可使用example中的移植好的u8g2库。
+- 往dispDirver.c中替换你的屏幕驱动，亦可使用example中的移植的u8g2库。
 - 需在Menu_State BtnScan(void)函数中放入按键扫描程序。
-- 在新增菜单项时，应在menu.c中定义菜单所在页面(page)和菜单项(item)，然后在Menu_Team中通过AddPage、AddItem加入。
-- 最后将Menu_Init()和Menu_Task()放入你的程序中。
+- 在新增菜单项时，应在menu.c中定义菜单所在页面(page)和菜单项(item)，然后在Craete_MenuTree中通过AddPage、AddItem加入。
+- 建立一个xMenu类型的全局结构体
+- 最后将Menu_Init和Menu_Loop放入你的程序中。
 # Example
 基于STM32F103C8T6，使用硬件I2C2驱动0.96寸OLED(SSD1306)，按键为串口虚拟按键
 其中：
