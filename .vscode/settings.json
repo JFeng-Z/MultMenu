@@ -3,6 +3,7 @@
         "menuconfig.h": "c",
         "multi_button.h": "c",
         "stdbool.h": "c",
-        "bsp_usart.h": "c"
+        "bsp_usart.h": "c",
+        "menu.h": "c"
     }
 }

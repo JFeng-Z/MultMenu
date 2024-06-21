@@ -188,7 +188,7 @@ static void Draw_Home(xpMenu Menu)
     OLED_DrawStr(0, Font_Size, "MultMenu");
     OLED_DrawStr(0, Font_Size*2, "Author:ZhangJianFeng");
     OLED_DrawStr(0, Font_Size*3, "Wait button...");
-    OLED_DrawStr(50, Font_Size*5, "Version:1.0.0");
+    OLED_DrawStr(50, Font_Size*5, "Version:2.0.0");
     OLED_SendBuffer();
 }
 
