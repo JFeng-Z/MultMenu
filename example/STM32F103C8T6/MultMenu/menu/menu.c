@@ -8,7 +8,7 @@
 /* Page*/
 xPage Home_Page, System_Page, CursorAnimation_Page, SettingTextPage_Page, SettingImagePage_Page, Games_Page;
 /* item */
-xItem HomeHead_Item, SystemHead_Item, GamesHead_Item, System_Item, Games_Item, ShowLogo_Item, Github_Item, Bilibili_Item, ReadME_Item;
+xItem HomeHead_Item, SystemHead_Item, GamesHead_Item, System_Item, Games_Item, Image_Item, Github_Item, Bilibili_Item, ReadME_Item;
 xItem CursorAnimationHead_Item, CursorKp_Item, CursorKi_Item, CursorKd_Item;
 xItem SettingTextPageHead_Item, TextSpace_Item;
 xItem SettingImagePageHead_Item, ImageSpace_Item;
@@ -16,14 +16,14 @@ xItem MPU6050_Item, CursorAnimation_Item, SettingTextPage_Item, SettingImagePage
 xItem Dino_Item, AirPlane_Item;
 
 const uint8_t Presets_Logo [] = {
-	0xff, 0xff, 0xff, 0x3f, 0xff, 0xe3, 0xff, 0x3f, 0xff, 0x00, 0xfc, 0x3f, 0x3f, 0x04, 0xf0, 0x3f, 
-	0x1f, 0x91, 0xe2, 0x3f, 0x4f, 0x02, 0xc8, 0x3f, 0xa7, 0x20, 0x01, 0x3f, 0x93, 0x7e, 0x14, 0x3e, 
-	0x13, 0xff, 0x90, 0x3c, 0x21, 0x9f, 0x20, 0x38, 0x49, 0x4c, 0x84, 0x39, 0xc1, 0xe3, 0x11, 0x38, 
-	0x81, 0xd3, 0x40, 0x38, 0xb1, 0xd7, 0x09, 0x38, 0xef, 0xf7, 0x03, 0x38, 0xcb, 0xf3, 0x9b, 0x3c, 
-	0x13, 0x48, 0x64, 0x3e, 0x67, 0x86, 0x61, 0x3f, 0xc7, 0xb0, 0x59, 0x3f, 0xd7, 0xce, 0x41, 0x38, 
-	0xe7, 0xf9, 0x37, 0x32, 0xef, 0xbf, 0x9f, 0x20, 0xcf, 0xe7, 0x46, 0x29, 0x0f, 0x03, 0x40, 0x1b, 
-	0x1f, 0x00, 0x80, 0x24, 0x0f, 0x00, 0x88, 0x24, 0x4f, 0x00, 0x08, 0x2d, 0x47, 0x00, 0x0c, 0x31, 
-	0x47, 0x04, 0x04, 0x3d, 0xff, 0xff, 0xff, 0x3f
+	0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 
+	0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 0xcf, 0xff, 0xff, 0x3f, 
+	0xcf, 0xff, 0xff, 0x3f, 0xcf, 0x3f, 0xff, 0x3f, 0xcf, 0x1f, 0xff, 0x3f, 0xcf, 0x8f, 0xff, 0x3f, 
+	0xcf, 0xe7, 0xff, 0x3f, 0xcf, 0xf3, 0xff, 0x3f, 0xcf, 0x01, 0x00, 0x3c, 0xcf, 0x01, 0x00, 0x3c, 
+	0xcf, 0xf3, 0xff, 0x3f, 0xcf, 0xe7, 0xff, 0x3f, 0xcf, 0x8f, 0xff, 0x3f, 0xcf, 0x1f, 0xff, 0x3f, 
+	0xcf, 0x3f, 0xff, 0x3f, 0xcf, 0xff, 0xff, 0x3f, 0xcf, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 
+	0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 
+	0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f
 };
 
 /**
@@ -208,11 +208,10 @@ void Draw_DialogBox(xpMenu Menu, uint16_t x,uint16_t y,uint16_t w,uint16_t h)
 {
     // 设置绘制边框的颜色，并绘制边框
     OLED_SetDrawColor(Menu->bgColor^0x01);
-    OLED_DrawFrame(x, y, w, h);
-    
+    OLED_DrawBox(x, y, w, h);
     // 设置绘制背景的颜色，并绘制背景盒
     OLED_SetDrawColor(Menu->bgColor);
-    OLED_DrawBox(x+1, y+1, w-2, h-2);
+    OLED_DrawBox(x+1, y+1, Menu->_dialogScale.now_wide-2, Menu->_dialogScale.now_high-2);
     
     // 设置边框高亮颜色（通常与背景色异或得到），用于强调边框
     OLED_SetDrawColor(Menu->bgColor^0x01);
@@ -245,7 +244,7 @@ bool DialogScale_Show(xpMenu Menu, int16_t x,int16_t y,int16_t Targrt_w,int16_t 
     }
 
     // 当动画时间达到预设的对话框显示时间时，切换到应用运行状态
-    if (Menu->_dialogScale.now_wide >= (Targrt_w - 5) && Menu->_dialogScale.now_high >= (Targrt_h - 5))
+    if (Menu->_dialogScale.now_wide >= (Targrt_w - 2) && Menu->_dialogScale.now_high >= (Targrt_h - 2))
     {
         Change_MenuState(Menu, APP_RUN);
         return true;
@@ -723,7 +722,7 @@ static void Draw_ImagePage(xpMenu Menu, xpPage Page, xpItem now_item, xpItem nex
         OLED_DrawXBMP(temp_item->Animation_x, 12, IMG_WIDTH, IMG_HEIGHT, temp_item->image);
         temp_item = temp_item->nextItem;
     }
-    OLED_DrawStr(0, 60, next_item->itemName);
+    OLED_DrawStr(0, VER_RES - 3, next_item->itemName);
     OLED_SetDrawColor(2); // 设置特定的颜色，通常用于高亮显示
     // 根据目标位置和当前位置，以及PID算法计算并更新当前选项的位置和宽度
     Menu->_cursor.NowColumn = PID_Animation(Menu->_cursor.TargrtColumn, Menu->_cursor.NowColumn, &Menu->_animation.ImagePage_Cursor);
@@ -794,7 +793,7 @@ static void Craete_MenuTree(xpMenu Menu)
 {
     AddPage("[HomePage]", &Home_Page, IMAGE);
         AddItem("[HomePage]", LOOP_FUNCTION, NULL, NULL, &HomeHead_Item, &Home_Page, NULL, Draw_Home);
-        AddItem(" +System", PARENTS, NULL, logo1, &System_Item, &Home_Page, &System_Page, NULL);
+        AddItem(" +System", PARENTS, NULL, logo_allArray[8], &System_Item, &Home_Page, &System_Page, NULL);
             AddPage("[System]", &System_Page, TEXT);
                 AddItem("[System]", RETURN, NULL, NULL, &SystemHead_Item, &System_Page, &Home_Page, NULL);
                 AddItem(" -MPU6050", LOOP_FUNCTION, NULL, NULL, &MPU6050_Item, &System_Page, NULL, Show_MPU6050);
@@ -811,19 +810,19 @@ static void Craete_MenuTree(xpMenu Menu)
                         AddItem("[Setting Image]", RETURN, NULL, NULL, &SettingImagePageHead_Item, &SettingImagePage_Page, &System_Page, NULL);
                         AddItem(" -Image Space", DATA, &Menu->image_space, NULL, &ImageSpace_Item, &SettingImagePage_Page, NULL, Setting_Space);
                 AddItem(" -Power", SWITCH, NULL, NULL, &Power_Item, &System_Page, NULL, PowerSave);
-        AddItem(" +Games", PARENTS, NULL, logo1, &Games_Item, &Home_Page, &Games_Page, NULL);
+        AddItem(" +Games", PARENTS, NULL, logo_allArray[4], &Games_Item, &Home_Page, &Games_Page, NULL);
             AddPage("[Games]", &Games_Page, IMAGE);
                 AddItem("[Games]", RETURN, NULL, NULL, &GamesHead_Item, &Games_Page, &Home_Page, NULL);
-                AddItem(" -DinoGame", LOOP_FUNCTION, NULL, logo1, &Dino_Item, &Games_Page, NULL, DinoGame_Run);
-                AddItem(" -AirPlane", LOOP_FUNCTION, NULL, logo1, &AirPlane_Item, &Games_Page, NULL, AirPlane_Run);
-        AddItem(" +Setting Text", PARENTS, NULL, logo1, &SettingTextPage_Item, &Home_Page, &SettingTextPage_Page, NULL);
+                AddItem(" -DinoGame", LOOP_FUNCTION, NULL, logo_allArray[3], &Dino_Item, &Games_Page, NULL, DinoGame_Run);
+                AddItem(" -AirPlane", LOOP_FUNCTION, NULL, logo_allArray[0], &AirPlane_Item, &Games_Page, NULL, AirPlane_Run);
+        AddItem(" +Setting Text", PARENTS, NULL, logo_allArray[1], &SettingTextPage_Item, &Home_Page, &SettingTextPage_Page, NULL);
             AddPage("[Setting Text]", &SettingTextPage_Page, IMAGE);
                 AddItem("[Setting Text]", RETURN, NULL, NULL, &SettingTextPageHead_Item, &SettingTextPage_Page, &Home_Page, NULL);
-                AddItem(" -Text Space", DATA, &Menu->text_space, logo1, &TextSpace_Item, &SettingTextPage_Page, NULL, Setting_Space);                
-        AddItem(" -ShowLogo", LOOP_FUNCTION, NULL, logo1, &ShowLogo_Item, &Home_Page, NULL, Show_Log);
-        AddItem(" -Github", LOOP_FUNCTION, NULL, logo1, &Github_Item, &Home_Page, NULL, Show_GitHub);
-        AddItem(" -Bilibili", LOOP_FUNCTION, NULL, logo1, &Bilibili_Item, &Home_Page, NULL, Show_Bilibili);
-        AddItem(" -ReadME", LOOP_FUNCTION, NULL, logo1, &ReadME_Item, &Home_Page, NULL, Show_Bilibili);
+                AddItem(" -Text Space", DATA, &Menu->text_space, logo_allArray[9], &TextSpace_Item, &SettingTextPage_Page, NULL, Setting_Space);                
+        AddItem(" -Image", LOOP_FUNCTION, NULL, logo_allArray[6], &Image_Item, &Home_Page, NULL, Show_Log);
+        AddItem(" -Github", LOOP_FUNCTION, NULL, logo_allArray[5], &Github_Item, &Home_Page, NULL, Show_GitHub);
+        AddItem(" -Bilibili", LOOP_FUNCTION, NULL, logo_allArray[7], &Bilibili_Item, &Home_Page, NULL, Show_Bilibili);
+        AddItem(" -ReadME", LOOP_FUNCTION, NULL, logo_allArray[9], &ReadME_Item, &Home_Page, NULL, Show_Bilibili);
 }
 
 /* 在此填入按键扫描程序
@@ -1047,9 +1046,9 @@ static void AnimationParam_Init(Animation *Ani)
     Ani->OptionPlace.ki = 0;
     Ani->OptionPlace.kd = 30;
 
-    Ani->Dialog_Scale.kp = 350;
+    Ani->Dialog_Scale.kp = 400;
     Ani->Dialog_Scale.ki = 0;
-    Ani->Dialog_Scale.kd = 100;
+    Ani->Dialog_Scale.kd = 0;
 
     Ani->TextPage_Cursor.kp = 500;
     Ani->TextPage_Cursor.ki = 100;
