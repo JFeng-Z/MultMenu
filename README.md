@@ -8,7 +8,7 @@
 5. DATA：可调参数型
 6. RETURN: 用于上级返回
 - 全局使用非线性动画（类PID控制器）
-在菜单数据结构上参考开源项目：https://github.com/morepray/MorepUI。感谢！
+在菜单数据结构上参考开源项目：https://github.com/morepray/MorepUI  感谢！
 # 移植准备
 1. 在menuConfig.h中配置你的屏幕分辨率与菜单字体。
 2. 往dispDirver.c中替换你的屏幕驱动，亦可使用example中的移植的u8g2库。
