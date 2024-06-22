@@ -104,12 +104,11 @@
           "MultMenu/menu",
           "src",
           "src/u8g2Drive",
-          "src/u8g2Lib/inc",
+          "src/u8g2Drive/u8g2Lib/inc",
           "src/led",
           "src/uart",
           "src/button",
           "src/timerTick",
-          "src/SEGGER_RTT",
           "src/encoder"
         ],
         "libList": [],
