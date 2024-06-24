@@ -5,7 +5,7 @@
 
 void Show_MPU6050(xpMenu Menu)
 {
-    float pitch, roll, yaw; 		//欧拉角
+    float pitch = 0, roll = 0, yaw = 0; 		//欧拉角
     char Pi[20], Ro[20], Ya[20];
 
     if (DialogScale_Show(Menu, 1, 2, 100, 62))
