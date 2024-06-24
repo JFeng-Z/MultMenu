@@ -12,7 +12,7 @@ void Text_Widget(xpMenu Menu)
     int char_cnt = strlen(Menu->now_item->element->text->ptr);
     int lineMaxCnt = HOR_RES / Menu->now_item->element->text->font_width;
     int line = 0;
-    int x = -2;
+    int x = 0;
     char c;
     int cnt = 0;
     if(DialogScale_Show(Menu, 0, 0, HOR_RES, VER_RES))
@@ -26,11 +26,11 @@ void Text_Widget(xpMenu Menu)
             {
                 line ++;
                 cnt = 0;
-                x = -2;
-                continue;
+                x = 0;
             }
             OLED_DrawStr(x, Menu->now_item->element->text->font_hight + line*(Menu->now_item->element->text->font_hight), &c);
         }
         OLED_SendBuffer();
     }
 }
+
