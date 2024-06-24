@@ -3,14 +3,9 @@
 #include "bsp_usart.h"
 #include "image.h"
 
-void White_Dark_Day(xpMenu Menu)
-{
-    Set_BgColor(Menu, Menu->now_item->switchState);
-}
-
 void Show_MPU6050(xpMenu Menu)
 {
-    static float pitch, roll, yaw; 		//欧拉角
+    float pitch, roll, yaw; 		//欧拉角
     char Pi[20], Ro[20], Ya[20];
 
     if (DialogScale_Show(Menu, 1, 2, 100, 62))
@@ -28,30 +23,6 @@ void Show_MPU6050(xpMenu Menu)
         OLED_SendBuffer();
     }
 
-}
-
-void Show_GitHub(xpMenu Menu)
-{
-    const char* GitHub1="https://github.com/";
-    const char* GitHub2="JFeng-Z/MultMenu";
-
-    if(DialogScale_Show(Menu, 2, 12, 125, 32))
-    {
-        OLED_DrawStr(8, 25, GitHub1);
-        OLED_DrawStr(8, 37, GitHub2);
-        OLED_SendBuffer();
-    }
-}
-
-void Show_Bilibili(xpMenu Menu)
-{
-    const char* Bilibili = "BV1Xh4y1N7By";
-
-    if(DialogScale_Show(Menu, 22, 24, 82, 20))
-    {
-        OLED_DrawStr(28, 37, Bilibili);
-        OLED_SendBuffer();
-    }
 }
 
 const uint8_t logo[] = { 
@@ -94,9 +65,4 @@ void Show_Log(xpMenu Menu)
     OLED_ClearBuffer();
     OLED_DrawXBMP(32, 0, 64, 64, logo);
     OLED_SendBuffer();
-}
-
-void PowerSave(xpMenu Menu)
-{
-    OLED_SetPowerSave(Menu->now_item->switchState);
 }

@@ -2,6 +2,9 @@
 #include "dispDirver.h"
 #include "application.h"
 #include "image.h"
+#include "parameter.h"
+#include "switch.h"
+#include "text.h"
 #include "DinoGame.h"
 #include "AirPlane.h"
 
@@ -27,42 +30,48 @@ const uint8_t Presets_Logo [] = {
 };
 
 /**
- * 向指定页面添加一个项目。
+ * 添加项目到页面
  * 
- * @param Name 项目名称。
- * @param Type 项目类型。
- * @param Data 项目关联的数据指针。
+ * 该函数用于向指定的页面添加一个新的项目。项目包括名称、类型、元素、图像等信息，
+ * 并且可以设置项目的功能回调。添加的项目将按照链表的形式管理，同时维护页面上项目的数量。
+ *
+ * @param Name 项目名称，不可为NULL。
+ * @param Type 项目类型，如数据、开关、文本等。
+ * @param Element 项目关联的元素，根据项目类型不同，包含不同的数据。
+ * @param Image 项目显示的图像，如果为NULL，则使用预设图像。
  * @param item 待添加的项目结构体。
- * @param LocalPage 项目所属的页面。
- * @param nextpage 项目跳转到的下一个页面。
- * @param function 项目关联的函数指针。
- * 
- * 项目会被添加到指定页面的链表中，并且会更新页面的相关信息。
+ * @param LocalPage 项目所在的页面结构体。
+ * @param nextpage 项目跳转的下一个页面结构体，如果无跳转，则为NULL。
+ * @param function 项目对应的函数指针，用于处理项目特定的功能。
  */
-static void AddItem(const char *Name, Item_Type Type, void *Data, const uint8_t *Image, xpItem item, xpPage LocalPage, xpPage nextpage, ItemFunction function)
+static void AddItem(const char *Name, Item_Type Type, element_t *Element, const uint8_t *Image, xpItem item, xpPage LocalPage, xpPage nextpage, ItemFunction function)
 {
+    // 检查输入参数的有效性
     // 参数检验
-    if (!Name || !item || !LocalPage || (Type == DATA && !Data)) {
+    if (!Name || !item || !LocalPage || (Type == DATA && !Element->data) || (Type == SWITCH && !Element->switch_data) || (Type == _TEXT_ && !Element->text)) {
         printf("Invalid parameter(s)\n");
         return; // 早期返回以避免进一步错误
     }
 
+    // 初始化项目的基本信息
     item->itemName = Name; // 设置项目名称
     item->itemType = Type; // 设置项目类型
-    // 如果项目类型为DATA，则设置数据指针
-    if(Type == DATA)item->data.ptr = (int *)Data; 
-    if(LocalPage->type == IMAGE)item->image = Image;
+    item->logo = Image;
+    // 如果页面类型为图像且没有指定图像，则使用预设图像
     if(LocalPage->type == IMAGE && Image == NULL)
     {
-        item->image = Presets_Logo;
+        item->logo = Presets_Logo;
         printf("%s : Image is null!\n", item->itemName);
     }
+    item->element = Element;
     item->page.location = LocalPage; // 设置项目所在页面
     item->itemFunction= function; // 设置项目关联的函数
 
+    // 初始化项目链接信息
     /* 初始化项目下一个项为NULL */
     item->nextItem = NULL;
 
+    // 设置跳转页面的父项目为当前项目
     /* 设置跳转页面的父级项目 */
     if (nextpage != NULL)
         nextpage->item.parent = item;
@@ -70,6 +79,7 @@ static void AddItem(const char *Name, Item_Type Type, void *Data, const uint8_t 
         nextpage = LocalPage;
     item->page.jumpPage = nextpage; // 设置项目跳转页面
 
+    // 如果页面为空，则初始化项目链表
     /* 链式结构创建项目 */
     if (LocalPage->item.head == NULL) // 如果是首个项目
     {
@@ -81,13 +91,16 @@ static void AddItem(const char *Name, Item_Type Type, void *Data, const uint8_t 
     }
     else // 如果不是首个项目
     {
+        // 将新项目连接到链表尾部
         // 连接新项目到链表尾部
         item->lastItem = LocalPage->item.tail;                // 新项目上一个项指向当前尾项目
         LocalPage->item.tail->nextItem = item;                // 尾项目下一个项指向新项目
         LocalPage->item.tail = LocalPage->item.tail->nextItem; // 更新尾项目为新项目
         LocalPage->length++; // 项目计数加一
     }
+    // 设置项目ID为当前页面项目数量
     item->id = LocalPage->length; // 设置项目ID为当前页面项目计数
+    // 关联页面的头尾项目互相指向，用于快速遍历
     // 关联页面的头尾项目互相指向，用于快速遍历
     LocalPage->item.tail->nextItem = LocalPage->item.head;  
     LocalPage->item.head->lastItem = LocalPage->item.tail;
@@ -97,14 +110,10 @@ static void AddItem(const char *Name, Item_Type Type, void *Data, const uint8_t 
  * @brief 向页面中添加一个新页面。
  * 
  * @param name 新页面的名称。
- * @param menu 新页面所在菜单。
  * @param page 指向新页面结构体的指针。
- * @param item 新页面对应的项。
- * @param LocalPage 当前局部页面的指针。
- * @param nextpage 下一个页面的指针。
- * @param function 项的功能函数指针。
+ * @param Type 新页面的类型。
  */
-static void AddPage(const char *name, xpPage page, Page_Type Type)
+static void AddPage(const char *name, xpPage page, PageType Type)
 {
     // 初始化新页面的基本信息
     page->pageName = name;
@@ -146,19 +155,9 @@ static int PID_Animation(int Targrt, int Now, AnimationParam *Obj)
     return x;
 }
 
-static void Change_MenuState(xpMenu Menu, Menu_State state)
+static void Change_MenuState(xpMenu Menu, MenuState state)
 {
     Menu->menu_state = state;
-}
-
-void Switch_Widget(xpMenu Menu)
-{
-    
-}
-
-void ParamSet_Widget(xpMenu Menu)
-{
-    
 }
 
 static void CursorAnimationParam_Init(xpMenu Menu)
@@ -188,10 +187,11 @@ static void DialogScale_AnimationParam_Init(xpMenu Menu)
 static void Draw_Home(xpMenu Menu)
 {
     OLED_ClearBuffer();
-    OLED_DrawStr(0, Font_Size, "MultMenu");
-    OLED_DrawStr(0, Font_Size*2, "Author:ZhangJianFeng");
-    OLED_DrawStr(0, Font_Size*3, "Wait button...");
-    OLED_DrawStr(50, Font_Size*5, "Version:1.0.0");
+    OLED_SetFont(MENU_FONT);
+    OLED_DrawStr(0, Font_Hight, "MultMenu");
+    OLED_DrawStr(0, Font_Hight*2, "Author:ZhangJianFeng");
+    OLED_DrawStr(0, Font_Hight*3, "Wait button...");
+    OLED_DrawStr(50, Font_Hight*5, "Version:2.0.0");
     OLED_SendBuffer();
 }
 
@@ -228,9 +228,9 @@ void Draw_DialogBox(xpMenu Menu, uint16_t x,uint16_t y,uint16_t w,uint16_t h)
  * @param y 对话框的y坐标。
  * @param Targrt_w 目标对话框的宽度。
  * @param Targrt_h 目标对话框的高度。
- * @return bool 如果动画时间达到预设的对话框显示时间，则返回true；否则返回false。
+ * @return uint8_t 如果动画时间达到预设的对话框显示时间，则返回true；否则返回false。
  */
-bool DialogScale_Show(xpMenu Menu, int16_t x,int16_t y,int16_t Targrt_w,int16_t Targrt_h)
+uint8_t DialogScale_Show(xpMenu Menu, int16_t x,int16_t y,int16_t Targrt_w,int16_t Targrt_h)
 {
     // 当前处于应用绘制状态时，处理对话框的缩放动画
     if (Menu->menu_state == APP_DRAWING)
@@ -324,84 +324,6 @@ int Draw_Scrollbar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r, d
     return value;
 }
 
-static void Setting_AnimationParam(xpMenu Menu)
-{
-    char value[20] = {0};
-    
-    if (DialogScale_Show(Menu, 4, 12, 120, 32))
-    {
-
-        switch (Menu->now_item->state)
-        {
-        case MENU_UP:
-            (*Menu->now_item->data.ptr) = Draw_Scrollbar(8, 30, 90, 6, 3, -1000, 1000, 10, (*Menu->now_item->data.ptr));
-            break;
-        case MENU_DOWN:
-            (*Menu->now_item->data.ptr) = Draw_Scrollbar(8, 30, 90, 6, 3, -1000, 1000, -10, (*Menu->now_item->data.ptr));
-        default:
-            Draw_Scrollbar(8, 30, 90, 6, 3, -1000, 1000, 0, (*Menu->now_item->data.ptr));
-            break;
-        }
-
-        sprintf(value, "Value = %d ", (*Menu->now_item->data.ptr));
-        OLED_DrawStr(8, 25, value);
-        OLED_SendBuffer();
-    }
-
-}
-
-static void Setting_Space(xpMenu Menu)
-{
-    char value[20] = {0};
-    
-    if (DialogScale_Show(Menu, 4, 12, 120, 32))
-    {
-
-        switch (Menu->now_item->state)
-        {
-        case MENU_UP:
-            (*Menu->now_item->data.ptr) = Draw_Scrollbar(8, 30, 90, 6, 3, 0, 100, 2, (*Menu->now_item->data.ptr));
-            break;
-        case MENU_DOWN:
-            (*Menu->now_item->data.ptr) = Draw_Scrollbar(8, 30, 90, 6, 3, 0, 100, -2, (*Menu->now_item->data.ptr));
-        default:
-            Draw_Scrollbar(8, 30, 90, 6, 3, 0, 100, 0, (*Menu->now_item->data.ptr));
-            break;
-        }
-
-        sprintf(value, "Space = %d ", (*Menu->now_item->data.ptr));
-        OLED_DrawStr(8, 25, value);
-        OLED_SendBuffer();
-    }
-}
-
-static void Setting_Contrast(xpMenu Menu)
-{
-    char contrast[20];
-    if(DialogScale_Show(Menu, 4, 12, 120, 32))
-    {
-
-        switch (Menu->now_item->state)
-        {
-        case MENU_UP:
-            (*Menu->now_item->data.ptr) = Draw_Scrollbar(8, 30, 90, 6, 3, 0, 255, 5, (*Menu->now_item->data.ptr));
-            break;
-        case MENU_DOWN:
-            (*Menu->now_item->data.ptr) = Draw_Scrollbar(8, 30, 90, 6, 3, 0, 255, -5, (*Menu->now_item->data.ptr));
-            break;
-        default:
-            Draw_Scrollbar(8, 30, 90, 6, 3, 0, 255, 0, (*Menu->now_item->data.ptr));
-            break;
-        }
-
-        sprintf(contrast, "Contrast = %d", (*Menu->now_item->data.ptr));
-        OLED_DrawStr(8, 25, contrast);
-
-        OLED_SetContrast((*Menu->now_item->data.ptr));
-        OLED_SendBuffer();
-    }
-}
-
 /**
  * @brief 使屏幕上的内容逐渐消失的函数
  * 
@@ -450,9 +372,9 @@ static uint8_t ui_disapper(xpMenu Menu, uint8_t disapper)
  * 
  * @param now_item 当前选项项的指针
  * @param next_item 下一个选项项的指针
- * @return bool 如果绘制过程完成（达到设定的时间），返回true；否则返回false。
+ * @return uint8_t 如果绘制过程完成（达到设定的时间），返回true；否则返回false。
  */
-static bool Draw_TextPage_OptionPlace(xpMenu Menu, xpItem now_item, xpItem next_item)
+static uint8_t Draw_TextPage_OptionPlace(xpMenu Menu, xpItem now_item, xpItem next_item)
 {
     // 根据下一个项的id和位置长度，计算其理论绘制长度
     Menu->_optionPlace.TextPage_OptionPlace.target_lenght = (VER_RES / (float)(next_item->page.location->length)) * next_item->id;
@@ -470,7 +392,7 @@ static bool Draw_TextPage_OptionPlace(xpMenu Menu, xpItem now_item, xpItem next_
     return false;
 }
 
-static bool Draw_ImagePage_OptionPlace(xpMenu Menu, xpItem now_item, xpItem next_item)
+static uint8_t Draw_ImagePage_OptionPlace(xpMenu Menu, xpItem now_item, xpItem next_item)
 {
     // 根据下一个项的id和位置长度，计算其理论绘制长度
     Menu->_optionPlace.ImagePage_OptionPlace.target_lenght = (HOR_RES / (float)(next_item->page.location->length)) * next_item->id;
@@ -678,14 +600,14 @@ static void Draw_TextPage(xpMenu Menu, xpPage Page, xpItem now_item, xpItem next
         // 根据选项类型绘制开关或数据
         if(temp_item->itemType == SWITCH)
         {
-            OLED_DrawFrame(temp_item->x + HOR_RES - 33, temp_item->Animation_y - Font_Size, Font_Size, Font_Size);
+            OLED_DrawFrame(temp_item->x + HOR_RES - 33, temp_item->Animation_y - Font_Hight, Font_Hight, Font_Hight);
             // 绘制开关状态
-            if(temp_item->switchState == true)OLED_DrawBox(temp_item->x + HOR_RES - 33 + 2, temp_item->Animation_y - Font_Size + 2, Font_Size - 4, Font_Size - 4);
+            if(*temp_item->element->switch_data->is_enable == true)OLED_DrawBox(temp_item->x + HOR_RES - 33 + 2, temp_item->Animation_y - Font_Hight + 2, Font_Hight - 4, Font_Hight - 4);
         }
         if(temp_item->itemType == DATA)
         {
             // 格式化并绘制数据
-            sprintf(Data, "%d", *temp_item->data.ptr);
+            sprintf(Data, "%d", *temp_item->element->data->ptr);
             OLED_DrawStr(temp_item->x + HOR_RES - 33, temp_item->Animation_y, Data);
         }
         temp_item = temp_item->nextItem;
@@ -696,7 +618,7 @@ static void Draw_TextPage(xpMenu Menu, xpPage Page, xpItem now_item, xpItem next
     Menu->_cursor.NowRow = PID_Animation(Menu->_cursor.TargrtRow, Menu->_cursor.NowRow, &Menu->_animation.TextPage_Cursor);
     Menu->_cursor.NowWide = PID_Animation(Menu->_cursor.TargrtWide, Menu->_cursor.NowWide, &Menu->_animation.TextPage_Cursor);
     // 绘制选中项的高亮边框
-    OLED_DrawRBox(Menu->headX + 1, Menu->_cursor.NowRow + 1, Menu->_cursor.NowWide, Font_Size, 4);
+    OLED_DrawRBox(Menu->headX + 1, Menu->_cursor.NowRow + 1, Menu->_cursor.NowWide, Font_Hight, 4);
 }
 
 static void Draw_ImagePage(xpMenu Menu, xpPage Page, xpItem now_item, xpItem next_item)
@@ -719,10 +641,10 @@ static void Draw_ImagePage(xpMenu Menu, xpPage Page, xpItem now_item, xpItem nex
     }
     for (uint16_t i = 0; i <= Page->length; i++)
     {
-        OLED_DrawXBMP(temp_item->Animation_x, 12, IMG_WIDTH, IMG_HEIGHT, temp_item->image);
+        OLED_DrawXBMP(temp_item->Animation_x, 12, IMG_WIDTH, IMG_HEIGHT, temp_item->logo);
         temp_item = temp_item->nextItem;
     }
-    OLED_DrawStr(0, VER_RES - 3, next_item->itemName);
+    OLED_DrawStr(0, VER_RES, next_item->itemName);
     OLED_SetDrawColor(2); // 设置特定的颜色，通常用于高亮显示
     // 根据目标位置和当前位置，以及PID算法计算并更新当前选项的位置和宽度
     Menu->_cursor.NowColumn = PID_Animation(Menu->_cursor.TargrtColumn, Menu->_cursor.NowColumn, &Menu->_animation.ImagePage_Cursor);
@@ -742,8 +664,8 @@ static void Draw_ImagePage(xpMenu Menu, xpPage Page, xpItem now_item, xpItem nex
  */
 static void Draw_Menu(xpMenu Menu, xpPage Page, xpItem now_item,xpItem next_item)
 {
-    bool OptionState = false;
-
+    uint8_t OptionState = false;
+    OLED_SetFont(MENU_FONT);
     OLED_ClearBuffer(); // 清除屏幕缓冲区
 
     // 初始化或更新动画参数及页面状态
@@ -783,7 +705,17 @@ static void Draw_Menu(xpMenu Menu, xpPage Page, xpItem now_item,xpItem next_item
     }
 }
 
-int Contrast = 255; 
+element_t Contrast_element = {&Contrast_data, NULL, NULL};
+element_t CursorKp_element = {&Cursorkp_data, NULL, NULL};
+element_t CursorKi_element = {&Cursorki_data, NULL, NULL};
+element_t CursorKd_element = {&Cursorkd_data, NULL, NULL};
+element_t image_space_element = {&image_space_data, NULL, NULL};
+element_t text_space_element = {&text_space_data, NULL, NULL};
+element_t Power_element = {NULL, &Power_switch, NULL};
+element_t MenuColor_element = {NULL, &MenuColor_switch, NULL};
+element_t github_element = {NULL, NULL, &github_text};
+element_t bilibili_element = {NULL, NULL, &bilibili_text};
+
 /*
  * 菜单构建函数
  * 该函数不接受参数，也不返回任何值。
@@ -800,16 +732,16 @@ static void Craete_MenuTree(xpMenu Menu)
                 AddItem(" +Cursor Program", PARENTS, NULL, NULL, &CursorAnimation_Item, &System_Page, &CursorAnimation_Page, NULL);
                     AddPage("[Cursor Program]", &CursorAnimation_Page, TEXT);
                         AddItem("[Cursor Program]", RETURN, NULL, NULL, &CursorAnimationHead_Item, &CursorAnimation_Page, &System_Page, NULL);
-                        AddItem(" -Kp", DATA, &Menu->_animation.TextPage_Cursor.kp, NULL, &CursorKp_Item, &CursorAnimation_Page, NULL, Setting_AnimationParam);
-                        AddItem(" -Ki", DATA, &Menu->_animation.TextPage_Cursor.ki, NULL, &CursorKi_Item, &CursorAnimation_Page, NULL, Setting_AnimationParam);
-                        AddItem(" -Kd", DATA, &Menu->_animation.TextPage_Cursor.kd, NULL, &CursorKd_Item, &CursorAnimation_Page, NULL, Setting_AnimationParam);
-                AddItem(" -Mode", SWITCH, NULL, NULL, &Mode_Item, &System_Page, NULL, White_Dark_Day);
-                AddItem(" -Contrast", DATA, &Contrast, NULL, &Contrast_Item, &System_Page, NULL, Setting_Contrast);
+                        AddItem(" -Kp", DATA, &CursorKp_element, NULL, &CursorKp_Item, &CursorAnimation_Page, NULL, NULL);
+                        AddItem(" -Ki", DATA, &CursorKi_element, NULL, &CursorKi_Item, &CursorAnimation_Page, NULL, NULL);
+                        AddItem(" -Kd", DATA, &CursorKd_element, NULL, &CursorKd_Item, &CursorAnimation_Page, NULL, NULL);
+                AddItem(" -Mode", SWITCH, &MenuColor_element, NULL, &Mode_Item, &System_Page, NULL, NULL);
+                AddItem(" -Contrast", DATA, &Contrast_element, NULL, &Contrast_Item, &System_Page, NULL, NULL);
                 AddItem(" +Setting Image", PARENTS, NULL, NULL, &SettingImagePage_Item, &System_Page, &SettingImagePage_Page, NULL);
                     AddPage("[Setting Image]", &SettingImagePage_Page, TEXT);
                         AddItem("[Setting Image]", RETURN, NULL, NULL, &SettingImagePageHead_Item, &SettingImagePage_Page, &System_Page, NULL);
-                        AddItem(" -Image Space", DATA, &Menu->image_space, NULL, &ImageSpace_Item, &SettingImagePage_Page, NULL, Setting_Space);
-                AddItem(" -Power", SWITCH, NULL, NULL, &Power_Item, &System_Page, NULL, PowerSave);
+                        AddItem(" -Image Space", DATA, &image_space_element, NULL, &ImageSpace_Item, &SettingImagePage_Page, NULL, NULL);
+                AddItem(" -Power", SWITCH, &Power_element, NULL, &Power_Item, &System_Page, NULL, NULL);
         AddItem(" +Games", PARENTS, NULL, logo_allArray[4], &Games_Item, &Home_Page, &Games_Page, NULL);
             AddPage("[Games]", &Games_Page, IMAGE);
                 AddItem("[Games]", RETURN, NULL, NULL, &GamesHead_Item, &Games_Page, &Home_Page, NULL);
@@ -818,10 +750,10 @@ static void Craete_MenuTree(xpMenu Menu)
         AddItem(" +Setting Text", PARENTS, NULL, logo_allArray[1], &SettingTextPage_Item, &Home_Page, &SettingTextPage_Page, NULL);
             AddPage("[Setting Text]", &SettingTextPage_Page, IMAGE);
                 AddItem("[Setting Text]", RETURN, NULL, NULL, &SettingTextPageHead_Item, &SettingTextPage_Page, &Home_Page, NULL);
-                AddItem(" -Text Space", DATA, &Menu->text_space, logo_allArray[9], &TextSpace_Item, &SettingTextPage_Page, NULL, Setting_Space);                
+                AddItem(" -Text Space", DATA, &text_space_element, logo_allArray[9], &TextSpace_Item, &SettingTextPage_Page, NULL, NULL);                
         AddItem(" -Image", LOOP_FUNCTION, NULL, logo_allArray[6], &Image_Item, &Home_Page, NULL, Show_Log);
-        AddItem(" -Github", LOOP_FUNCTION, NULL, logo_allArray[5], &Github_Item, &Home_Page, NULL, Show_GitHub);
-        AddItem(" -Bilibili", LOOP_FUNCTION, NULL, logo_allArray[7], &Bilibili_Item, &Home_Page, NULL, Show_Bilibili);
+        AddItem(" -Github", _TEXT_, &github_element, logo_allArray[5], &Github_Item, &Home_Page, NULL, NULL);
+        AddItem(" -Bilibili", _TEXT_, &bilibili_element, logo_allArray[7], &Bilibili_Item, &Home_Page, NULL, NULL);
         AddItem(" -ReadME", LOOP_FUNCTION, NULL, logo_allArray[9], &ReadME_Item, &Home_Page, NULL, Show_Bilibili);
 }
 
@@ -976,12 +908,25 @@ static void Process_App_Run(xpMenu Menu, xpItem item, Menu_Direction State)
     switch (item->itemType) // 根据项目类型执行不同的操作
     {
     case DATA:
+        if (item->itemFunction == NULL)ParameterSetting_Widget(Menu);
+        else (item->itemFunction)(Menu); // 执行项目的函数
+        if(item->state == MENU_ENTER)Change_MenuState(Menu, APP_QUIT); // 如果项目状态为进入菜单，则改变菜单状态为函数退出
+        break;
     case LOOP_FUNCTION:
         if (item->itemFunction != NULL)(item->itemFunction)(Menu); // 执行项目的函数
         if(item->state == MENU_ENTER)Change_MenuState(Menu, APP_QUIT); // 如果项目状态为进入菜单，则改变菜单状态为函数退出
         break;
     case SWITCH:
-        item->switchState = ! item->switchState; // 切换开关状态
+        *item->element->switch_data->is_enable = ! *item->element->switch_data->is_enable; // 切换开关状态
+        if (item->itemFunction == NULL)Switch_Widget(Menu);
+        else (item->itemFunction)(Menu); // 执行项目的函数
+        Change_MenuState(Menu, APP_QUIT); // 改变菜单状态为函数退出
+        break;
+    case _TEXT_:
+        if (item->itemFunction == NULL)Text_Widget(Menu);
+        else (item->itemFunction)(Menu);
+        if(item->state == MENU_ENTER)Change_MenuState(Menu, APP_QUIT); // 如果项目状态为进入菜单，则改变菜单状态为函数退出
+        break;
     case ONCE_FUNCTION:
         if (item->itemFunction != NULL)(item->itemFunction)(Menu); // 如果项目有函数，则执行该函数
         Change_MenuState(Menu, APP_QUIT); // 改变菜单状态为函数退出

@@ -3,6 +3,7 @@
 
 #include "stm32f10x.h"
 
-extern const uint8_t logo1[];
+#define logo_allArray_LEN   10
+extern const unsigned char* logo_allArray[logo_allArray_LEN];
 
 #endif

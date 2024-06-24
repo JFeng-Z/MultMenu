@@ -43,7 +43,7 @@ void Rotary_Encoder_Init(void)
     TIM_Cmd(TIM2,ENABLE);
 }
 
-bool EncoderButton_Scan(void)
+uint8_t EncoderButton_Scan(void)
 {
     if(GPIO_ReadInputDataBit(GPIOA,SW) == 0)
     {

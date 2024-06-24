@@ -17,8 +17,6 @@ void Disp_Init(void)
 {
     // 初始化U8g2库，为OLED显示做准备
     u8g2Init(&u8g2);
-    // 设置默认使用的字体为MENU_FONT
-    OLED_SetFont(MENU_FONT);
 }
 
 /**
@@ -46,6 +44,11 @@ void OLED_SendBuffer(void)
 {
     /* 将U8G2实例的缓冲区数据发送到OLED设备 */
     u8g2_SendBuffer(&u8g2);
+}
+
+void OLED_UpdateDisplayArea(uint8_t tx, uint8_t ty, uint8_t tw, uint8_t th)
+{
+    u8g2_UpdateDisplayArea(&u8g2, tx, ty, tw, th);
 }
 
 /**

@@ -3,7 +3,6 @@
 
 #include "stm32f10x.h"
 #include "u8g2.h"
-#include "stdbool.h"
 
 // 屏幕分辨率定义
 #define HOR_RES     128 // 水平分辨率
@@ -13,13 +12,16 @@
 #define MENU_FONT   u8g2_font_profont12_mf
 
 // 字体尺寸定义
-#define Font_Size   12 // 字体高度
+#define Font_Hight   12 // 字体高度
+
+// 字体宽度
+#define Font_Width  6
 
 // 文本间距
 #define TEXT_SPACE  16
 
 // 起始Y坐标，基于字体大小设定的第一行位置
-#define Init_y   Font_Size
+#define Init_y   Font_Hight
 
 // 起始X坐标
 #define Init_x    0
@@ -40,6 +42,41 @@
 // 图片间距
 #define IMG_SPACE   39
 
+#define true 1
+#define false 0
+
+typedef struct Page *xpPage;
+typedef struct Item *xpItem;
+typedef struct Menu *xpMenu;
+typedef void (*ItemFunction)(xpMenu);
+typedef void (*SwitchFunction)(uint8_t);
+
+typedef struct data_t {
+    const char *name;
+    int *ptr; // 指向整型数据的指针
+    int max;
+    int min;
+    int step;
+} data_t;
+
+typedef struct switch_t {
+    uint8_t *is_enable;
+    SwitchFunction function;
+} switch_t;
+
+typedef struct text_t {
+    const char *ptr;
+    const uint8_t *font;
+    int font_hight;
+    int font_width;
+} text_t;
+
+typedef struct element_t {
+    data_t *data;
+    switch_t *switch_data;
+    text_t *text;
+} element_t;
+
 /**
  * AnimationParam 结构体定义
  * 用于存储PID控制器的误差及调整参数
@@ -54,7 +91,7 @@ typedef struct Animation_Param
     float last_error; // 上一次的误差
 }AnimationParam;
 
-typedef struct Animation_
+typedef struct Animation
 {
     AnimationParam OptionPlace;
     AnimationParam Dialog_Scale;
@@ -73,7 +110,7 @@ typedef enum MenuState
     APP_RUN,         // 应用程序运行状态
     APP_DRAWING,     // 应用程序绘制状态
     APP_QUIT         // 应用程序退出状态
-} Menu_State;
+} MenuState;
 
 // 页面状态枚举
 // 用于表示页面的两种状态：移动和静止
@@ -106,6 +143,8 @@ typedef enum ItemType
     SWITCH,
     // 数据项: 代表菜单中用于显示或设置数据的项，可以是数值、文本等各种形式的数据。
     DATA,
+    // 文本类型: 代表菜单中的文本项，用于显示提示信息或提示用户操作。
+    _TEXT_,
     // 返回键: 代表菜单中的返回键，用于返回上一级菜单。
     RETURN
 } Item_Type;
@@ -117,10 +156,10 @@ typedef enum PageType
     TEXT,
     // 图像类型
     IMAGE
-} Page_Type;
+} PageType;
 
 // 光标运动参数
-typedef struct cursor_Param
+typedef struct CursorParam
 {
     // 当前宽度
     int NowWide;
@@ -143,7 +182,7 @@ typedef struct cursor_Param
 } CursorParam;
 
 // 对话框运动参数
-typedef struct Dialog_Scale_Param
+typedef struct DialogScaleParam
 {
     // 对话框初始宽度
     uint16_t now_wide;
@@ -152,7 +191,7 @@ typedef struct Dialog_Scale_Param
 } DialogScaleParam;
 
 // 滚动条运动参数
-typedef struct Option_Place_Param
+typedef struct OptionPlaceParam
 {
     // 滚动条当前长度
     uint16_t now_lenght;
@@ -161,16 +200,11 @@ typedef struct Option_Place_Param
 } OptionPlaceParam;
 
 // 滚动条
-typedef struct Option_Place
+typedef struct OptionPlace
 {
     OptionPlaceParam TextPage_OptionPlace;
     OptionPlaceParam ImagePage_OptionPlace;
 } OptionPlace;
-
-typedef struct Page *xpPage;
-typedef struct Item *xpItem;
-typedef struct Menu *xpMenu;
-typedef void (*ItemFunction)(xpMenu);
 
 /**
  * 定义一个名为Page的结构体类型
@@ -185,7 +219,7 @@ typedef struct Page {
         xpItem head;           // 头部项
         xpItem tail;           // 尾部项
     } item;
-    Page_Type type;         // 页面类型
+    PageType type;         // 页面类型
     int16_t jumpX;
     int16_t jumpY;
     xpItem lastJumpItem;
@@ -198,13 +232,8 @@ typedef struct Page {
 typedef struct Item {
     const char *itemName; // 结构体成员变量：项目名称，使用const char*类型
     Item_Type itemType; // 结构体成员变量：项目类型，自定义的Item_Type类型
-    bool switchState; // 结构体成员变量：开关状态，使用bool类型
-    // 封装data指针，以确保数据的完整性
-    struct {
-        int *ptr; // 指向整型数据的指针
-        size_t size; // 指针指向数据的大小，使用size_t类型
-    } data;
-    uint8_t id; // 结构体成员变量：项目ID，使用uint8_t类型
+    element_t *element;
+    int id; // 结构体成员变量：项目ID，使用uint8_t类型
     // 使用内联函数封装page结构体，以保护成员变量
     struct {
         xpPage location; // 页面位置
@@ -217,7 +246,7 @@ typedef struct Item {
     int16_t y;
     int16_t Animation_x;
     int16_t Animation_y;
-    const uint8_t *image;
+    const uint8_t *logo;
 } xItem;
 
 /**
@@ -225,14 +254,14 @@ typedef struct Item {
  * 用于表示一个菜单的相关信息
  */
 typedef struct Menu {
-    size_t text_space;        // 文本间距
-    size_t image_space;      // 图片间距
+    int text_space;        // 文本间距
+    int image_space;      // 图片间距
     int headX;                // 整个菜单的起始x坐标
     int headY;                // 整个菜单的起始y坐标
     xpItem now_item;          // 当前选中的item
     xpItem old_item;          // 上一个选中的item
     xItem lastJumpItem;
-    Menu_State menu_state;    // 菜单的状态
+    MenuState menu_state;    // 菜单的状态
     Page_State page_state;    // 页面的状态
     uint8_t bgColor;          // 菜单的背景颜色
     Animation _animation;

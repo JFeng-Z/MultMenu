@@ -3,14 +3,9 @@
 #include "bsp_usart.h"
 #include "image.h"
 
-void White_Dark_Day(xpMenu Menu)
-{
-    Set_BgColor(Menu, Menu->now_item->switchState);
-}
-
 void Show_MPU6050(xpMenu Menu)
 {
-    static float pitch, roll, yaw; 		//欧拉角
+    float pitch, roll, yaw; 		//欧拉角
     char Pi[20], Ro[20], Ya[20];
 
     if (DialogScale_Show(Menu, 1, 2, 100, 62))
@@ -94,9 +89,4 @@ void Show_Log(xpMenu Menu)
     OLED_ClearBuffer();
     OLED_DrawXBMP(32, 0, 64, 64, logo);
     OLED_SendBuffer();
-}
-
-void PowerSave(xpMenu Menu)
-{
-    OLED_SetPowerSave(Menu->now_item->switchState);
 }
