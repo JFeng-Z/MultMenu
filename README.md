@@ -2,8 +2,8 @@
 这是一个用于单色OLED屏幕的单片机多级菜单，采用双向链表结构，移植方便、在容量足够的情况下可无限扩展。
 - 菜单支持类型有：
 1. PARENTS：内含子菜单项
-2. LOOP_FUNCTION：循环运行某项功能
-3. ONCE_FUNCTION： 单次运行某项功能
+2. LOOP_FUNCTION：循环运行某项自定义功能
+3. ONCE_FUNCTION： 单次运行某项自定义功能
 4. SWITCH：开关型
 5. DATA：可调参数型
 6. _TEXT_：文本型，用于显示某些文本内容
