@@ -129,8 +129,6 @@ static void AddPage(const char *name, xpPage page, PageType Type)
 static int PID_Animation(int Targrt, int Now, AnimationParam *Obj)
 {
     int x = Now;
-    // 将PID系数从毫单位转换为浮点数
-    float Kp = (float)(Obj->kp)/1000.00, Ki = (float)(Obj->ki)/1000.00, Kd = (float)(Obj->kd)/1000.00;
     
     // 计算误差
     Obj->error = Targrt - x;
@@ -140,7 +138,7 @@ static int PID_Animation(int Targrt, int Now, AnimationParam *Obj)
     float delta_error = Obj->error - Obj->last_error;
 
     // 计算控制量
-    float velocity = Kp * Obj->error + Ki * Obj->sum_srror + Kd * delta_error;
+    float velocity = Obj->kp * Obj->error + Obj->ki * Obj->sum_srror + Obj->kd * delta_error;
     
     // 更新状态
     x += velocity;
@@ -288,34 +286,59 @@ void Set_BgColor(xpMenu Menu, uint8_t color)
  * @param w 滚动条的宽度
  * @param h 滚动条的高度
  * @param r 滚动条圆角的半径
- * @param min 滚动条代表的最小值
- * @param max 滚动条代表的最大值
- * @param step 滚动条的步进值
+ * @param data->min 滚动条代表的最小值
+ * @param data->max 滚动条代表的最大值
+ * @param data->step 滚动条的步进值
  * @param NowValue 滚动条当前的值
  */
-int Draw_Scrollbar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r, double min, double max, int step, int NowValue)
+void Draw_Scrollbar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r, void *step, data_t *data)
 {
-    int value = NowValue;
-    // 根据当前值计算滚动条可见部分的长度
-    if ((value <= max) && (value >= min))
+    switch (data->type)
     {
-        value += step;
-        if (value > max)
+    case DATA_INT:
+        // 根据当前值计算滚动条可见部分的长度
+        if (((*(int *)(data->ptr)) <= data->max) && ((*(int *)(data->ptr)) >= data->min))
         {
-            value = max;
+            (*(int *)(data->ptr)) += *(float *)step;
+            if ((*(int *)(data->ptr)) > data->max)
+            {
+                (*(int *)(data->ptr)) = data->max;
+            }
+            if ((*(int *)(data->ptr)) < data->min)
+            {
+                (*(int *)(data->ptr)) = data->min;
+            }
+            float value = (float)(abs((*(int *)(data->ptr)) - data->min) * ((w - 6)) / (float)((data->max - data->min)) + 6);
+            // 绘制滚动条的填充部分
+            OLED_SetDrawColor(0);
+            OLED_DrawBox(x + (uint16_t)value, y, w-(uint16_t)value, h);
+            OLED_SetDrawColor(1);
+            OLED_DrawBox(x, y, (uint16_t)value, h);
         }
-        if (value < min)
+        break;
+    case DATA_FLOAT:
+        // 根据当前值计算滚动条可见部分的长度
+        if (((*(float *)(data->ptr)) <= data->max) && ((*(float *)(data->ptr)) >= data->min))
         {
-            value = min;
+            (*(float *)(data->ptr)) += *(float *)step;
+            if ((*(float *)(data->ptr)) > data->max)
+            {
+                (*(float *)(data->ptr)) = data->max;
+            }
+            if ((*(float *)(data->ptr)) < data->min)
+            {
+                (*(float *)(data->ptr)) = data->min;
+            }
+            float value = (float)(abs((*(float *)(data->ptr)) - data->min) * ((w - 6)) / (float)((data->max - data->min)) + 6);
+            // 绘制滚动条的填充部分
+            OLED_SetDrawColor(0);
+            OLED_DrawBox(x + (uint16_t)value, y, w-(uint16_t)value, h);
+            OLED_SetDrawColor(1);
+            OLED_DrawBox(x, y, (uint16_t)value, h);
         }
-        double value = (double)(abs(value - min) * ((w - 6)) / (double)((max - min)) + 6);
-        // 绘制滚动条的填充部分
-        OLED_SetDrawColor(0);
-        OLED_DrawBox(x + (uint16_t)value, y, w-(uint16_t)value, h);
-        OLED_SetDrawColor(1);
-        OLED_DrawBox(x, y, (uint16_t)value, h);
+    default:
+        break;
     }
-    return value;
 }
 
 /**
@@ -955,29 +978,29 @@ void Menu_Loop(xpMenu Menu)
 
 static void AnimationParam_Init(Animation *Ani)
 {
-    Ani->OptionPlace.kp = 350;
+    Ani->OptionPlace.kp = 0.35f;
     Ani->OptionPlace.ki = 0;
-    Ani->OptionPlace.kd = 30;
+    Ani->OptionPlace.kd = 0.03f;
 
-    Ani->Dialog_Scale.kp = 400;
+    Ani->Dialog_Scale.kp = 0.4f;
     Ani->Dialog_Scale.ki = 0;
     Ani->Dialog_Scale.kd = 0;
 
-    Ani->TextPage_Cursor.kp = 500;
-    Ani->TextPage_Cursor.ki = 100;
-    Ani->TextPage_Cursor.kd = 170;
+    Ani->TextPage_Cursor.kp = 0.5f;
+    Ani->TextPage_Cursor.ki = 0.1f;
+    Ani->TextPage_Cursor.kd = 0.17f;
 
-    Ani->ImagePage_X.kp = 250;
+    Ani->ImagePage_X.kp = 0.25f;
     Ani->ImagePage_X.ki = 0;
-    Ani->ImagePage_X.kd = 30;
+    Ani->ImagePage_X.kd = 0.03f;
 
-    Ani->ImagePage_Cursor.kp = 450;
-    Ani->ImagePage_Cursor.ki = 100;
-    Ani->ImagePage_Cursor.kd = 100;
+    Ani->ImagePage_Cursor.kp = 0.45f;
+    Ani->ImagePage_Cursor.ki = 0.1f;
+    Ani->ImagePage_Cursor.kd = 0.1f;
 
-    Ani->TextPage_Y.kp = 350;
+    Ani->TextPage_Y.kp = 0.35f;
     Ani->TextPage_Y.ki = 0;
-    Ani->TextPage_Y.kd = 100;
+    Ani->TextPage_Y.kd = 0.1f;
 }
 
 static void Create_Menu(xpMenu Menu, xpItem item)

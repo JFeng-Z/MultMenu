@@ -51,12 +51,19 @@ typedef struct Menu *xpMenu;
 typedef void (*ItemFunction)(xpMenu);
 typedef void (*SwitchFunction)(uint8_t);
 
+typedef enum data_type
+{
+    DATA_INT,      // 整型数据
+    DATA_FLOAT,     // 浮点型数据
+} data_type;
+
 typedef struct data_t {
     const char *name;
-    int *ptr; // 指向整型数据的指针
+    void *ptr; // 指向整型数据的指针
+    data_type type;
     int max;
     int min;
-    int step;
+    float step;
 } data_t;
 
 typedef struct switch_t {
@@ -83,9 +90,9 @@ typedef struct element_t {
  */
 typedef struct Animation_Param
 {
-    int kp;         // 比例增益
-    int ki;         // 积分增益
-    int kd;         // 微分增益
+    float kp;         // 比例增益
+    float ki;         // 积分增益
+    float kd;         // 微分增益
     float error;    // 当前误差
     float sum_srror; // 积累的误差
     float last_error; // 上一次的误差
