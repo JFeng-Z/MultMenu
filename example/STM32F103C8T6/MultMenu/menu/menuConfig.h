@@ -1,7 +1,7 @@
 #ifndef _MENUCONFIG_H_
 #define _MENUCONFIG_H_
 
-#include "stm32f10x.h"
+#include "stdint.h"
 #include "u8g2.h"
 
 // 屏幕分辨率定义
@@ -26,15 +26,6 @@
 // 起始X坐标
 #define Init_x    0
 
-// 最大可见项目数，除去标题栏
-#define MaxVisible_Number  (VER_RES/TEXT_SPACE) // 可见菜单项数量
-
-// 最大Y坐标，根据字体大小和最大可见项目数计算得出
-#define LINE_MAX    TEXT_SPACE*MaxVisible_Number - TEXT_SPACE
-
-// 最小Y坐标，即第一行的位置
-#define LINE_MIN    Init_y
-
 // 图片大小
 #define IMG_WIDTH   30
 #define IMG_HEIGHT  30
@@ -54,7 +45,7 @@ typedef void (*SwitchFunction)(uint8_t);
 typedef enum data_type
 {
     DATA_INT,      // 整型数据
-    DATA_FLOAT,     // 浮点型数据
+    DATA_FLOAT     // 浮点型数据
 } data_type;
 
 typedef struct data_t {
@@ -152,6 +143,8 @@ typedef enum ItemType
     DATA,
     // 文本类型: 代表菜单中的文本项，用于显示提示信息或提示用户操作。
     _TEXT_,
+    // 波形类型: 代表菜单中的波形显示项，用于显示波形数据。
+    WAVE,
     // 返回键: 代表菜单中的返回键，用于返回上一级菜单。
     RETURN
 } Item_Type;
@@ -180,12 +173,6 @@ typedef struct CursorParam
     int TargrtColumn;
     // 目标宽度
     int TargrtWide;
-    // 目标行坐标
-    int LastRow;
-    // 目标列坐标
-    int LastColumn;
-    // 目标宽度
-    int LastWide;
 } CursorParam;
 
 // 对话框运动参数

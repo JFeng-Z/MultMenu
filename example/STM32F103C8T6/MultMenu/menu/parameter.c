@@ -66,11 +66,11 @@ void ParameterSetting_Widget(xpMenu Menu)
         switch (Menu->now_item->state)
         {
         case MENU_UP:
-            Draw_Scrollbar(x + 4, y + 18, w - 30, 6, 3, &Step, Menu->now_item->element->data);
+            Draw_Scrollbar(x + 4, y + 18, w - 30, 6, 3, Step, Menu->now_item->element->data);
             break;
         case MENU_DOWN:
             Step = -Step;
-            Draw_Scrollbar(x + 4, y + 18, w - 30, 6, 3, &Step, Menu->now_item->element->data);
+            Draw_Scrollbar(x + 4, y + 18, w - 30, 6, 3, Step, Menu->now_item->element->data);
             break;
         default:
             Draw_Scrollbar(x + 4, y + 18, w - 30, 6, 3, 0, Menu->now_item->element->data);

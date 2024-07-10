@@ -7,7 +7,7 @@
         "output-debug-info": "enable"
     },
     "c/cpp-compiler": {
-        "optimization": "level-0",
+        "optimization": "level-3",
         "one-elf-section-per-function": true,
         "c99-mode": true,
         "misc-controls": "--diag_suppress=1 --diag_suppress=1295",

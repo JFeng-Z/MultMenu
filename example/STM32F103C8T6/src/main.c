@@ -2,8 +2,10 @@
 #include "bsp_usart.h"
 #include "TimerTick.h"
 #include "menu.h"
+#include "stdlib.h"
 
 xMenu menu;
+extern int test;
 
 int main()
 {
@@ -12,6 +14,7 @@ int main()
     Menu_Init(&menu);
     for(;;)
     {
+        test = rand();
         Menu_Loop(&menu);
     }
 }

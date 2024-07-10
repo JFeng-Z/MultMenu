@@ -291,7 +291,7 @@ void Set_BgColor(xpMenu Menu, uint8_t color)
  * @param data->step 滚动条的步进值
  * @param NowValue 滚动条当前的值
  */
-void Draw_Scrollbar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r, void *step, data_t *data)
+void Draw_Scrollbar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r, float step, data_t *data)
 {
     switch (data->type)
     {
@@ -299,7 +299,7 @@ void Draw_Scrollbar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r, 
         // 根据当前值计算滚动条可见部分的长度
         if (((*(int *)(data->ptr)) <= data->max) && ((*(int *)(data->ptr)) >= data->min))
         {
-            (*(int *)(data->ptr)) += *(float *)step;
+            (*(int *)(data->ptr)) += step;
             if ((*(int *)(data->ptr)) > data->max)
             {
                 (*(int *)(data->ptr)) = data->max;
@@ -320,7 +320,7 @@ void Draw_Scrollbar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r, 
         // 根据当前值计算滚动条可见部分的长度
         if (((*(float *)(data->ptr)) <= data->max) && ((*(float *)(data->ptr)) >= data->min))
         {
-            (*(float *)(data->ptr)) += *(float *)step;
+            (*(float *)(data->ptr)) += step;
             if ((*(float *)(data->ptr)) > data->max)
             {
                 (*(float *)(data->ptr)) = data->max;

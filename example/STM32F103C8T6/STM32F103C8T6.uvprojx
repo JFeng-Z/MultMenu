@@ -1190,6 +1190,26 @@
               <FileType>1</FileType>
               <FilePath>.\MultMenu\menu\image.c</FilePath>
             </File>
+            <File>
+              <FileName>parameter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MultMenu\menu\parameter.c</FilePath>
+            </File>
+            <File>
+              <FileName>switch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MultMenu\menu\switch.c</FilePath>
+            </File>
+            <File>
+              <FileName>text.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MultMenu\menu\text.c</FilePath>
+            </File>
+            <File>
+              <FileName>wave.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MultMenu\menu\wave.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

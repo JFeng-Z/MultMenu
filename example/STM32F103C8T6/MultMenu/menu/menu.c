@@ -5,6 +5,7 @@
 #include "parameter.h"
 #include "switch.h"
 #include "text.h"
+#include "wave.h"
 #include "rotary_encoder.h"
 #include "DinoGame.h"
 #include "AirPlane.h"
@@ -288,7 +289,7 @@ void Set_BgColor(xpMenu Menu, uint8_t color)
  * @param data->step 滚动条的步进值
  * @param NowValue 滚动条当前的值
  */
-void Draw_Scrollbar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r, void *step, data_t *data)
+void Draw_Scrollbar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r, float step, data_t *data)
 {
     switch (data->type)
     {
@@ -296,7 +297,7 @@ void Draw_Scrollbar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r, 
         // 根据当前值计算滚动条可见部分的长度
         if (((*(int *)(data->ptr)) <= data->max) && ((*(int *)(data->ptr)) >= data->min))
         {
-            (*(int *)(data->ptr)) += *(float *)step;
+            (*(int *)(data->ptr)) += step;
             if ((*(int *)(data->ptr)) > data->max)
             {
                 (*(int *)(data->ptr)) = data->max;
@@ -317,7 +318,7 @@ void Draw_Scrollbar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t r, 
         // 根据当前值计算滚动条可见部分的长度
         if (((*(float *)(data->ptr)) <= data->max) && ((*(float *)(data->ptr)) >= data->min))
         {
-            (*(float *)(data->ptr)) += *(float *)step;
+            (*(float *)(data->ptr)) += step;
             if ((*(float *)(data->ptr)) > data->max)
             {
                 (*(float *)(data->ptr)) = data->max;
@@ -673,7 +674,7 @@ static void Draw_ImagePage(xpMenu Menu, xpPage Page, xpItem now_item, xpItem nex
     // 根据目标位置和当前位置，以及PID算法计算并更新当前选项的位置和宽度
     Menu->_cursor.NowColumn = PID_Animation(Menu->_cursor.TargrtColumn, Menu->_cursor.NowColumn, &Menu->_animation.ImagePage_Cursor);
     // 绘制选中项的高亮边框
-    OLED_DrawFrame(Menu->_cursor.NowColumn, 47, 28, 2);
+    OLED_DrawFrame(Menu->_cursor.NowColumn, VER_RES - 17, IMG_WIDTH, 2);
 }
 
 /**
@@ -699,7 +700,7 @@ static void Draw_Menu(xpMenu Menu, xpPage Page, xpItem now_item,xpItem next_item
     }
 
     // 计算下一个将要选中项的名称宽度
-    Menu->_cursor.TargrtWide = OLED_GetStrWidth(next_item->itemName) + 3;
+    Menu->_cursor.TargrtWide = strlen(next_item->itemName)*Font_Width;
 
     // 开始绘制菜单界面
     OLED_SetDrawColor(Menu->bgColor); // 设置背景颜色
@@ -723,7 +724,7 @@ static void Draw_Menu(xpMenu Menu, xpPage Page, xpItem now_item,xpItem next_item
     // 更新菜单状态为绘制中
     Change_MenuState(Menu, MENU_DRAWING);
     // 如果动画参数达到目标值且选项绘制完成，则更新菜单状态为运行中
-    if ((Menu->_cursor.NowRow == Menu->_cursor.TargrtRow) && (Menu->_cursor.NowWide == Menu->_cursor.TargrtWide) && (OptionState == true))
+    if ((Menu->_cursor.NowColumn == Menu->_cursor.TargrtColumn) && (Menu->_cursor.NowRow == Menu->_cursor.TargrtRow) && (Menu->_cursor.NowWide == Menu->_cursor.TargrtWide) && (OptionState == true))
     {
         Change_MenuState(Menu, MENU_RUN);
     }
@@ -738,6 +739,7 @@ xItem SettingTextPageHead_Item, TextSpace_Item;
 xItem SettingImagePageHead_Item, ImageSpace_Item;
 xItem MPU6050_Item, CursorAnimation_Item, SettingTextPage_Item, SettingImagePage_Item, Mode_Item, Contrast_Item, Power_Item;
 xItem Dino_Item, AirPlane_Item;
+xItem Wave_Item;
 
 element_t Contrast_element = {&Contrast_data, NULL, NULL};
 element_t CursorKp_element = {&Cursorkp_data, NULL, NULL};
@@ -749,6 +751,7 @@ element_t Power_element = {NULL, &Power_switch, NULL};
 element_t MenuColor_element = {NULL, &MenuColor_switch, NULL};
 element_t github_element = {NULL, NULL, &github_text};
 element_t bilibili_element = {NULL, NULL, &bilibili_text};
+element_t Wave_element = {&Wave_data, NULL, NULL};
 
 /*
  * 菜单构建函数
@@ -789,6 +792,7 @@ static void Craete_MenuTree(xpMenu Menu)
         AddItem(" -Github", _TEXT_, &github_element, logo_allArray[5], &Github_Item, &Home_Page, NULL, NULL);
         AddItem(" -Bilibili", _TEXT_, &bilibili_element, logo_allArray[7], &Bilibili_Item, &Home_Page, NULL, NULL);
         AddItem(" -ReadME", LOOP_FUNCTION, NULL, logo_allArray[9], &ReadME_Item, &Home_Page, NULL, Show_Bilibili);
+        AddItem(" -Wave", WAVE, &Wave_element, logo_allArray[9], &Wave_Item, &Home_Page, NULL, NULL);
 }
 
 /* 在此填入按键扫描程序
@@ -948,6 +952,11 @@ static void Process_App_Run(xpMenu Menu, xpItem item, Menu_Direction State)
         break;
     case LOOP_FUNCTION:
         if (item->itemFunction != NULL)(item->itemFunction)(Menu); // 执行项目的函数
+        if(item->state == MENU_ENTER)Change_MenuState(Menu, APP_QUIT); // 如果项目状态为进入菜单，则改变菜单状态为函数退出
+        break;
+    case WAVE:
+        if (item->itemFunction == NULL)Wave_Widget(Menu);
+        else (item->itemFunction)(Menu); // 执行项目的函数
         if(item->state == MENU_ENTER)Change_MenuState(Menu, APP_QUIT); // 如果项目状态为进入菜单，则改变菜单状态为函数退出
         break;
     case SWITCH:

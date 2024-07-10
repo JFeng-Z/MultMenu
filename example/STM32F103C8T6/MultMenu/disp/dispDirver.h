@@ -1,16 +1,12 @@
 #ifndef _DISP_DRIVER_H_
 #define _DISP_DRIVER_H_
 
-#include "stm32f10x.h"
+#include "stdint.h"
 
 void Disp_Init(void);
 void OLED_ClearBuffer(void);
 void OLED_SendBuffer(void);
-void OLED_UpdateDisplayArea(uint8_t tx, uint8_t ty, uint8_t tw, uint8_t th);
-uint16_t OLED_GetStrWidth(const char *s);
-void OLED_SetMaxClipWindow(void);
 void OLED_SetFont(const uint8_t  *font);
-void OLED_DrawPixel(uint16_t x, uint16_t y);
 void OLED_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 uint16_t OLED_DrawStr(uint16_t x, uint16_t y, const char *str);
 void OLED_SetDrawColor(uint8_t color);
