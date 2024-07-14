@@ -94,9 +94,9 @@ uint16_t OLED_DrawStr(uint16_t x, uint16_t y, const char *str)
  * 
  * 该函数通过调用u8g2库的u8g2_SetDrawColor函数，来设置当前绘制的颜色。绘制颜色会影响后续所有绘制操作。
  */
-void OLED_SetDrawColor(uint8_t color)
+void OLED_SetDrawColor(void *color)
 {
-    u8g2_SetDrawColor(&u8g2, color); // 调用u8g2库的函数设置绘制颜色
+    u8g2_SetDrawColor(&u8g2, *(uint8_t *)color); // 调用u8g2库的函数设置绘制颜色
 }
 
 /**
@@ -199,9 +199,9 @@ void OLED_SetContrast(uint8_t value)
  * @param is_enable 一个无符号字符(uint8_t)，用来控制是否启用电源节省模式。
  *                  当其值为1时，启用电源节省模式；当其值为0时，禁用电源节省模式。
  */
-void OLED_SetPowerSave(uint8_t is_enable)
+void OLED_SetPowerSave(void *is_enable)
 {
-    u8g2_SetPowerSave(&u8g2, is_enable); // 调用u8g2库的函数，设置OLED的电源节省模式状态
+    u8g2_SetPowerSave(&u8g2, *(uint8_t *)is_enable); // 调用u8g2库的函数，设置OLED的电源节省模式状态
 }
 
 /**

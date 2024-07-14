@@ -1,9 +1,10 @@
 #include "application.h"
-#include "dispDirver.h"
-#include "bsp_usart.h"
+#include "disp_dirver.h"
+#include "menu.h"
+#include "MenuConfig.h"
 #include "image.h"
 
-void Show_MPU6050(xpMenu Menu)
+void Application::Show_MPU6050(xpMenu Menu)
 {
     float pitch = 0, roll = 0, yaw = 0; 		//欧拉角
     char Pi[20], Ro[20], Ya[20];
@@ -25,7 +26,7 @@ void Show_MPU6050(xpMenu Menu)
 
 }
 
-void Show_GitHub(xpMenu Menu)
+void Application::Show_GitHub(xpMenu Menu)
 {
     const char* GitHub1="https://github.com/";
     const char* GitHub2="JFeng-Z/MultMenu";
@@ -38,7 +39,7 @@ void Show_GitHub(xpMenu Menu)
     }
 }
 
-void Show_Bilibili(xpMenu Menu)
+void Application::Show_Bilibili(xpMenu Menu)
 {
     const char* Bilibili = "BV1Xh4y1N7By";
 
@@ -84,7 +85,7 @@ const uint8_t logo[] = {
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 };
 
-void Show_Log(xpMenu Menu)
+void Application::Show_Log(xpMenu Menu)
 {
     OLED_ClearBuffer();
     OLED_DrawXBMP(32, 0, 64, 64, logo);
@@ -94,7 +95,7 @@ void Show_Log(xpMenu Menu)
 extern xMenu menu;
 extern xItem HomeHead_Item;
 
-void Menu_to_Home(void *value)
+void Application::Menu_to_Home(void *value)
 {
     menu.now_item = &HomeHead_Item;
     menu.old_item = &HomeHead_Item;

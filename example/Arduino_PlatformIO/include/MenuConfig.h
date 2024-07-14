@@ -1,8 +1,8 @@
 #ifndef _MENUCONFIG_H_
 #define _MENUCONFIG_H_
 
-#include "stdint.h"
-#include "u8g2.h"
+#include "Arduino.h"
+#include <U8g2lib.h>
 
 // 屏幕分辨率定义
 #define HOR_RES     128 // 水平分辨率

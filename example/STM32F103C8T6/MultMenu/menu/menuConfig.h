@@ -40,27 +40,31 @@ typedef struct Page *xpPage;
 typedef struct Item *xpItem;
 typedef struct Menu *xpMenu;
 typedef void (*ItemFunction)(xpMenu);
-typedef void (*SwitchFunction)(uint8_t);
+typedef void (*DataFunction)(void *);
+
+typedef enum DataFunction_Type
+{
+    EXIT_EXECUTE,   // 退出执行
+    STEP_EXECUTE    // 步进执行
+} DataFunction_Type;
 
 typedef enum data_type
 {
     DATA_INT,      // 整型数据
-    DATA_FLOAT     // 浮点型数据
+    DATA_FLOAT,     // 浮点型数据
+    DATA_SWITCH    // 开关类型数据
 } data_type;
 
 typedef struct data_t {
     const char *name;
     void *ptr; // 指向整型数据的指针
-    data_type type;
+    DataFunction function;
+    DataFunction_Type Function_Type;
+    data_type Data_Type;
     int max;
     int min;
     float step;
 } data_t;
-
-typedef struct switch_t {
-    uint8_t *is_enable;
-    SwitchFunction function;
-} switch_t;
 
 typedef struct text_t {
     const char *ptr;
@@ -71,7 +75,6 @@ typedef struct text_t {
 
 typedef struct element_t {
     data_t *data;
-    switch_t *switch_data;
     text_t *text;
 } element_t;
 
@@ -137,8 +140,6 @@ typedef enum ItemType
     LOOP_FUNCTION,
     // 一次性功能项: 代表仅执行一次的功能，执行后即被标记为完成，不再重复执行。
     ONCE_FUNCTION,
-    // 开关切换项: 代表菜单中的开关选项，可用于启用或禁用某个功能或设置。
-    SWITCH,
     // 数据项: 代表菜单中用于显示或设置数据的项，可以是数值、文本等各种形式的数据。
     DATA,
     // 文本类型: 代表菜单中的文本项，用于显示提示信息或提示用户操作。
@@ -241,6 +242,7 @@ typedef struct Item {
     int16_t Animation_x;
     int16_t Animation_y;
     const uint8_t *logo;
+    uint8_t function_state;
 } xItem;
 
 /**

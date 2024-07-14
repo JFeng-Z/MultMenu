@@ -1,10 +1,11 @@
 #include "menu.h"
-#include "dispDirver.h"
-#include "application.h"
+#include "disp_dirver.h"
+#include "button.h"
 #include "image.h"
 #include "parameter.h"
 #include "text.h"
 #include "wave.h"
+#include "application.h"
 
 const uint8_t Presets_Logo [] = {
 	0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xff, 0x3f, 
@@ -790,7 +791,7 @@ static void Craete_MenuTree(xpMenu Menu)
         AddItem(" +System", PARENTS, NULL, logo_allArray[8], &System_Item, &Home_Page, &System_Page, NULL);
             AddPage("[System]", &System_Page, TEXT);
                 AddItem("[System]", RETURN, NULL, NULL, &SystemHead_Item, &System_Page, &Home_Page, NULL);
-                AddItem(" -MPU6050", LOOP_FUNCTION, NULL, NULL, &MPU6050_Item, &System_Page, NULL, Show_MPU6050);
+                AddItem(" -MPU6050", LOOP_FUNCTION, NULL, NULL, &MPU6050_Item, &System_Page, NULL, Application::Show_MPU6050);
                 AddItem(" +Cursor Program", PARENTS, NULL, NULL, &CursorAnimation_Item, &System_Page, &CursorAnimation_Page, NULL);
                     AddPage("[Cursor Program]", &CursorAnimation_Page, TEXT);
                         AddItem("[Cursor Program]", RETURN, NULL, NULL, &CursorAnimationHead_Item, &CursorAnimation_Page, &System_Page, NULL);
@@ -808,35 +809,19 @@ static void Craete_MenuTree(xpMenu Menu)
             AddPage("[Setting Text]", &SettingTextPage_Page, IMAGE);
                 AddItem("[Setting Text]", RETURN, NULL, NULL, &SettingTextPageHead_Item, &SettingTextPage_Page, &Home_Page, NULL);
                 AddItem(" -Text Space", DATA, &text_space_element, logo_allArray[9], &TextSpace_Item, &SettingTextPage_Page, NULL, NULL);                
-        AddItem(" -Image", LOOP_FUNCTION, NULL, logo_allArray[6], &Image_Item, &Home_Page, NULL, Show_Logo);
+        AddItem(" -Image", LOOP_FUNCTION, NULL, logo_allArray[6], &Image_Item, &Home_Page, NULL, Application::Show_Log);
         AddItem(" -Github", _TEXT_, &github_element, logo_allArray[5], &Github_Item, &Home_Page, NULL, NULL);
         AddItem(" -Bilibili", _TEXT_, &bilibili_element, logo_allArray[7], &Bilibili_Item, &Home_Page, NULL, NULL);
-        AddItem(" -ReadME", LOOP_FUNCTION, NULL, logo_allArray[9], &ReadME_Item, &Home_Page, NULL, Show_Bilibili);
+        AddItem(" -ReadME", LOOP_FUNCTION, NULL, logo_allArray[9], &ReadME_Item, &Home_Page, NULL, Application::Show_Bilibili);
         AddItem(" -Wave", WAVE, &Wave_element, logo_allArray[9], &Wave_Item, &Home_Page, NULL, NULL);
 }
 
-/* 在此填入按键扫描程序
- * 功能：执行按键扫描，根据接收到的数据确定按键方向
- * 参数：无
- * 返回值：Menu_Direction 枚举类型，表示按键的方向，没有按键按下时返回MENU_NONE
- */
 static Menu_Direction BtnScan(void)
 {
-    if(RXD_GetReceiveFlag() == 1)
-    {
-        uint8_t data = RXD_GetReceiveData();
-        switch (data)
-        {
-        case MENU_UP:
-            return MENU_UP;
-        case MENU_DOWN:
-            return MENU_DOWN;
-        case MENU_ENTER:
-            return MENU_ENTER;
-        default:
-            break;
-        }
-    }
+    uint8_t data = Serial.read();
+    if(data == MENU_UP)return MENU_UP;
+    else if(data == MENU_DOWN)return MENU_DOWN;
+    else if(data == MENU_ENTER)return MENU_ENTER;
     return MENU_NONE;
 }
 

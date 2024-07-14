@@ -1,6 +1,6 @@
 #include "parameter.h"
 #include "menu.h"
-#include "dispDirver.h"
+#include "disp_dirver.h"
 #include "application.h"
 
 extern xMenu menu;
@@ -46,7 +46,7 @@ data_t Cursorkd_data = {
 data_t image_space_data = {
     .name = "image space",
     .ptr = &menu.image_space,
-    .function = Menu_to_Home,
+    .function = Application::Menu_to_Home,
     .Function_Type = EXIT_EXECUTE,
     .Data_Type = DATA_INT,
     .max = 100,
@@ -56,7 +56,7 @@ data_t image_space_data = {
 data_t text_space_data = {
     .name = "text space",
     .ptr = &menu.text_space,
-    .function = Menu_to_Home,
+    .function = Application::Menu_to_Home,
     .Function_Type = EXIT_EXECUTE,
     .Data_Type = DATA_INT,
     .max = 100,
