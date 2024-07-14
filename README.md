@@ -25,7 +25,7 @@
 - 0x01为上移按键
 - 0x02为下移按键
 - 0x03为确认按键
-~ Arduino也类似。
+- Arduino也类似。
 # 效果如下
 ![image](https://github.com/JFeng-Z/MultMenu/blob/master/Image/img1.png)
 ![image](https://github.com/JFeng-Z/MultMenu/blob/master/Image/img2.png)
