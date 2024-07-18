@@ -185,9 +185,9 @@ void OLED_DrawXBMP(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint8_t
  * 该函数通过调用u8g2库中的u8g2_SetContrast函数，来设置OLED显示器的对比度。
  * 使用者需要根据具体的OLED显示器和u8g2配置来选择合适的对比度值。
  */
-void OLED_SetContrast(uint8_t value)
+void OLED_SetContrast(void *value)
 {
-    u8g2_SetContrast(&u8g2, value); // 调用u8g2库函数设置对比度
+    u8g2_SetContrast(&u8g2, *(uint8_t *)value); // 调用u8g2库函数设置对比度
 }
 
 /**

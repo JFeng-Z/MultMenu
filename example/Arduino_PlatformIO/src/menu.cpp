@@ -951,19 +951,28 @@ static void Process_App_Run(xpMenu Menu, xpItem item, Menu_Direction State)
     switch (item->itemType) // 根据项目类型执行不同的操作
     {
     case DATA:
-        if (item->itemFunction == NULL)ParameterSetting_Widget(Menu);
-        else (item->itemFunction)(Menu); // 执行项目的函数
-        if(item->element->data->Data_Type == DATA_SWITCH)
+        if(item->element->data->Operate_Type == READ_ONLY)
         {
-            *(uint8_t *)item->element->data->ptr = ! *(uint8_t *)item->element->data->ptr; // 切换开关状态
-            Change_MenuState(Menu, APP_QUIT); // 改变菜单状态为函数退出
+            Change_MenuState(Menu, APP_QUIT); // 如果项目状态为进入菜单，则改变菜单状态为函数退出
+            break;
         }
         else
         {
-            if(item->state == MENU_ENTER)
+            if (item->itemFunction == NULL)ParameterSetting_Widget(Menu);
+            else (item->itemFunction)(Menu); // 执行项目的函数
+
+            if(item->element->data->Data_Type == DATA_SWITCH)
             {
-                if(Menu->now_item->element->data->function != NULL && Menu->now_item->element->data->Function_Type == EXIT_EXECUTE)Menu->now_item->element->data->function(Menu->now_item->element->data->ptr);
-                Change_MenuState(Menu, APP_QUIT); // 如果项目状态为进入菜单，则改变菜单状态为函数退出
+                *(uint8_t *)item->element->data->ptr = ! *(uint8_t *)item->element->data->ptr; // 切换开关状态
+                Change_MenuState(Menu, APP_QUIT); // 改变菜单状态为函数退出
+            }
+            else
+            {
+                if(item->state == MENU_ENTER)
+                {
+                    if(Menu->now_item->element->data->function != NULL && Menu->now_item->element->data->Function_Type == EXIT_EXECUTE)Menu->now_item->element->data->function(Menu->now_item->element->data->ptr);
+                    Change_MenuState(Menu, APP_QUIT); // 如果项目状态为进入菜单，则改变菜单状态为函数退出
+                }
             }
         }
         break;

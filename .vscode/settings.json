@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "parameter.h": "c",
-        "menuconfig.h": "c"
+        "menuconfig.h": "c",
+        "dispdirver.h": "c"
     }
 }

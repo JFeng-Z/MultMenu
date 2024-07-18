@@ -3,6 +3,7 @@
 #include "TimerTick.h"
 #include "menu.h"
 #include "stdlib.h"
+#include "rotary_encoder.h"
 
 xMenu menu;
 extern int test;
@@ -11,6 +12,7 @@ int main()
 {
     USART_Config();
     Timer_Init();
+    Rotary_Encoder_Init();
     Menu_Init(&menu);
     for(;;)
     {

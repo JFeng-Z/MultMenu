@@ -55,12 +55,19 @@ typedef enum data_type
     DATA_SWITCH    // 开关类型数据
 } data_type;
 
+typedef enum operate_type
+{
+    READ_ONLY,     // 只读
+    READ_WRITE     // 读写
+} operate_type;
+
 typedef struct data_t {
     const char *name;
     void *ptr; // 指向整型数据的指针
     DataFunction function;
     DataFunction_Type Function_Type;
     data_type Data_Type;
+    operate_type Operate_Type;
     int max;
     int min;
     float step;

@@ -1,11 +1,12 @@
 #include "menu.h"
+#include "stdlib.h"
+#include "string.h"
 #include "dispDirver.h"
 #include "application.h"
 #include "image.h"
 #include "parameter.h"
 #include "text.h"
 #include "wave.h"
-#include "rotary_encoder.h"
 #include "DinoGame.h"
 #include "AirPlane.h"
 
@@ -787,7 +788,7 @@ element_t Wave_element = {&Wave_data, NULL};
  * 该函数不接受参数，也不返回任何值。
  * 功能：静态地构建一个菜单系统。
  */
-static void Craete_MenuTree(xpMenu Menu)
+static void Create_MenuTree(xpMenu Menu)
 {
     AddPage("[HomePage]", &Home_Page, IMAGE);
         AddItem("[HomePage]", LOOP_FUNCTION, NULL, NULL, &HomeHead_Item, &Home_Page, NULL, Draw_Home);
@@ -975,19 +976,28 @@ static void Process_App_Run(xpMenu Menu, xpItem item, Menu_Direction State)
     switch (item->itemType) // 根据项目类型执行不同的操作
     {
     case DATA:
-        if (item->itemFunction == NULL)ParameterSetting_Widget(Menu);
-        else (item->itemFunction)(Menu); // 执行项目的函数
-        if(item->element->data->Data_Type == DATA_SWITCH)
+        if(item->element->data->Operate_Type == READ_ONLY)
         {
-            *(uint8_t *)item->element->data->ptr = ! *(uint8_t *)item->element->data->ptr; // 切换开关状态
-            Change_MenuState(Menu, APP_QUIT); // 改变菜单状态为函数退出
+            Change_MenuState(Menu, APP_QUIT); // 如果项目状态为进入菜单，则改变菜单状态为函数退出
+            break;
         }
         else
         {
-            if(item->state == MENU_ENTER)
+            if (item->itemFunction == NULL)ParameterSetting_Widget(Menu);
+            else (item->itemFunction)(Menu); // 执行项目的函数
+
+            if(item->element->data->Data_Type == DATA_SWITCH)
             {
-                if(Menu->now_item->element->data->function != NULL && Menu->now_item->element->data->Function_Type == EXIT_EXECUTE)Menu->now_item->element->data->function(Menu->now_item->element->data->ptr);
-                Change_MenuState(Menu, APP_QUIT); // 如果项目状态为进入菜单，则改变菜单状态为函数退出
+                *(uint8_t *)item->element->data->ptr = ! *(uint8_t *)item->element->data->ptr; // 切换开关状态
+                Change_MenuState(Menu, APP_QUIT); // 改变菜单状态为函数退出
+            }
+            else
+            {
+                if(item->state == MENU_ENTER)
+                {
+                    if(Menu->now_item->element->data->function != NULL && Menu->now_item->element->data->Function_Type == EXIT_EXECUTE)Menu->now_item->element->data->function(Menu->now_item->element->data->ptr);
+                    Change_MenuState(Menu, APP_QUIT); // 如果项目状态为进入菜单，则改变菜单状态为函数退出
+                }
             }
         }
         break;
@@ -1104,7 +1114,7 @@ static void AnimationParam_Init(Animation *Ani)
 
 static void Create_Menu(xpMenu Menu, xpItem item)
 {
-    Craete_MenuTree(Menu);
+    Create_MenuTree(Menu);
     Menu->text_space = TEXT_SPACE;
     Menu->image_space = IMG_SPACE;
     Menu->headX = Init_x;

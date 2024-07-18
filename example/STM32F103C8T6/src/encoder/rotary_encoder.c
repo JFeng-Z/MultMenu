@@ -67,5 +67,6 @@ Menu_Direction Encoder_Scan(void)
     {
         return MENU_DOWN;
     }
+    if(EncoderButton_Scan())return MENU_ENTER;
     return MENU_NONE;
 }
