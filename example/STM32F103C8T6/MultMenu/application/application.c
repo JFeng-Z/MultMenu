@@ -1,53 +1,6 @@
 #include "application.h"
 #include "dispDirver.h"
-#include "bsp_usart.h"
 #include "image.h"
-
-void Show_MPU6050(xpMenu Menu)
-{
-    float pitch = 0, roll = 0, yaw = 0; 		//欧拉角
-    char Pi[20], Ro[20], Ya[20];
-
-    if (DialogScale_Show(Menu, 1, 2, 100, 62))
-    {
-        // mpu_dmp_get_data(&pitch, &roll, &yaw);
-
-        sprintf(Pi, "Pitch = %.2f", pitch);
-        sprintf(Ro, "Roll  = %.2f", roll);
-        sprintf(Ya, "Yaw   = %.2f", yaw);
-
-        OLED_DrawStr(12, 14, Pi);
-        OLED_DrawStr(12, 36, Ro);
-        OLED_DrawStr(12, 58, Ya);
-
-        OLED_SendBuffer();
-    }
-
-}
-
-void Show_GitHub(xpMenu Menu)
-{
-    const char* GitHub1="https://github.com/";
-    const char* GitHub2="JFeng-Z/MultMenu";
-
-    if(DialogScale_Show(Menu, 2, 12, 125, 32))
-    {
-        OLED_DrawStr(8, 25, GitHub1);
-        OLED_DrawStr(8, 37, GitHub2);
-        OLED_SendBuffer();
-    }
-}
-
-void Show_Bilibili(xpMenu Menu)
-{
-    const char* Bilibili = "BV1Xh4y1N7By";
-
-    if(DialogScale_Show(Menu, 22, 24, 82, 20))
-    {
-        OLED_DrawStr(28, 37, Bilibili);
-        OLED_SendBuffer();
-    }
-}
 
 const uint8_t logo[] = { 
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -84,23 +37,9 @@ const uint8_t logo[] = {
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 };
 
-void Show_Log(xpMenu Menu)
+void Show_Logo(xpMenu Menu)
 {
     OLED_ClearBuffer();
     OLED_DrawXBMP(32, 0, 64, 64, logo);
     OLED_SendBuffer();
-}
-
-extern xMenu menu;
-extern xItem HomeHead_Item;
-
-void Menu_to_Home(void *value)
-{
-    menu.now_item = &HomeHead_Item;
-    menu.old_item = &HomeHead_Item;
-    menu.menu_state = MENU_INIT;
-    menu.page_state = PAGE_STATIC; 
-    menu._cursor.TargrtColumn = 0;
-    menu._cursor.TargrtRow = 0;
-    menu._cursor.TargrtWide = 0;
 }

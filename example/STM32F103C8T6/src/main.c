@@ -6,7 +6,7 @@
 #include "rotary_encoder.h"
 
 xMenu menu;
-extern int test;
+int test;
 
 int main()
 {

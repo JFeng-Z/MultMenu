@@ -2,7 +2,6 @@
 #include "u8g2.h"
 #include "stm32_u8g2.h"
 #include "menuConfig.h"
-#include "bsp_usart.h"
 
 u8g2_t u8g2;
 
@@ -46,33 +45,6 @@ void OLED_SendBuffer(void)
     u8g2_SendBuffer(&u8g2);
 }
 
-void OLED_UpdateDisplayArea(uint8_t tx, uint8_t ty, uint8_t tw, uint8_t th)
-{
-    u8g2_UpdateDisplayArea(&u8g2, tx, ty, tw, th);
-}
-
-/**
- * 获取字符串在OLED显示设备上的宽度。
- * 
- * @param s 指向要测量的字符串的指针。
- * @return 返回字符串在OLED显示设备上的宽度，单位为像素。
- */
-uint16_t OLED_GetStrWidth(const char *s)
-{
-    // 调用u8g2库的函数，获取字符串s的宽度
-    return u8g2_GetStrWidth(&u8g2, s);
-}
-
-/**
- * 设置OLED的最大剪辑窗口
- * 该函数无参数。
- * 该函数无返回值。
- */
-void OLED_SetMaxClipWindow(void)
-{
-    u8g2_SetMaxClipWindow(&u8g2);  // 调用u8g2库的函数设置最大的剪辑窗口
-}
-
 /**
  * 设置OLED显示器的字体。
  * 
@@ -83,19 +55,6 @@ void OLED_SetMaxClipWindow(void)
 void OLED_SetFont(const uint8_t  *font)
 {
     u8g2_SetFont(&u8g2, font); // 设置U8g2实例的字体
-}
-
-/**
- * 在OLED屏幕上绘制一个像素点
- * 
- * @param x 像素点的x坐标
- * @param y 像素点的y坐标
- * 
- * 该函数调用u8g2的DrawPixel函数，来在指定位置绘制一个像素点。
- */
-void OLED_DrawPixel(uint16_t x, uint16_t y)
-{
-    u8g2_DrawPixel(&u8g2, x, y); // 调用u8g2库的绘制像素点函数
 }
 
 /**
@@ -134,9 +93,9 @@ uint16_t OLED_DrawStr(uint16_t x, uint16_t y, const char *str)
  * 
  * 该函数通过调用u8g2库的u8g2_SetDrawColor函数，来设置当前绘制的颜色。绘制颜色会影响后续所有绘制操作。
  */
-void OLED_SetDrawColor(uint8_t color)
+void OLED_SetDrawColor(void *color)
 {
-    u8g2_SetDrawColor(&u8g2, color); // 调用u8g2库的函数设置绘制颜色
+    u8g2_SetDrawColor(&u8g2, *(uint8_t *)color); // 调用u8g2库的函数设置绘制颜色
 }
 
 /**
@@ -225,9 +184,9 @@ void OLED_DrawXBMP(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint8_t
  * 该函数通过调用u8g2库中的u8g2_SetContrast函数，来设置OLED显示器的对比度。
  * 使用者需要根据具体的OLED显示器和u8g2配置来选择合适的对比度值。
  */
-void OLED_SetContrast(uint8_t value)
+void OLED_SetContrast(void *value)
 {
-    u8g2_SetContrast(&u8g2, value); // 调用u8g2库函数设置对比度
+    u8g2_SetContrast(&u8g2, *(uint8_t *)value); // 调用u8g2库函数设置对比度
 }
 
 /**
@@ -239,9 +198,9 @@ void OLED_SetContrast(uint8_t value)
  * @param is_enable 一个无符号字符(uint8_t)，用来控制是否启用电源节省模式。
  *                  当其值为1时，启用电源节省模式；当其值为0时，禁用电源节省模式。
  */
-void OLED_SetPowerSave(uint8_t is_enable)
+void OLED_SetPowerSave(void *is_enable)
 {
-    u8g2_SetPowerSave(&u8g2, is_enable); // 调用u8g2库的函数，设置OLED的电源节省模式状态
+    u8g2_SetPowerSave(&u8g2, *(uint8_t *)is_enable); // 调用u8g2库的函数，设置OLED的电源节省模式状态
 }
 
 /**

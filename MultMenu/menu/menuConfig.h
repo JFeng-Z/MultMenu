@@ -214,17 +214,18 @@ typedef struct OptionPlace
  */
 typedef struct Page {
     const char *pageName;      // 页面名称，使用指针存储
-    uint8_t length;            // 页面长度
+    PageType type;         // 页面类型
+    Page_State page_state;    // 页面的状态
     // 使用内联函数封装成员变量，以提供更高的数据封装性和保护性
     struct {
         xpItem parent;         // 父级项
         xpItem head;           // 头部项
         xpItem tail;           // 尾部项
+        xpItem lastJumpItem;
     } item;
-    PageType type;         // 页面类型
-    int16_t jumpX;
-    int16_t jumpY;
-    xpItem lastJumpItem;
+    int length;            // 页面长度
+    int jumpX;
+    int jumpY;
     int cursorLastColumn;
     int cursorLastRow;
     int cursorLastWide;
@@ -243,13 +244,12 @@ typedef struct Item {
     } page;
     xpItem lastItem, nextItem; // 上一个项目和下一个项目的指针
     ItemFunction itemFunction; // 函数指针，指向一个接受xpItem类型参数的函数
-    Menu_Direction state; // 菜单方向状态
     int16_t x;
     int16_t y;
     int16_t Animation_x;
     int16_t Animation_y;
-    const uint8_t *logo;
     uint8_t function_state;
+    const uint8_t *logo;
 } xItem;
 
 /**
@@ -257,16 +257,16 @@ typedef struct Item {
  * 用于表示一个菜单的相关信息
  */
 typedef struct Menu {
-    int text_space;        // 文本间距
-    int image_space;      // 图片间距
-    int headX;                // 整个菜单的起始x坐标
-    int headY;                // 整个菜单的起始y坐标
     xpItem now_item;          // 当前选中的item
     xpItem old_item;          // 上一个选中的item
-    xItem lastJumpItem;
-    MenuState menu_state;    // 菜单的状态
-    Page_State page_state;    // 页面的状态
+    xpItem lastJumpItem;
     uint8_t bgColor;          // 菜单的背景颜色
+    int text_space;        // 文本间距
+    int image_space;      // 图片间距
+    int headX;
+    int headY;
+    MenuState menu_state;    // 菜单的状态
+    Menu_Direction dir;
     Animation _animation;
     CursorParam _cursor;
     DialogScaleParam _dialogScale;

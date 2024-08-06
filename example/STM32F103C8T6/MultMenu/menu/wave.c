@@ -3,11 +3,6 @@
 #include "dispDirver.h"
 
 uint8_t buffer[HOR_RES];
-int test;
-data_t Wave_data = {
-    .name = "test", 
-    .ptr = &test
-};
 
 void Wave_Widget(xpMenu Menu)
 {
@@ -27,4 +22,3 @@ void Wave_Widget(xpMenu Menu)
     OLED_DrawStr(0, VER_RES - 5, str);
     OLED_SendBuffer();
 }
-

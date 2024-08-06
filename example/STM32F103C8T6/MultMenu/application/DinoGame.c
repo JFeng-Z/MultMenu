@@ -225,12 +225,12 @@ void reset(){
 }
 
 //Deteching Joystick Interaction
-void keyPress(xpItem item)
+void keyPress(xpMenu Menu)
 {
     uint8_t temp;
     
-    if(item->state == MENU_UP)temp = DOWN;
-    if(item->state == MENU_DOWN)temp = UP;
+    if(Menu->dir == MENU_UP)temp = DOWN;
+    if(Menu->dir == MENU_DOWN)temp = UP;
     if(menu & (temp != 0))
     {
         reset();
@@ -376,7 +376,7 @@ void DinoGame_Run(xpMenu Menu)
     }
 
     u8g2_FirstPage(&u8g2);
-    keyPress(Menu->now_item);
+    keyPress(Menu);
     if ( (!gameOver) && (!menu) )
     {
       moveObjects();

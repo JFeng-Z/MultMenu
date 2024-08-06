@@ -700,7 +700,7 @@ static void Draw_ImagePage(xpMenu Menu, xpPage Page, xpItem now_item, xpItem nex
         OLED_DrawXBMP(temp_item->Animation_x, 12, IMG_WIDTH, IMG_HEIGHT, temp_item->logo);
         temp_item = temp_item->nextItem;
     }
-    OLED_DrawStr(0, VER_RES, next_item->itemName);
+    OLED_DrawStr(0, VER_RES - 2, next_item->itemName);
     uint8_t color = 2;
     OLED_SetDrawColor(&color); // 设置特定的颜色，通常用于高亮显示
     // 根据目标位置和当前位置，以及PID算法计算并更新当前选项的位置和宽度

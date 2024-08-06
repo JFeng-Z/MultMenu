@@ -1473,6 +1473,6 @@ void AirPlane_Run(xpMenu Menu)
         st_Draw(0);
     } while( u8g2_NextPage(&u8g2) );
 
-    if(Menu->now_item->state == MENU_UP) {y++;}
-    if(Menu->now_item->state == MENU_DOWN) {y--;}
+    if(Menu->dir == MENU_UP) {y++;}
+    if(Menu->dir == MENU_DOWN) {y--;}
 }

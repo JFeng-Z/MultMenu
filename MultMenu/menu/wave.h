@@ -3,8 +3,6 @@
 
 #include "menuConfig.h"
 
-extern data_t Wave_data;
-
 void Wave_Widget(xpMenu Menu);
 
 #endif
