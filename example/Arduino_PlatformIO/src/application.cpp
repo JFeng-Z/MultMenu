@@ -1,5 +1,5 @@
 #include "application.h"
-#include "disp_dirver.h"
+#include "dispDirver.h"
 #include "menu.h"
 #include "MenuConfig.h"
 #include "image.h"
@@ -85,23 +85,21 @@ const uint8_t logo[] = {
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 };
 
-void Application::Show_Log(xpMenu Menu)
+//首页
+void Application::Draw_Home(xpMenu Menu)
+{
+    OLED_ClearBuffer();
+    OLED_SetFont(MENU_FONT);
+    OLED_DrawStr(0, Font_Hight, "MultMenu");
+    OLED_DrawStr(0, Font_Hight*2, "Author:ZhangJianFeng");
+    OLED_DrawStr(0, Font_Hight*3, "Wait button...");
+    OLED_DrawStr(50, Font_Hight*5, "Version:2.1.5");
+    OLED_SendBuffer();
+}
+
+void Application::Show_Logo(xpMenu Menu)
 {
     OLED_ClearBuffer();
     OLED_DrawXBMP(32, 0, 64, 64, logo);
     OLED_SendBuffer();
-}
-
-extern xMenu menu;
-extern xItem HomeHead_Item;
-
-void Application::Menu_to_Home(void *value)
-{
-    menu.now_item = &HomeHead_Item;
-    menu.old_item = &HomeHead_Item;
-    menu.menu_state = MENU_INIT;
-    menu.page_state = PAGE_STATIC; 
-    menu._cursor.TargrtColumn = 0;
-    menu._cursor.TargrtRow = 0;
-    menu._cursor.TargrtWide = 0;
 }

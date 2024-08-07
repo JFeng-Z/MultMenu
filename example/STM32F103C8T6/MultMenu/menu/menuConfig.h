@@ -273,4 +273,9 @@ typedef struct Menu {
     OptionPlace _optionPlace;
 } xMenu;
 
+void Create_Parameter(void);
+void Create_Text(void);
+void Create_MenuTree(xpMenu Menu);
+void Menu_Init(xpMenu Menu);
+
 #endif

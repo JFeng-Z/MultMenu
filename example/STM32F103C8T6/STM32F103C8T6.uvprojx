@@ -1196,11 +1196,6 @@
               <FilePath>.\MultMenu\menu\parameter.c</FilePath>
             </File>
             <File>
-              <FileName>switch.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\MultMenu\menu\switch.c</FilePath>
-            </File>
-            <File>
               <FileName>text.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MultMenu\menu\text.c</FilePath>
@@ -1209,6 +1204,11 @@
               <FileName>wave.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MultMenu\menu\wave.c</FilePath>
+            </File>
+            <File>
+              <FileName>menuConfig.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MultMenu\menu\menuConfig.c</FilePath>
             </File>
           </Files>
         </Group>

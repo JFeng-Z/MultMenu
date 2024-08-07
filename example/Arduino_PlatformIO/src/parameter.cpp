@@ -1,87 +1,7 @@
 #include "parameter.h"
+#include "stdio.h"
 #include "menu.h"
-#include "disp_dirver.h"
-#include "application.h"
-
-extern xMenu menu;
-
-int Contrast = 255; 
-data_t Contrast_data = {    
-    .name = "Contrast",
-    .ptr = &Contrast,
-    .function = OLED_SetContrast,
-    .Function_Type = STEP_EXECUTE,
-    .Data_Type = DATA_INT,
-    .Operate_Type = READ_WRITE,
-    .max = 255,
-    .min = 0,
-    .step = 2
-};
-data_t Cursorkp_data = {
-    .name = "Cursor kp",
-    .ptr = &menu._animation.TextPage_Cursor.kp,
-    .function = NULL,
-    .Data_Type = DATA_FLOAT,
-    .Operate_Type = READ_WRITE,
-    .max = 1,
-    .min = -1,
-    .step = 0.05
-};
-data_t Cursorki_data = {
-    .name = "Cursor ki",
-    .ptr = &menu._animation.TextPage_Cursor.ki,
-    .function = NULL,
-    .Data_Type = DATA_FLOAT,
-    .Operate_Type = READ_WRITE,
-    .max = 1,
-    .min = -1,
-    .step = 0.05
-};
-data_t Cursorkd_data = {
-    .name = "Cursor kd",
-    .ptr = &menu._animation.TextPage_Cursor.kd,
-    .function = NULL,
-    .Data_Type = DATA_FLOAT,
-    .Operate_Type = READ_WRITE,
-    .max = 1,
-    .min = -1,
-    .step = 0.05
-};
-data_t image_space_data = {
-    .name = "image space",
-    .ptr = &menu.image_space,
-    .function = Application::Menu_to_Home,
-    .Function_Type = EXIT_EXECUTE,
-    .Data_Type = DATA_INT,
-    .Operate_Type = READ_WRITE,
-    .max = 100,
-    .min = 0,
-    .step = 2
-};
-data_t text_space_data = {
-    .name = "text space",
-    .ptr = &menu.text_space,
-    .function = Application::Menu_to_Home,
-    .Function_Type = EXIT_EXECUTE,
-    .Data_Type = DATA_INT,
-    .Operate_Type = READ_WRITE,
-    .max = 100,
-    .min = 0,
-    .step = 2
-};
-data_t MenuColor_switch_data = {
-    .ptr = &menu.bgColor,
-    .function = OLED_SetDrawColor,
-    .Data_Type = DATA_SWITCH,
-    .Operate_Type = READ_WRITE
-};
-uint8_t power = true;
-data_t Power_switch_data = {
-    .ptr = &power,
-    .function = OLED_SetPowerSave,
-    .Data_Type = DATA_SWITCH,
-    .Operate_Type = READ_WRITE
-};
+#include "dispDirver.h"
 
 void ParameterSetting_Widget(xpMenu Menu)
 {
@@ -97,7 +17,7 @@ void ParameterSetting_Widget(xpMenu Menu)
         
         if (DialogScale_Show(Menu, x, y, w, h))
         {
-            switch (Menu->now_item->state)
+            switch (Menu->dir)
             {
             case MENU_UP:
                 Draw_Scrollbar(x + 4, y + 18, w - 30, 6, 3, Step, Menu->now_item->element->data);

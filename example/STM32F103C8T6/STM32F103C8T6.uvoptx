@@ -670,8 +670,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\MultMenu\menu\switch.c</PathWithFileName>
-      <FilenameWithoutPath>switch.c</FilenameWithoutPath>
+      <PathWithFileName>.\MultMenu\menu\text.c</PathWithFileName>
+      <FilenameWithoutPath>text.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -682,8 +682,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\MultMenu\menu\text.c</PathWithFileName>
-      <FilenameWithoutPath>text.c</FilenameWithoutPath>
+      <PathWithFileName>.\MultMenu\menu\wave.c</PathWithFileName>
+      <FilenameWithoutPath>wave.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -694,8 +694,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\MultMenu\menu\wave.c</PathWithFileName>
-      <FilenameWithoutPath>wave.c</FilenameWithoutPath>
+      <PathWithFileName>.\MultMenu\menu\menuConfig.c</PathWithFileName>
+      <FilenameWithoutPath>menuConfig.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

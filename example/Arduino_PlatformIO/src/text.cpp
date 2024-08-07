@@ -1,10 +1,7 @@
 #include "text.h"
 #include "menu.h"
-#include "disp_dirver.h"
+#include "dispDirver.h"
 #include "string.h"
-
-text_t github_text = {"https://github.com/JFeng-Z/MultMenu", u8g2_font_7x13_tr, 13, 7};
-text_t bilibili_text = {"https://www.bilibili.com/video/BV1d4421Q7kD?vd_source=11fa79768e087179635ff2a439abe018", MENU_FONT, Font_Hight, Font_Width};
 
 void Text_Widget(xpMenu Menu) 
 {

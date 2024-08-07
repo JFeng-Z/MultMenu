@@ -5,7 +5,7 @@
 #include "button.h"
 
 xMenu menu;
-extern int test;
+int test;
 
 void setup()
 {

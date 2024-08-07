@@ -37,6 +37,18 @@ const uint8_t logo[] = {
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 };
 
+//首页
+void Draw_Home(xpMenu Menu)
+{
+    OLED_ClearBuffer();
+    OLED_SetFont(MENU_FONT);
+    OLED_DrawStr(0, Font_Hight, "MultMenu");
+    OLED_DrawStr(0, Font_Hight*2, "Author:ZhangJianFeng");
+    OLED_DrawStr(0, Font_Hight*3, "Wait button...");
+    OLED_DrawStr(50, Font_Hight*5, "Version:2.1.5");
+    OLED_SendBuffer();
+}
+
 void Show_Logo(xpMenu Menu)
 {
     OLED_ClearBuffer();

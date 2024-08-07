@@ -1,5 +1,5 @@
-#ifndef _DISP_DRIVER_H_
-#define _DISP_DRIVER_H_
+#ifndef _DISPDRIVER_H_
+#define _DISPDRIVER_H_
 
 #include "Arduino.h"
 
