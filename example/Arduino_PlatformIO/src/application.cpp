@@ -4,52 +4,6 @@
 #include "MenuConfig.h"
 #include "image.h"
 
-void Application::Show_MPU6050(xpMenu Menu)
-{
-    float pitch = 0, roll = 0, yaw = 0; 		//欧拉角
-    char Pi[20], Ro[20], Ya[20];
-
-    if (DialogScale_Show(Menu, 1, 2, 100, 62))
-    {
-        // mpu_dmp_get_data(&pitch, &roll, &yaw);
-
-        sprintf(Pi, "Pitch = %.2f", pitch);
-        sprintf(Ro, "Roll  = %.2f", roll);
-        sprintf(Ya, "Yaw   = %.2f", yaw);
-
-        OLED_DrawStr(12, 14, Pi);
-        OLED_DrawStr(12, 36, Ro);
-        OLED_DrawStr(12, 58, Ya);
-
-        OLED_SendBuffer();
-    }
-
-}
-
-void Application::Show_GitHub(xpMenu Menu)
-{
-    const char* GitHub1="https://github.com/";
-    const char* GitHub2="JFeng-Z/MultMenu";
-
-    if(DialogScale_Show(Menu, 2, 12, 125, 32))
-    {
-        OLED_DrawStr(8, 25, GitHub1);
-        OLED_DrawStr(8, 37, GitHub2);
-        OLED_SendBuffer();
-    }
-}
-
-void Application::Show_Bilibili(xpMenu Menu)
-{
-    const char* Bilibili = "BV1Xh4y1N7By";
-
-    if(DialogScale_Show(Menu, 22, 24, 82, 20))
-    {
-        OLED_DrawStr(28, 37, Bilibili);
-        OLED_SendBuffer();
-    }
-}
-
 const uint8_t logo[] = { 
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -93,7 +47,7 @@ void Application::Draw_Home(xpMenu Menu)
     OLED_DrawStr(0, Font_Hight, "MultMenu");
     OLED_DrawStr(0, Font_Hight*2, "Author:ZhangJianFeng");
     OLED_DrawStr(0, Font_Hight*3, "Wait button...");
-    OLED_DrawStr(50, Font_Hight*5, "Version:2.1.5");
+    OLED_DrawStr(50, Font_Hight*5, "Version:2.1.7");
     OLED_SendBuffer();
 }
 
