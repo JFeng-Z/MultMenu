@@ -15,10 +15,9 @@
 2. 往dispDirver.c中替换你的屏幕驱动，亦可使用example中的移植的u8g2库。
 3. 在Menu_State BtnScan(void)函数中放入你的按键扫描程序。
 4. 在image.c中写入你需要显示的项目logo，否则图形界面的logo为预设logo。推荐开源图标库：[https://github.com/hugeicons/hugeicons-react](https://github.com/hugeicons/hugeicons-react)，图片取模工具：[https://javl.github.io/image2cpp/](https://github.com/javl/image2cpp)。
-5. 在parameter.c中建立需要的数据类，并填入想控制的变量、变量名、上下限、步进值、在text.c中建立需要的文本类、在wave.c中建立需要的波形类。
-6. 在新增菜单项时，在menu.c中定义菜单所在页面(page)和菜单项(item)，并建立所需要的元素类（数据、文本、波形），然后在Craete_MenuTree中通过AddPage、AddItem加入。
-7. 建立一个xMenu类型的全局结构体
-8. 将Menu_Init和Menu_Loop放入你的程序中（若使用RTOS，建议给予10ms运行周期）。
+5. 在menuConfig.c中建立需要的数据类、文本类、波形类以及菜单的页面(page)和项(item)。
+6. 建立一个xMenu类型的全局结构体
+7. 将Menu_Init和Menu_Loop放入你的程序中（若使用RTOS，建议给予10ms运行周期）。
 # Example
 基于STM32F103C8T6，使用硬件I2C2驱动0.96寸OLED(SSD1306)，按键为串口虚拟按键。
 其中：
