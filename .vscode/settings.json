@@ -2,6 +2,7 @@
     "files.associations": {
         "parameter.h": "c",
         "menuconfig.h": "c",
-        "dispdirver.h": "c"
+        "dispdirver.h": "c",
+        "stdio.h": "c"
     }
 }
