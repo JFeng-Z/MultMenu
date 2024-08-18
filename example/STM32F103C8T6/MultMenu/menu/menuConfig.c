@@ -48,6 +48,9 @@ void Create_Parameter(void)
     static data_t Wave_data;
     Wave_data.name = "Wave";
     Wave_data.ptr = &test;
+    Wave_data.Data_Type = DATA_INT;
+    Wave_data.max = 360;
+    Wave_data.min = 0;
     static element_t Wave_element;
     Wave_element.data = &Wave_data;
     Create_element(&Wave_Item, &Wave_element);

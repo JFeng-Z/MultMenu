@@ -16,6 +16,6 @@ void setup()
 
 void loop()
 {
-    test = rand();
+    test = rand()%360;
     Menu_Loop(&menu);
 }

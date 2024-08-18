@@ -16,7 +16,7 @@ int main()
     Menu_Init(&menu);
     for(;;)
     {
-        test = rand();
+        test = rand()%360;
         Menu_Loop(&menu);
     }
 }

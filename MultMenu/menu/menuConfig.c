@@ -11,8 +11,6 @@ xItem HomeHead_Item, SystemHead_Item, System_Item, Image_Item, Github_Item, Bili
 xItem Contrast_Item, Power_Item;
 xItem Wave_Item;
 
-extern int test;
-
 /**
  * 在此建立所需显示或更改的数据
  * 无参数
@@ -44,13 +42,6 @@ void Create_Parameter(void)
     static element_t Power_element;
     Power_element.data = &Power_switch_data;
     Create_element(&Power_Item, &Power_element);
-
-    static data_t Wave_data;
-    Wave_data.name = "Wave";
-    Wave_data.ptr = &test;
-    static element_t Wave_element;
-    Wave_element.data = &Wave_data;
-    Create_element(&Wave_Item, &Wave_element);
 }
 
 /**
@@ -96,7 +87,6 @@ void Create_MenuTree(xpMenu Menu)
         AddItem(" -Image", LOOP_FUNCTION, logo_allArray[6], &Image_Item, &Home_Page, NULL, Show_Logo);
         AddItem(" -Github", _TEXT_, logo_allArray[5], &Github_Item, &Home_Page, NULL, NULL);
         AddItem(" -Bilibili", _TEXT_, logo_allArray[7], &Bilibili_Item, &Home_Page, NULL, NULL);
-        AddItem(" -Wave", WAVE, logo_allArray[9], &Wave_Item, &Home_Page, NULL, NULL);
 }
 
 void Menu_Init(xpMenu Menu)
