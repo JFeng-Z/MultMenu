@@ -1,0 +1,17 @@
+##########################################################################################
+#                        Append Compiler Options For Source Files
+##########################################################################################
+
+# syntax:
+#   <your pattern>: <compiler options>
+# For get pattern syntax, please refer to: https://www.npmjs.com/package/micromatch
+#
+# examples:
+#   'main.cpp':           --cpp11 -Og ...
+#   'src/*.c':            -gnu -O2 ...
+#   'src/lib/**/*.cpp':   --cpp11 -Os ...
+#   '!Application/*.c':   -O0
+#   '**/*.c':             -O2 -gnu ...
+
+version: "2.0"
+options: {}

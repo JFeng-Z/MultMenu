@@ -9,9 +9,9 @@ void Timer_Init(void)
 
     // 配置定时器2
     TIM_TimeBaseInitTypeDef TIM_InitStruct;
-    TIM_InitStruct.TIM_Prescaler = SystemCoreClock / 1000 - 1;   // 设置预分频值，将时钟频率降低为1KHz
+    TIM_InitStruct.TIM_Prescaler = 72 - 1;   // 设置预分频值，将时钟频率降低为1KHz
     TIM_InitStruct.TIM_CounterMode = TIM_CounterMode_Up;         // 向上计数模式
-    TIM_InitStruct.TIM_Period = 1;                               // 自动重装载寄存器的值，设置为1以产生1ms的中断
+    TIM_InitStruct.TIM_Period = 1000 - 1;                               // 自动重装载寄存器的值，设置为1以产生1ms的中断
     TIM_InitStruct.TIM_ClockDivision = TIM_CKD_DIV1;             // 时钟分割: 不分割
     TIM_InitStruct.TIM_RepetitionCounter = 0;                    // 重复计数器的值，设置为0
     TIM_TimeBaseInit(TIM2, &TIM_InitStruct);
