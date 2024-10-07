@@ -7,13 +7,13 @@
 
 xMenu menu;
 int test;
-
 int main()
 {
     USART_Config();
     Timer_Init();
     Rotary_Encoder_Init();
     Menu_Init(&menu);
+    
     for(;;)
     {
         test = rand()%360;

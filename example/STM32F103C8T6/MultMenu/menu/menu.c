@@ -739,6 +739,16 @@ void Create_element(xpItem item, element_t *element)
 
     item->element = element;
 }
+// extern xMenu menu;
+// extern xItem HomeHead_Item;
+
+// void require_jump(xpMenu Menu, xpItem target_item)
+// {
+//     Menu->menu_state = MENU_RUN;
+//     Draw_Menu(Menu, target_item->page.location, Menu->now_item, target_item);
+//     Menu->old_item = Menu->now_item;
+//     Menu->now_item = target_item;
+// }
 
 /* 在此填入按键扫描程序
  * 功能：执行按键扫描，根据接收到的数据确定按键方向
@@ -758,6 +768,12 @@ static Menu_Direction BtnScan(void)
             return MENU_DOWN;
         case MENU_ENTER:
             return MENU_ENTER;
+        // case 4:
+        //     require_jump(&menu, menu.now_item->page.location->item.head);
+        //     return MENU_ENTER;
+        // case 5:
+        //     require_jump(&menu, &HomeHead_Item);
+        //     return MENU_ENTER;
         default:
             break;
         }
