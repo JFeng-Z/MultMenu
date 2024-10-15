@@ -3,11 +3,13 @@
 #include "dispDirver.h"
 #include "image.h"
 #include "application.h"
+#include "DinoGame.h"
+#include "AirPlane.h"
 
 /* Page*/
 xPage Home_Page, System_Page;
 /* item */
-xItem HomeHead_Item, SystemHead_Item, System_Item, Image_Item, Github_Item, Bilibili_Item;
+xItem HomeHead_Item, SystemHead_Item, System_Item, Image_Item, Github_Item, Bilibili_Item, Dino_Item, AirPlane_Item;
 xItem Contrast_Item, Power_Item;
 xItem Wave_Item;
 
@@ -100,6 +102,8 @@ void Create_MenuTree(xpMenu Menu)
         AddItem(" -Github", _TEXT_, logo_allArray[5], &Github_Item, &Home_Page, NULL, NULL);
         AddItem(" -Bilibili", _TEXT_, logo_allArray[7], &Bilibili_Item, &Home_Page, NULL, NULL);
         AddItem(" -Wave", WAVE, logo_allArray[9], &Wave_Item, &Home_Page, NULL, NULL);
+        AddItem(" -DinoGame", LOOP_FUNCTION, logo_allArray[3], &Dino_Item, &Home_Page, NULL, DinoGame_Run);
+        AddItem(" -AirPlane", LOOP_FUNCTION, logo_allArray[0], &AirPlane_Item, &Home_Page, NULL, AirPlane_Run);
 }
 
 void Menu_Init(xpMenu Menu)
